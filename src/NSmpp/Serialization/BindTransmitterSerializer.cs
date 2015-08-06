@@ -6,14 +6,46 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(BindTransmitter pdu)
         {
-            var builder = new PduWriter(pdu.Length);
-            builder.WritePduHeader(pdu);
-            return builder.GetBytes();
+            var writer = new PduWriter(pdu.Length);
+            writer.WritePduHeader(pdu);
+            writer.WriteString(pdu.SystemId);
+            writer.WriteString(pdu.Password);
+            writer.WriteString(pdu.SystemType);
+            writer.WriteByte(pdu.InterfaceVersion);
+            writer.WriteByte(pdu.AddressTon);
+            writer.WriteByte(pdu.AddressNpi);
+            writer.WriteString(pdu.AddressRange);
+
+            return writer.GetBytes();
         }
 
         internal override BindTransmitter Deserialize(byte[] bytes)
         {
-            throw new System.NotImplementedException();
+            var reader = new PduReader(bytes);
+            int length = reader.ReadInteger();
+            var command = (SmppCommand)reader.ReadInteger();
+            var status = (SmppStatus)reader.ReadInteger();
+            var sequence = reader.ReadInteger();
+            var systemId = reader.ReadString();
+            var password = reader.ReadString();
+            var systemType = reader.ReadString();
+            var interfaceVersion = reader.ReadByte();
+            var addressTon = reader.ReadByte();
+            var addressNpi = reader.ReadByte();
+            var addressRange = reader.ReadString();
+
+            return new BindTransmitter(
+                length,
+                command,
+                status,
+                sequence,
+                systemId,
+                password,
+                systemType,
+                interfaceVersion,
+                addressTon,
+                addressNpi,
+                addressRange);
         }
     }
 }

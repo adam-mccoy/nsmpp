@@ -2,5 +2,6 @@
 {
     internal enum SmppCommand
     {
+        BindTransmitter = 0x00000002
     }
 }
