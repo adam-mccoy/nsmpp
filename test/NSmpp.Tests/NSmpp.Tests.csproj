@@ -48,6 +48,7 @@
     <Compile Include="BindTransmitterResponseSerializerTests.cs" />
     <Compile Include="BindTransmitterTests.cs" />
     <Compile Include="PduReaderTests.cs" />
+    <Compile Include="PduReceiverTests.cs" />
     <Compile Include="PduWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

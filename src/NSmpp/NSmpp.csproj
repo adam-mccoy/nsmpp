@@ -48,9 +48,11 @@
     <Compile Include="Serialization\BindTransmitterResponseSerializer.cs" />
     <Compile Include="Serialization\BindTransmitterSerializer.cs" />
     <Compile Include="Serialization\IPduSerializer.cs" />
+    <Compile Include="Serialization\PduSerializerFactory.cs" />
     <Compile Include="Serialization\PduWriter.cs" />
     <Compile Include="Serialization\PduReader.cs" />
     <Compile Include="Serialization\PduSerializer.cs" />
+    <Compile Include="PduReceiver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
