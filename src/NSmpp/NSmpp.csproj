@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PduSender.cs" />
     <Compile Include="Pdu\BindTransmitter.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="Pdu\PduBase.cs" />
