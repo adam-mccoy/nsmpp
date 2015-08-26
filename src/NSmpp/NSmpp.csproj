@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
     <Compile Include="Pdu\BindTransmitter.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="PduReceiver.cs" />
     <Compile Include="SessionState.cs" />
     <Compile Include="SmppSession.cs" />
+    <Compile Include="TypeOfNumber.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

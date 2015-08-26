@@ -6,21 +6,21 @@
         internal string Password { get; private set; }
         internal string SystemType { get; private set; }
         internal byte InterfaceVersion { get; private set; }
-        internal byte AddressTon { get; private set; }
-        internal byte AddressNpi { get; private set; }
+        internal TypeOfNumber AddressTon { get; private set; }
+        internal NumericPlanIndicator AddressNpi { get; private set; }
         internal string AddressRange { get; private set; }
 
         public BindTransmitter(
             int length,
             SmppCommand command,
             SmppStatus status,
-            int sequenceNumber,
+            uint sequenceNumber,
             string systemId,
             string password,
             string systemType,
             byte interfaceVersion,
-            byte addressTon,
-            byte addressNpi,
+            TypeOfNumber addressTon,
+            NumericPlanIndicator addressNpi,
             string addressRange)
             : base(length, command, status, sequenceNumber)
         {

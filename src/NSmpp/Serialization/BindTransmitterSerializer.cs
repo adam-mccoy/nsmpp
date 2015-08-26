@@ -12,8 +12,8 @@ namespace NSmpp.Serialization
             writer.WriteString(pdu.Password);
             writer.WriteString(pdu.SystemType);
             writer.WriteByte(pdu.InterfaceVersion);
-            writer.WriteByte(pdu.AddressTon);
-            writer.WriteByte(pdu.AddressNpi);
+            writer.WriteByte((byte)pdu.AddressTon);
+            writer.WriteByte((byte)pdu.AddressNpi);
             writer.WriteString(pdu.AddressRange);
 
             return writer.GetBytes();
@@ -30,8 +30,8 @@ namespace NSmpp.Serialization
             var password = reader.ReadString();
             var systemType = reader.ReadString();
             var interfaceVersion = reader.ReadByte();
-            var addressTon = reader.ReadByte();
-            var addressNpi = reader.ReadByte();
+            var addressTon = (TypeOfNumber)reader.ReadByte();
+            var addressNpi = (NumericPlanIndicator)reader.ReadByte();
             var addressRange = reader.ReadString();
 
             return new BindTransmitter(

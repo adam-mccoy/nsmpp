@@ -35,8 +35,8 @@ namespace NSmpp.Tests
             Assert.AreEqual("PASS", pdu.Password);
             Assert.AreEqual("SMS", pdu.SystemType);
             Assert.AreEqual(52, pdu.InterfaceVersion);
-            Assert.AreEqual(2, pdu.AddressTon);
-            Assert.AreEqual(3, pdu.AddressNpi);
+            Assert.AreEqual(TypeOfNumber.National, pdu.AddressTon);
+            Assert.AreEqual(NumericPlanIndicator.Telex, pdu.AddressNpi);
             Assert.IsNull(pdu.AddressRange);
         }
 
@@ -65,8 +65,8 @@ namespace NSmpp.Tests
                 "PASS",
                 "SMS",
                 52,
-                2,
-                3,
+                TypeOfNumber.National,
+                NumericPlanIndicator.Telex,
                 null);
 
             var serializer = new BindTransmitterSerializer();
