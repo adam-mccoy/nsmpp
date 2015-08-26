@@ -8,7 +8,7 @@
             int length,
             SmppCommand command,
             SmppStatus status,
-            int sequenceNumber,
+            uint sequenceNumber,
             string systemId)
             : base(length, command, status, sequenceNumber)
         {

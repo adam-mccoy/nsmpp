@@ -25,7 +25,7 @@ namespace NSmpp.Serialization
             int length = reader.ReadInteger();
             var command = (SmppCommand)reader.ReadInteger();
             var status = (SmppStatus)reader.ReadInteger();
-            var sequence = reader.ReadInteger();
+            var sequence = (uint)reader.ReadInteger();
             var systemId = reader.ReadString();
             var password = reader.ReadString();
             var systemType = reader.ReadString();
