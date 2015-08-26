@@ -54,6 +54,7 @@
     <Compile Include="Serialization\PduReader.cs" />
     <Compile Include="Serialization\PduSerializer.cs" />
     <Compile Include="PduReceiver.cs" />
+    <Compile Include="SmppSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
