@@ -66,7 +66,7 @@ namespace NSmpp
                 {
                     var lengthBuffer = new byte[4];
                     if (requestTask == null)
-                        requestTask = _inputStream.ReadAsync(lengthBuffer, 0, 4);
+                        requestTask = _inputStream.ReadAsync(lengthBuffer, bytesRead, 4 - bytesRead);
 
                     var timeoutTask = Task.Delay(TimeSpan.FromMilliseconds(1000));
 
@@ -78,7 +78,10 @@ namespace NSmpp
                             var length = PduReader.ReadInteger(lengthBuffer, 0);
                             var pduBuffer = new byte[length];
                             Buffer.BlockCopy(lengthBuffer, 0, pduBuffer, 0, 4);
-                            await _inputStream.ReadAsync(pduBuffer, 4, length - 4);
+
+                            var toRead = length - 4;
+                            while (toRead > 0)
+                                toRead -= await _inputStream.ReadAsync(pduBuffer, length - toRead, toRead);
 
                             bytesRead = 0;
                             ProcessPdu(pduBuffer);
@@ -86,7 +89,7 @@ namespace NSmpp
                         requestTask = null;
                     }
                 }
-                catch (ArgumentNullException ex)
+                catch
                 {
                 }
             }
