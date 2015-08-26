@@ -43,6 +43,7 @@
     <Compile Include="PduSender.cs" />
     <Compile Include="Pdu\BindTransmitter.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
+    <Compile Include="Pdu\BindType.cs" />
     <Compile Include="Pdu\PduBase.cs" />
     <Compile Include="Pdu\SmppCommand.cs" />
     <Compile Include="Pdu\SmppStatus.cs" />
