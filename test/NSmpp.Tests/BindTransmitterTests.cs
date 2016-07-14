@@ -57,8 +57,6 @@ namespace NSmpp.Tests
                 0x00,                         // address range
             };
             var pdu = new BindTransmitter(
-                34,
-                SmppCommand.BindTransmitter,
                 SmppStatus.Ok,
                 16,
                 "TEST",

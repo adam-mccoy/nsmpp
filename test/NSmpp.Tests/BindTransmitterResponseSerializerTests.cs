@@ -39,8 +39,6 @@ namespace NSmpp.Tests
                 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x00 // system ID
             };
             var pdu = new BindTransmitterResponse(
-                23,
-                SmppCommand.BindTransmitterResp,
                 SmppStatus.Ok,
                 32,
                 "System");

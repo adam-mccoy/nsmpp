@@ -2,15 +2,23 @@
 {
     internal class BindTransmitterResponse : PduBase
     {
+        internal override int Length
+        {
+            get { return HeaderLength + (SystemId?.Length ?? 0) + 1; }
+        }
+
+        internal override SmppCommand Command
+        {
+            get { return SmppCommand.BindTransmitterResp; }
+        }
+
         public string SystemId { get; private set; }
 
         public BindTransmitterResponse(
-            int length,
-            SmppCommand command,
             SmppStatus status,
             uint sequenceNumber,
             string systemId)
-            : base(length, command, status, sequenceNumber)
+            : base(status, sequenceNumber)
         {
             SystemId = systemId;
         }

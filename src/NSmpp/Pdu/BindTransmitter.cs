@@ -2,6 +2,24 @@
 {
     internal class BindTransmitter : PduBase
     {
+        internal override int Length
+        {
+            get
+            {
+                return HeaderLength +
+                       SystemId.Length + 1 +
+                       Password.Length + 1 +
+                       (SystemType?.Length ?? 0) + 1 +
+                       3 +
+                       (AddressRange?.Length ?? 0) + 1;
+            }
+        }
+
+        internal override SmppCommand Command
+        {
+            get { return SmppCommand.BindTransmitter; }
+        }
+
         internal string SystemId { get; private set; }
         internal string Password { get; private set; }
         internal string SystemType { get; private set; }
@@ -11,8 +29,6 @@
         internal string AddressRange { get; private set; }
 
         public BindTransmitter(
-            int length,
-            SmppCommand command,
             SmppStatus status,
             uint sequenceNumber,
             string systemId,
@@ -22,7 +38,7 @@
             TypeOfNumber addressTon,
             NumericPlanIndicator addressNpi,
             string addressRange)
-            : base(length, command, status, sequenceNumber)
+            : base(status, sequenceNumber)
         {
             SystemId = systemId;
             Password = password;

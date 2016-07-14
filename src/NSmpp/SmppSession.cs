@@ -50,20 +50,12 @@ namespace NSmpp
             NumericPlanIndicator npi,
             string addressRange)
         {
-            var length = 16 +
-                systemId.Length + 1 +
-                password.Length + 1 +
-                systemType.Length + 1 +
-                3 +
-                addressRange.Length + 1;
             var sequence = GetNextSequenceNumber();
 
             switch (bindType)
             {
                 case BindType.Transmitter:
                     return new BindTransmitter(
-                        length,
-                        SmppCommand.BindTransmitter,
                         SmppStatus.Ok,
                         sequence,
                         systemId,

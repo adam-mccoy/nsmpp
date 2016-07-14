@@ -21,12 +21,7 @@ namespace NSmpp.Serialization
             var sequence = (uint)reader.ReadInteger();
             var systemId = reader.ReadString();
 
-            return new BindTransmitterResponse(
-                length,
-                command,
-                status,
-                sequence,
-                systemId);
+            return new BindTransmitterResponse(status, sequence, systemId);
         }
     }
 }

@@ -35,8 +35,6 @@ namespace NSmpp.Serialization
             var addressRange = reader.ReadString();
 
             return new BindTransmitter(
-                length,
-                command,
                 status,
                 sequence,
                 systemId,
