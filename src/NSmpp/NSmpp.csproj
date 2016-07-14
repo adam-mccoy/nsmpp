@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\SocketExtensions.cs" />
     <Compile Include="IPduReceivedHandler.cs" />
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Serialization\PduSerializer.cs" />
     <Compile Include="PduReceiver.cs" />
     <Compile Include="SessionState.cs" />
+    <Compile Include="SmppClient.cs" />
     <Compile Include="SmppSession.cs" />
     <Compile Include="TypeOfNumber.cs" />
   </ItemGroup>
