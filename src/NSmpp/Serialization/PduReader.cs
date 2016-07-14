@@ -74,7 +74,7 @@ namespace NSmpp.Serialization
         internal static string ReadString(byte[] buffer, int position)
         {
             var builder = new StringBuilder();
-            while (buffer[position] != 0x00)
+            while (position < buffer.Length && buffer[position] != 0x00)
             {
                 builder.Append((char)buffer[position++]);
             }
