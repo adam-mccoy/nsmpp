@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
+    <Compile Include="BindOptions.cs" />
     <Compile Include="Pdu\BindTransmitter.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />

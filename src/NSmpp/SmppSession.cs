@@ -43,11 +43,7 @@ namespace NSmpp
             BindType bindType,
             string systemId,
             string password,
-            string systemType,
-            byte interfaceVersion,
-            TypeOfNumber ton,
-            NumericPlanIndicator npi,
-            string addressRange)
+            BindOptions options)
         {
             var sequence = GetNextSequenceNumber();
 
@@ -59,11 +55,11 @@ namespace NSmpp
                         sequence,
                         systemId,
                         password,
-                        systemType,
-                        interfaceVersion,
-                        ton,
-                        npi,
-                        addressRange);
+                        options.SystemType,
+                        options.InterfaceVersion,
+                        options.Ton,
+                        options.Npi,
+                        options.AddressRange);
 
                 default:
                     return null;
