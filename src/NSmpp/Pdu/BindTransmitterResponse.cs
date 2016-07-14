@@ -22,5 +22,27 @@
         {
             SystemId = systemId;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == this)
+                return true;
+
+            var rhs = obj as BindTransmitterResponse;
+            if (rhs == null)
+                return false;
+
+            return
+                rhs.Length == Length &&
+                rhs.Command == Command &&
+                rhs.Status == Status &&
+                rhs.SequenceNumber == SequenceNumber &&
+                rhs.SystemId == SystemId;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() * 17 ^ SystemId.GetHashCode();
+        }
     }
 }

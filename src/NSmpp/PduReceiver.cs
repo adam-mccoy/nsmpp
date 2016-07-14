@@ -9,22 +9,20 @@ namespace NSmpp
 {
     internal class PduReceiver
     {
+        private readonly IPduReceivedHandler _handler;
         private readonly Stream _inputStream;
         private readonly object _lock = new object();
-        private readonly Action<PduBase> _receivedCallback;
-        private readonly Action<byte[], string> _errorCallback;
         private readonly CancellationTokenSource _token = new CancellationTokenSource();
 
         private Task _task;
         private bool _running;
 
-        internal PduReceiver(Stream inputStream,
-            Action<PduBase> receivedCallback,
-            Action<byte[], string> errorCallback)
+        internal PduReceiver(
+            Stream inputStream,
+            IPduReceivedHandler handler)
         {
             _inputStream = inputStream;
-            _receivedCallback = receivedCallback;
-            _errorCallback = errorCallback;
+            _handler = handler;
         }
 
         internal void Start()
@@ -102,11 +100,11 @@ namespace NSmpp
             {
                 var serializer = PduSerializerFactory.Create(command);
                 var pdu = serializer.Deserialize(pduBuffer);
-                _receivedCallback(pdu);
+                _handler.HandlePdu((dynamic)pdu);
             }
             catch (ArgumentException ex)
             {
-                _errorCallback(pduBuffer, ex.Message);
+                _handler.HandleError(pduBuffer, ex.Message);
             }
         }
     }

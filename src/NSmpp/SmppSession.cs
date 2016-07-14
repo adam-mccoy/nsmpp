@@ -3,7 +3,7 @@ using NSmpp.Pdu;
 
 namespace NSmpp
 {
-    internal class SmppSession
+    internal class SmppSession : IPduReceivedHandler
     {
         private SessionState _state;
         private int _sequenceNumber = 0;
@@ -16,8 +16,7 @@ namespace NSmpp
             _pduSender = new PduSender(outputStream);
             _pduReceiver = new PduReceiver(
                 inputStream,
-                PduReceivedCallback,
-                PduError);
+                this);
             _pduReceiver.Start();
         }
 
@@ -31,11 +30,11 @@ namespace NSmpp
             _pduReceiver.Stop();
         }
 
-        private void PduReceivedCallback(PduBase pdu)
+        public void HandlePdu(BindTransmitterResponse pdu)
         {
         }
 
-        private void PduError(byte[] buffer, string error)
+        public void HandleError(byte[] buffer, string error)
         {
         }
 

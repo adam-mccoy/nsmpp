@@ -1,6 +1,6 @@
-﻿using NSmpp.Pdu;
-using System;
+﻿using System;
 using System.Text;
+using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {

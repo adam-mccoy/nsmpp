@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IPduReceivedHandler.cs" />
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
     <Compile Include="BindOptions.cs" />

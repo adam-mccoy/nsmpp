@@ -14,5 +14,22 @@
             Status = status;
             SequenceNumber = sequenceNumber;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == this)
+                return true;
+
+            var rhs = obj as PduBase;
+            if (rhs == null)
+                return false;
+
+            return rhs.SequenceNumber == SequenceNumber;
+        }
+
+        public override int GetHashCode()
+        {
+            return SequenceNumber.GetHashCode();
+        }
     }
 }
