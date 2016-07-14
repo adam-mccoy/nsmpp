@@ -1,6 +1,5 @@
 ﻿using System;
 using NSmpp;
-using NSmpp.Pdu;
 
 namespace TestClient
 {
@@ -10,10 +9,14 @@ namespace TestClient
         {
             try
             {
-                var client = new SmppClient();
-                client.Connect("localhost", 2775).Wait();
-                client.Bind(BindType.Transmitter, "smppclient1", "password").Wait();
-                Console.WriteLine("Done!");
+                using (var client = new SmppClient())
+                {
+
+                    client.Connect("localhost", 2775).Wait();
+                    client.Bind(BindType.Transmitter, "smppclient1", "password").Wait();
+                    Console.WriteLine("Bound. Press ENTER to quit.");
+                    Console.ReadKey(true);
+                }
             }
             catch (Exception ex)
             {

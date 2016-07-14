@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using NSmpp.Pdu;
 
 namespace NSmpp
 {
-    internal class SmppSession : IPduReceivedHandler
+    internal class SmppSession : IPduReceivedHandler, IDisposable
     {
         private readonly Dictionary<uint, object> _outstandingTasks = new Dictionary<uint, object>();
 
@@ -32,7 +33,10 @@ namespace NSmpp
 
         internal void Close()
         {
+            if (_state != SessionState.Open || _state != SessionState.Closed)
+                Unbind().Wait();
             _pduReceiver.Stop();
+            _state = SessionState.Closed;
         }
 
         internal Task Bind(BindType type, string systemId, string password)
@@ -48,6 +52,17 @@ namespace NSmpp
 
             await _pduSender.SendAsync(pdu);
             await tcs.Task;
+        }
+
+        internal async Task Unbind()
+        {
+            var sequence = GetNextSequenceNumber();
+            var pdu = new Unbind(sequence);
+            var tcs = new TaskCompletionSource<bool>();
+            _outstandingTasks.Add(pdu.SequenceNumber, tcs);
+
+            await _pduSender.SendAsync(pdu);
+            await tcs.Task.ConfigureAwait(false);
         }
 
         public void HandlePdu(BindTransmitterResponse pdu)
@@ -90,6 +105,20 @@ namespace NSmpp
 
         public void HandleError(byte[] buffer, string error)
         {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Close();
+            }
         }
 
         private PduBase CreateBindPdu(

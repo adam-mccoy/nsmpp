@@ -1,11 +1,11 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using NSmpp.Extensions;
-using NSmpp.Pdu;
 
 namespace NSmpp
 {
-    public class SmppClient
+    public class SmppClient : IDisposable
     {
         private SmppSession _currentSession = null;
 
@@ -21,6 +21,21 @@ namespace NSmpp
         public Task Bind(BindType type, string systemId, string password)
         {
             return _currentSession.Bind(type, systemId, password);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _currentSession.Dispose();
+                _currentSession = null;
+            }
         }
     }
 }
