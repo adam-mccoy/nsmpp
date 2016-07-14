@@ -9,7 +9,9 @@ namespace NSmpp.Serialization
         private static readonly IDictionary<SmppCommand, IPduSerializer> Serializers = new Dictionary<SmppCommand, IPduSerializer>()
         {
             { SmppCommand.BindTransmitter, new BindTransmitterSerializer() },
-            { SmppCommand.BindTransmitterResp, new BindTransmitterResponseSerializer() }
+            { SmppCommand.BindTransmitterResp, new BindTransmitterResponseSerializer() },
+            { SmppCommand.Unbind, new UnbindSerializer() },
+            { SmppCommand.UnbindResp, new UnbindResponseSerializer() }
         };
 
         internal static IPduSerializer Create(SmppCommand command)

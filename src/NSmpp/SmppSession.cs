@@ -56,9 +56,36 @@ namespace NSmpp
             if (!_outstandingTasks.TryGetValue(pdu.SequenceNumber, out task))
                 return;
 
-            _state = SessionState.BoundTransmitter;
             var tcs = (TaskCompletionSource<bool>)task;
-            tcs.SetResult(true);
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var bindException = new Exception("The bind operation failed with error code: " + pdu.Status);
+                tcs.SetException(bindException);
+            }
+            else
+            {
+                _state = SessionState.BoundTransmitter;
+                tcs.SetResult(true);
+            }
+        }
+
+        public void HandlePdu(UnbindResponse pdu)
+        {
+            object task;
+            if (!_outstandingTasks.TryGetValue(pdu.SequenceNumber, out task))
+                return;
+
+            var tcs = (TaskCompletionSource<bool>)task;
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var unbindException = new Exception("The unbind operation failed with error code: " + pdu.Status);
+                tcs.SetException(unbindException);
+            }
+            else
+            {
+                _state = SessionState.Open;
+                tcs.SetResult(true);
+            }
         }
 
         public void HandleError(byte[] buffer, string error)
