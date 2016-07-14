@@ -33,7 +33,7 @@ namespace NSmpp
 
         internal void Close()
         {
-            if (_state != SessionState.Open || _state != SessionState.Closed)
+            if (_state != SessionState.Open && _state != SessionState.Closed)
                 Unbind().Wait();
             _pduReceiver.Stop();
             _state = SessionState.Closed;
