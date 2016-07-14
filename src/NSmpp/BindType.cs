@@ -1,6 +1,6 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp
 {
-    internal enum BindType
+    public enum BindType
     {
         Transmitter,
         Receiver,
