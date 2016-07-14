@@ -6,8 +6,7 @@ namespace NSmpp
     internal class SmppSession
     {
         private SessionState _state;
-        private object _sequenceLock = new object();
-        private uint _sequenceNumber = 0u;
+        private int _sequenceNumber = 0;
 
         private PduSender _pduSender;
         private PduReceiver _pduReceiver;
@@ -73,10 +72,7 @@ namespace NSmpp
 
         private uint GetNextSequenceNumber()
         {
-            lock (_sequenceLock)
-            {
-                return _sequenceNumber++;
-            }
+            return (uint)Interlocked.Increment(ref _sequenceNumber);
         }
     }
 }
