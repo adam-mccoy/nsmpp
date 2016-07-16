@@ -17,6 +17,12 @@ namespace NSmpp
         private PduSender _pduSender;
         private PduReceiver _pduReceiver;
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         internal SmppSession(Stream inputStream, Stream outputStream)
         {
             _pduSender = new PduSender(outputStream);
@@ -61,6 +67,14 @@ namespace NSmpp
 
             await _pduSender.SendAsync(pdu);
             await tcs.Task.ConfigureAwait(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Close();
+            }
         }
 
         private TaskCompletionSource<T> RegisterTask<T>(uint sequenceNumber)
@@ -119,20 +133,6 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Close();
-            }
         }
 
         private PduBase CreateBindPdu(
