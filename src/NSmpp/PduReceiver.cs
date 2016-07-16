@@ -56,13 +56,13 @@ namespace NSmpp
 
         private async Task Run()
         {
+            var lengthBuffer = new byte[4];
             Task<int> requestTask = null;
             int bytesRead = 0;
             while (!_token.IsCancellationRequested)
             {
                 try
                 {
-                    var lengthBuffer = new byte[4];
                     if (requestTask == null)
                         requestTask = _inputStream.ReadAsync(lengthBuffer, bytesRead, 4 - bytesRead);
 
