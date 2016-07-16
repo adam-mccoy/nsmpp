@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +9,7 @@ namespace NSmpp
 {
     internal class SmppSession : IPduReceivedHandler, IDisposable
     {
-        private readonly Dictionary<uint, object> _outstandingTasks = new Dictionary<uint, object>();
+        private readonly ConcurrentDictionary<uint, object> _outstandingTasks = new ConcurrentDictionary<uint, object>();
 
         private SessionState _state;
         private int _sequenceNumber = 0;
@@ -47,8 +47,7 @@ namespace NSmpp
         internal async Task Bind(BindType type, string systemId, string password, BindOptions options)
         {
             var pdu = CreateBindPdu(type, systemId, password, options);
-            var tcs = new TaskCompletionSource<bool>();
-            _outstandingTasks.Add(pdu.SequenceNumber, tcs);
+            var tcs = RegisterTask<bool>(pdu.SequenceNumber);
 
             await _pduSender.SendAsync(pdu);
             await tcs.Task;
@@ -57,21 +56,37 @@ namespace NSmpp
         internal async Task Unbind()
         {
             var sequence = GetNextSequenceNumber();
+            var tcs = RegisterTask<bool>(sequence);
             var pdu = new Unbind(sequence);
-            var tcs = new TaskCompletionSource<bool>();
-            _outstandingTasks.Add(pdu.SequenceNumber, tcs);
 
             await _pduSender.SendAsync(pdu);
             await tcs.Task.ConfigureAwait(false);
         }
 
+        private TaskCompletionSource<T> RegisterTask<T>(uint sequenceNumber)
+        {
+            var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!_outstandingTasks.TryAdd(sequenceNumber, tcs))
+                throw new ArgumentException("A task with the same sequence number has already been registerd.");
+
+            return tcs;
+        }
+
+        private TaskCompletionSource<T> RetrieveTask<T>(uint sequenceNumber)
+        {
+            object tcs;
+            if (!_outstandingTasks.TryRemove(sequenceNumber, out tcs))
+                return null;
+
+            return (TaskCompletionSource<T>)tcs;
+        }
+
         public void HandlePdu(BindTransmitterResponse pdu)
         {
-            object task;
-            if (!_outstandingTasks.TryGetValue(pdu.SequenceNumber, out task))
+            var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
+            if (tcs == null)
                 return;
 
-            var tcs = (TaskCompletionSource<bool>)task;
             if (pdu.Status != SmppStatus.Ok)
             {
                 var bindException = new Exception("The bind operation failed with error code: " + pdu.Status);
@@ -86,11 +101,10 @@ namespace NSmpp
 
         public void HandlePdu(UnbindResponse pdu)
         {
-            object task;
-            if (!_outstandingTasks.TryGetValue(pdu.SequenceNumber, out task))
+            var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
+            if (tcs == null)
                 return;
 
-            var tcs = (TaskCompletionSource<bool>)task;
             if (pdu.Status != SmppStatus.Ok)
             {
                 var unbindException = new Exception("The unbind operation failed with error code: " + pdu.Status);
