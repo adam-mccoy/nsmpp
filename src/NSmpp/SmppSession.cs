@@ -81,7 +81,7 @@ namespace NSmpp
             return (TaskCompletionSource<T>)tcs;
         }
 
-        public void HandlePdu(BindTransmitterResponse pdu)
+        void IPduReceivedHandler.HandlePdu(BindTransmitterResponse pdu)
         {
             var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
             if (tcs == null)
@@ -99,7 +99,7 @@ namespace NSmpp
             }
         }
 
-        public void HandlePdu(UnbindResponse pdu)
+        void IPduReceivedHandler.HandlePdu(UnbindResponse pdu)
         {
             var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
             if (tcs == null)
@@ -117,7 +117,7 @@ namespace NSmpp
             }
         }
 
-        public void HandleError(byte[] buffer, string error)
+        void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
         }
 
