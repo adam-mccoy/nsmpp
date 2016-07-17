@@ -18,7 +18,7 @@ namespace NSmpp
             _currentSession = new SmppSession(stream, stream);
         }
 
-        public Task Bind(BindType type, string systemId, string password)
+        public Task<BindResult> Bind(BindType type, string systemId, string password)
         {
             return _currentSession.Bind(type, systemId, password);
         }

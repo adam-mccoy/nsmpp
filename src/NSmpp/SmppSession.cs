@@ -46,18 +46,18 @@ namespace NSmpp
             _state = SessionState.Closed;
         }
 
-        internal Task Bind(BindType type, string systemId, string password)
+        internal Task<BindResult> Bind(BindType type, string systemId, string password)
         {
             return Bind(type, systemId, password, new BindOptions());
         }
 
-        internal async Task Bind(BindType type, string systemId, string password, BindOptions options)
+        internal async Task<BindResult> Bind(BindType type, string systemId, string password, BindOptions options)
         {
             var pdu = CreateBindPdu(type, systemId, password, options);
-            var tcs = RegisterTask<bool>(pdu.SequenceNumber);
+            var tcs = RegisterTask<BindResult>(pdu.SequenceNumber);
 
             await _pduSender.SendAsync(pdu);
-            await tcs.Task;
+            return await tcs.Task;
         }
 
         internal async Task Unbind()
@@ -98,7 +98,7 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(BindTransmitterResponse pdu)
         {
-            var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
+            var tcs = RetrieveTask<BindResult>(pdu.SequenceNumber);
             if (tcs == null)
                 return;
 
@@ -110,7 +110,7 @@ namespace NSmpp
             else
             {
                 _state = SessionState.BoundTransmitter;
-                tcs.SetResult(true);
+                tcs.SetResult(new BindResult(pdu.SystemId));
             }
         }
 
