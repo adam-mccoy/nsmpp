@@ -46,7 +46,9 @@
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
     <Compile Include="BindOptions.cs" />
+    <Compile Include="Pdu\BindReceiver.cs" />
     <Compile Include="Pdu\BindTransmitter.cs" />
+    <Compile Include="Pdu\BindReceiverResponse.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
     <Compile Include="Pdu\PduBase.cs" />
@@ -55,7 +57,9 @@
     <Compile Include="Pdu\Unbind.cs" />
     <Compile Include="Pdu\UnbindResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\BindReceiverResponseSerializer.cs" />
     <Compile Include="Serialization\BindTransmitterResponseSerializer.cs" />
+    <Compile Include="Serialization\BindReceiverSerializer.cs" />
     <Compile Include="Serialization\BindTransmitterSerializer.cs" />
     <Compile Include="Serialization\IPduSerializer.cs" />
     <Compile Include="Serialization\PduSerializerFactory.cs" />
