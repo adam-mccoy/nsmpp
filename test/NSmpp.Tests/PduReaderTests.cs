@@ -8,10 +8,9 @@ namespace NSmpp.Tests
     public class PduReaderTests
     {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException), ExpectedMessage = "Value cannot be null.\r\nParameter name: buffer")]
         public void Throws_On_Null_Buffer()
         {
-            new PduReader(null);
+            Assert.Throws(typeof(ArgumentNullException), () => new PduReader(null), "Value cannot be null.\r\nParameter name: buffer");
         }
 
         [Test]
@@ -82,7 +81,6 @@ namespace NSmpp.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Buffer does not contain 4 bytes.")]
         public void Throw_On_Read_Four_Byte_Integer_With_Insufficient_Bytes()
         {
             var buffer = new byte[] {
@@ -91,11 +89,10 @@ namespace NSmpp.Tests
 
             var reader = new PduReader(buffer);
 
-            reader.ReadInteger();
+            Assert.Throws(typeof(InvalidOperationException), () => reader.ReadInteger(), "Buffer does not contain 4 bytes.");
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Buffer does not contain 2 bytes.")]
         public void Throw_On_Read_Two_Byte_Integer_With_Insufficient_Bytes()
         {
             var buffer = new byte[] {
@@ -104,18 +101,17 @@ namespace NSmpp.Tests
 
             var reader = new PduReader(buffer);
 
-            reader.ReadShort();
+            Assert.Throws(typeof(InvalidOperationException), () => reader.ReadShort(), "Buffer does not contain 2 bytes.");
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = "Buffer does not contain 1 bytes.")]
         public void Throw_On_Read_Byte_With_Insufficient_Bytes()
         {
             var buffer = new byte[0];
 
             var reader = new PduReader(buffer);
 
-            reader.ReadByte();
+            Assert.Throws(typeof(InvalidOperationException), () => reader.ReadByte(), "Buffer does not contain 1 bytes.");
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
+using Moq;
 using NUnit.Framework;
 using NSmpp.Pdu;
-using Moq;
 
 namespace NSmpp.Tests
 {

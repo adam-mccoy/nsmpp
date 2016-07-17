@@ -1,6 +1,6 @@
-﻿using NSmpp.Serialization;
+﻿using System;
 using NUnit.Framework;
-using System;
+using NSmpp.Serialization;
 
 namespace NSmpp.Tests
 {
@@ -184,10 +184,9 @@ namespace NSmpp.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "Value must be zero or greater.\r\nParameter name: initialBufferSize")]
         public void Throws_On_Negative_Initial_Buffer_Size()
         {
-            var builder = new PduWriter(-1);
+            Assert.Throws(typeof(ArgumentOutOfRangeException), () => new PduWriter(-1),  "Value must be zero or greater.\r\nParameter name: initialBufferSize");
         }
 
         [Test]
@@ -272,11 +271,10 @@ namespace NSmpp.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException), ExpectedMessage = "Value cannot be null.\r\nParameter name: bytes")]
         public void Throws_On_Write_Null_Bytes()
         {
             var builder = new PduWriter();
-            builder.WriteBytes(null);
+            Assert.Throws(typeof(ArgumentNullException), () => builder.WriteBytes(null), "Value cannot be null.\r\nParameter name: bytes");
         }
     }
 }

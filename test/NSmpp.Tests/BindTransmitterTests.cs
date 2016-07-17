@@ -1,6 +1,6 @@
-﻿using NSmpp.Pdu;
+﻿using NUnit.Framework;
+using NSmpp.Pdu;
 using NSmpp.Serialization;
-using NUnit.Framework;
 
 namespace NSmpp.Tests
 {
