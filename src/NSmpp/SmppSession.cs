@@ -132,6 +132,24 @@ namespace NSmpp
             }
         }
 
+        void IPduReceivedHandler.HandlePdu(BindTransceiverResponse pdu)
+        {
+            var tcs = RetrieveTask<BindResult>(pdu.SequenceNumber);
+            if (tcs == null)
+                return;
+
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var unbindException = new Exception("The unbind operation failed with error code: " + pdu.Status);
+                tcs.SetException(unbindException);
+            }
+            else
+            {
+                _state = SessionState.BoundTransceiver;
+                tcs.SetResult(new BindResult(pdu.SystemId));
+            }
+        }
+
         void IPduReceivedHandler.HandlePdu(UnbindResponse pdu)
         {
             var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
@@ -178,6 +196,18 @@ namespace NSmpp
 
                 case BindType.Receiver:
                     return new BindReceiver(
+                        SmppStatus.Ok,
+                        sequence,
+                        systemId,
+                        password,
+                        options.SystemType,
+                        options.InterfaceVersion,
+                        options.Ton,
+                        options.Npi,
+                        options.AddressRange);
+
+                case BindType.Transceiver:
+                    return new BindTransceiver(
                         SmppStatus.Ok,
                         sequence,
                         systemId,

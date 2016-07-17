@@ -12,6 +12,8 @@ namespace NSmpp.Serialization
             [SmppCommand.BindReceiverResp] = new BindReceiverResponseSerializer(),
             [SmppCommand.BindTransmitter] = new BindTransmitterSerializer(),
             [SmppCommand.BindTransmitterResp] = new BindTransmitterResponseSerializer(),
+            [SmppCommand.BindTransceiver] = new BindTransceiverSerializer(),
+            [SmppCommand.BindTransceiverResp] = new BindTransceiverResponseSerializer(),
             [SmppCommand.Unbind] = new UnbindSerializer(),
             [SmppCommand.UnbindResp] = new UnbindResponseSerializer()
         };
