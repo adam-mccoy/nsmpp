@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\SocketExtensions.cs" />
+    <Compile Include="Helpers\AsyncHelper.cs" />
     <Compile Include="IPduReceivedHandler.cs" />
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />

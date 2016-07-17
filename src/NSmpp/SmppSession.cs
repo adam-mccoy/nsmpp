@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using NSmpp.Helpers;
 using NSmpp.Pdu;
 
 namespace NSmpp
@@ -40,7 +41,7 @@ namespace NSmpp
         internal void Close()
         {
             if (_state != SessionState.Open && _state != SessionState.Closed)
-                Unbind().Wait();
+                AsyncHelper.RunSync(Unbind);
             _pduReceiver.Stop();
             _state = SessionState.Closed;
         }
