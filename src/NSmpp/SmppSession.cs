@@ -154,6 +154,14 @@ namespace NSmpp
             }
         }
 
+        void IPduReceivedHandler.HandlePdu(Unbind pdu)
+        {
+            var response = new UnbindResponse(SmppStatus.Ok, pdu.SequenceNumber);
+            AsyncHelper.RunSync(() => _pduSender.SendAsync(response));
+            // TODO: cancel outstanding tasks
+            _state = SessionState.Open;
+        }
+
         void IPduReceivedHandler.HandlePdu(UnbindResponse pdu)
         {
             var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
