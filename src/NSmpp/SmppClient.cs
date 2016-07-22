@@ -14,7 +14,7 @@ namespace NSmpp
             var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             await socket.ConnectAsync(host, port);
 
-            var stream = new NetworkStream(socket);
+            var stream = new NetworkStream(socket, true);
             _currentSession = new SmppSession(stream, stream);
         }
 

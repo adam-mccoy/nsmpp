@@ -17,6 +17,7 @@ namespace NSmpp
 
         private PduSender _pduSender;
         private PduReceiver _pduReceiver;
+        private Task _receiverTask;
 
         public void Dispose()
         {
@@ -27,10 +28,14 @@ namespace NSmpp
         internal SmppSession(Stream inputStream, Stream outputStream)
         {
             _pduSender = new PduSender(outputStream);
-            _pduReceiver = new PduReceiver(
-                inputStream,
-                this);
-            _pduReceiver.Start();
+            _pduReceiver = new PduReceiver(inputStream, this);
+            _receiverTask = _pduReceiver.Start().ContinueWith(t =>
+            {
+                _state = SessionState.Closed;
+                Console.WriteLine("Receiver task completed.");
+                if (t.IsFaulted)
+                    Console.WriteLine("Failed with exception: {0}", t.Exception.Flatten());
+            });
         }
 
         internal SessionState SessionState
@@ -43,7 +48,6 @@ namespace NSmpp
             if (_state != SessionState.Open && _state != SessionState.Closed)
                 AsyncHelper.RunSync(Unbind);
             _pduReceiver.Stop();
-            _state = SessionState.Closed;
         }
 
         internal Task<BindResult> Bind(BindType type, string systemId, string password)

@@ -25,12 +25,12 @@ namespace NSmpp
             _handler = handler;
         }
 
-        internal void Start()
+        internal Task Start()
         {
-            if (_running) return;
+            if (_running) return _task;
             lock (_lock)
             {
-                if (_running) return;
+                if (_running) return _task;
 
                 _task = Task.Factory.StartNew(
                     function: Run,
@@ -40,6 +40,7 @@ namespace NSmpp
 
                 _running = true;
             }
+            return _task;
         }
 
         internal void Stop()
@@ -61,34 +62,31 @@ namespace NSmpp
             int bytesRead = 0;
             while (!_token.IsCancellationRequested)
             {
-                try
+                if (requestTask == null)
+                    requestTask = _inputStream.ReadAsync(lengthBuffer, bytesRead, 4 - bytesRead);
+
+                var timeoutTask = Task.Delay(TimeSpan.FromMilliseconds(1000));
+
+                var completed = await Task.WhenAny(requestTask, timeoutTask);
+                if (completed == requestTask)
                 {
-                    if (requestTask == null)
-                        requestTask = _inputStream.ReadAsync(lengthBuffer, bytesRead, 4 - bytesRead);
+                    if (requestTask.Result == 0)
+                        return; // socket has been disconnected.
 
-                    var timeoutTask = Task.Delay(TimeSpan.FromMilliseconds(1000));
-
-                    var completed = await Task.WhenAny(requestTask, timeoutTask);
-                    if (completed == requestTask)
+                    if ((bytesRead += requestTask.Result) == 4)
                     {
-                        if ((bytesRead += requestTask.Result) == 4)
-                        {
-                            var length = PduReader.ReadInteger(lengthBuffer, 0);
-                            var pduBuffer = new byte[length];
-                            Buffer.BlockCopy(lengthBuffer, 0, pduBuffer, 0, 4);
+                        var length = PduReader.ReadInteger(lengthBuffer, 0);
+                        var pduBuffer = new byte[length];
+                        Buffer.BlockCopy(lengthBuffer, 0, pduBuffer, 0, 4);
 
-                            var toRead = length - 4;
-                            while (toRead > 0)
-                                toRead -= await _inputStream.ReadAsync(pduBuffer, length - toRead, toRead);
+                        var toRead = length - 4;
+                        while (toRead > 0)
+                            toRead -= await _inputStream.ReadAsync(pduBuffer, length - toRead, toRead);
 
-                            bytesRead = 0;
-                            ProcessPdu(pduBuffer);
-                        }
-                        requestTask = null;
+                        bytesRead = 0;
+                        ProcessPdu(pduBuffer);
                     }
-                }
-                catch
-                {
+                    requestTask = null;
                 }
             }
         }
