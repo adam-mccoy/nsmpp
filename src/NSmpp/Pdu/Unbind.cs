@@ -11,10 +11,5 @@
         {
             get { return SmppCommand.Unbind; }
         }
-
-        internal override int Length
-        {
-            get { return HeaderLength; }
-        }
     }
 }

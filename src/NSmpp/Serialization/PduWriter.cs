@@ -33,10 +33,16 @@ namespace NSmpp.Serialization
         internal void WriteInteger(int value)
         {
             EnsureSize(4);
-            _buffer[_position++] = (byte)(value >> 24 & 0xff);
-            _buffer[_position++] = (byte)(value >> 16 & 0xff);
-            _buffer[_position++] = (byte)(value >> 8 & 0xff);
-            _buffer[_position++] = (byte)(value & 0xff);
+            WriteInteger(_buffer, _position, value);
+            _position += 4;
+        }
+
+        internal static void WriteInteger(byte[] buffer, int position, int value)
+        {
+            buffer[position++] = (byte)(value >> 24 & 0xff);
+            buffer[position++] = (byte)(value >> 16 & 0xff);
+            buffer[position++] = (byte)(value >> 8 & 0xff);
+            buffer[position++] = (byte)(value & 0xff);
         }
 
         internal void WriteShort(short value)
@@ -77,7 +83,7 @@ namespace NSmpp.Serialization
             if (pdu == null)
                 throw new ArgumentNullException("pdu");
 
-            WriteInteger(pdu.Length);
+            WriteInteger(0);
             WriteInteger((int)pdu.Command);
 
             var responsePdu = pdu as ResponsePduBase;

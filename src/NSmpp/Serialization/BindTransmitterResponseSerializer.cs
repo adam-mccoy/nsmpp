@@ -6,10 +6,13 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(BindTransmitterResponse pdu)
         {
-            var writer = new PduWriter(pdu.Length);
+            var writer = new PduWriter();
             writer.WritePduHeader(pdu);
             writer.WriteString(pdu.SystemId);
-            return writer.GetBytes();
+
+            var bytes = writer.GetBytes();
+            PduWriter.WriteInteger(bytes, 0, bytes.Length);
+            return bytes;
         }
 
         internal override BindTransmitterResponse Deserialize(byte[] bytes)

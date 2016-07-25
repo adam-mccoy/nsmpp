@@ -2,11 +2,6 @@
 {
     internal class BindTransceiverResponse : ResponsePduBase
     {
-        internal override int Length
-        {
-            get { return HeaderLength + (SystemId?.Length ?? 0) + 1; }
-        }
-
         internal override SmppCommand Command
         {
             get { return SmppCommand.BindTransceiverResp; }
@@ -33,7 +28,6 @@
                 return false;
 
             return
-                rhs.Length == Length &&
                 rhs.Command == Command &&
                 rhs.Status == Status &&
                 rhs.SequenceNumber == SequenceNumber &&

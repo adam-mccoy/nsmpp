@@ -21,7 +21,6 @@ namespace NSmpp.Tests
             var serializer = new BindTransmitterResponseSerializer();
             var pdu = serializer.Deserialize(data);
 
-            Assert.AreEqual(23, pdu.Length);
             Assert.AreEqual(SmppCommand.BindTransmitterResp, pdu.Command);
             Assert.AreEqual(SmppStatus.Ok, pdu.Status);
             Assert.AreEqual(32, pdu.SequenceNumber);

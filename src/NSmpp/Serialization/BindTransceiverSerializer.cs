@@ -6,7 +6,7 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(BindTransceiver pdu)
         {
-            var writer = new PduWriter(pdu.Length);
+            var writer = new PduWriter();
             writer.WritePduHeader(pdu);
             writer.WriteString(pdu.SystemId);
             writer.WriteString(pdu.Password);
@@ -16,7 +16,9 @@ namespace NSmpp.Serialization
             writer.WriteByte((byte)pdu.AddressNpi);
             writer.WriteString(pdu.AddressRange);
 
-            return writer.GetBytes();
+            var bytes = writer.GetBytes();
+            PduWriter.WriteInteger(bytes, 0, bytes.Length);
+            return bytes;
         }
 
         internal override BindTransceiver Deserialize(byte[] bytes)

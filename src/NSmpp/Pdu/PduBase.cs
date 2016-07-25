@@ -4,7 +4,6 @@
     {
         protected const int HeaderLength = 16;
 
-        internal abstract int Length { get; }
         internal abstract SmppCommand Command { get; }
         internal uint SequenceNumber { get; private set; }
 

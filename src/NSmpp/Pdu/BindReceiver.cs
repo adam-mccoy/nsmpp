@@ -2,19 +2,6 @@
 {
     internal class BindReceiver : PduBase
     {
-        internal override int Length
-        {
-            get
-            {
-                return HeaderLength +
-                       SystemId.Length + 1 +
-                       Password.Length + 1 +
-                       (SystemType?.Length ?? 0) + 1 +
-                       3 +
-                       (AddressRange?.Length ?? 0) + 1;
-            }
-        }
-
         internal override SmppCommand Command
         {
             get { return SmppCommand.BindReceiver; }
