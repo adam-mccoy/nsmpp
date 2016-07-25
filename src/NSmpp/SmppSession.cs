@@ -57,6 +57,8 @@ namespace NSmpp
 
         internal async Task<BindResult> Bind(BindType type, string systemId, string password, BindOptions options)
         {
+            EnsureOpen();
+
             var pdu = CreateBindPdu(type, systemId, password, options);
             var tcs = RegisterTask<BindResult>(pdu.SequenceNumber);
 
@@ -64,14 +66,27 @@ namespace NSmpp
             return await tcs.Task;
         }
 
+        private void EnsureOpen()
+        {
+            if (_state != SessionState.Open)
+                throw new InvalidOperationException("This operation can only be performed when the session is in the Open state.");
+        }
+
         internal async Task Unbind()
         {
+            EnsureBound();
             var sequence = GetNextSequenceNumber();
             var tcs = RegisterTask<bool>(sequence);
             var pdu = new Unbind(sequence);
 
             await _pduSender.SendAsync(pdu);
             await tcs.Task.ConfigureAwait(false);
+        }
+
+        private void EnsureBound()
+        {
+            if (!_state.IsBound())
+                throw new InvalidOperationException("This operation can only be performed when the session is in the Bound state.");
         }
 
         protected virtual void Dispose(bool disposing)
