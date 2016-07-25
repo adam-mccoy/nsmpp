@@ -57,9 +57,12 @@
     <Compile Include="Pdu\ResponsePduBase.cs" />
     <Compile Include="Pdu\SmppCommand.cs" />
     <Compile Include="Pdu\SmppStatus.cs" />
+    <Compile Include="Pdu\Submit.cs" />
+    <Compile Include="Pdu\SubmitResponse.cs" />
     <Compile Include="Pdu\Unbind.cs" />
     <Compile Include="Pdu\UnbindResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\SubmitResponseSerializer.cs" />
     <Compile Include="Serialization\BindTransceiverSerializer.cs" />
     <Compile Include="Serialization\BindTransceiverResponseSerializer.cs" />
     <Compile Include="Serialization\BindReceiverResponseSerializer.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="Serialization\PduReader.cs" />
     <Compile Include="Serialization\PduSerializer.cs" />
     <Compile Include="PduReceiver.cs" />
+    <Compile Include="Serialization\SubmitSerializer.cs" />
     <Compile Include="Serialization\UnbindResponseSerializer.cs" />
     <Compile Include="Serialization\UnbindSerializer.cs" />
     <Compile Include="SessionState.cs" />

@@ -67,7 +67,7 @@ namespace NSmpp.Serialization
         internal string ReadString()
         {
             var result = ReadString(_buffer, _position);
-            _position += result == null ? 0 : result.Length + 1;
+            _position += (result?.Length ?? 0) + 1;
             return result;
         }
 

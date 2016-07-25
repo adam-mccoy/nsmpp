@@ -7,6 +7,7 @@
         public ResponsePduBase(SmppStatus status, uint sequenceNumber)
             : base(sequenceNumber)
         {
+            Status = status;
         }
     }
 }

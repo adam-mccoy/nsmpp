@@ -6,6 +6,8 @@
         BindReceiverResp    = 0x80000001,
         BindTransmitter     = 0x00000002,
         BindTransmitterResp = 0x80000002,
+        Submit              = 0x00000004,
+        SubmitResp          = 0x80000004,
         Unbind              = 0x00000006,
         UnbindResp          = 0x80000006,
         BindTransceiver     = 0x00000009,
