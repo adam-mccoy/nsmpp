@@ -53,7 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UnbindSerializerTests.cs" />
+    <Compile Include="UnbindResponseSerializerTests.cs" />
+    <Compile Include="BindReceiverResponseSerializerTests.cs" />
+    <Compile Include="BindTransceiverResponseSerializerTests.cs" />
     <Compile Include="BindTransmitterResponseSerializerTests.cs" />
+    <Compile Include="BindReceiverSerializerTests.cs" />
+    <Compile Include="BindTransceiverTests.cs" />
     <Compile Include="BindTransmitterTests.cs" />
     <Compile Include="PduReaderTests.cs" />
     <Compile Include="PduReceiverTests.cs" />
