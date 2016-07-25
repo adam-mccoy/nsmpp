@@ -6,12 +6,10 @@
 
         internal abstract int Length { get; }
         internal abstract SmppCommand Command { get; }
-        internal SmppStatus Status { get; private set; }
         internal uint SequenceNumber { get; private set; }
 
-        protected PduBase(SmppStatus status, uint sequenceNumber)
+        protected PduBase(uint sequenceNumber)
         {
-            Status = status;
             SequenceNumber = sequenceNumber;
         }
 

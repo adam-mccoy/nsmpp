@@ -24,7 +24,7 @@ namespace NSmpp.Serialization
             var reader = new PduReader(bytes);
             int length = reader.ReadInteger();
             var command = (SmppCommand)reader.ReadInteger();
-            var status = (SmppStatus)reader.ReadInteger();
+            reader.ReadInteger(); // skip status
             var sequence = (uint)reader.ReadInteger();
             var systemId = reader.ReadString();
             var password = reader.ReadString();
@@ -35,7 +35,6 @@ namespace NSmpp.Serialization
             var addressRange = reader.ReadString();
 
             return new BindTransmitter(
-                status,
                 sequence,
                 systemId,
                 password,

@@ -196,7 +196,6 @@ namespace NSmpp
             {
                 case BindType.Transmitter:
                     return new BindTransmitter(
-                        SmppStatus.Ok,
                         sequence,
                         systemId,
                         password,
@@ -208,7 +207,6 @@ namespace NSmpp
 
                 case BindType.Receiver:
                     return new BindReceiver(
-                        SmppStatus.Ok,
                         sequence,
                         systemId,
                         password,
@@ -220,7 +218,6 @@ namespace NSmpp
 
                 case BindType.Transceiver:
                     return new BindTransceiver(
-                        SmppStatus.Ok,
                         sequence,
                         systemId,
                         password,

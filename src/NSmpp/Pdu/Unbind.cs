@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace NSmpp.Pdu
+﻿namespace NSmpp.Pdu
 {
     internal class Unbind : PduBase
     {
         public Unbind(uint sequenceNumber)
-            : base(SmppStatus.Ok, sequenceNumber)
+            : base(sequenceNumber)
         {
         }
 

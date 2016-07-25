@@ -79,7 +79,12 @@ namespace NSmpp.Serialization
 
             WriteInteger(pdu.Length);
             WriteInteger((int)pdu.Command);
-            WriteInteger((int)pdu.Status);
+
+            var responsePdu = pdu as ResponsePduBase;
+            if (responsePdu != null)
+                WriteInteger((int)responsePdu.Status);
+            else
+                WriteInteger(0);
             WriteInteger((int)pdu.SequenceNumber);
         }
 

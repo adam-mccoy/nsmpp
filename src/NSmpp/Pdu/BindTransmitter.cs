@@ -29,7 +29,6 @@
         internal string AddressRange { get; private set; }
 
         public BindTransmitter(
-            SmppStatus status,
             uint sequenceNumber,
             string systemId,
             string password,
@@ -38,7 +37,7 @@
             TypeOfNumber addressTon,
             NumericPlanIndicator addressNpi,
             string addressRange)
-            : base(status, sequenceNumber)
+            : base(sequenceNumber)
         {
             SystemId = systemId;
             Password = password;

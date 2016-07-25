@@ -29,7 +29,6 @@ namespace NSmpp.Tests
 
             Assert.AreEqual(34, pdu.Length);
             Assert.AreEqual(SmppCommand.BindTransmitter, pdu.Command);
-            Assert.AreEqual(SmppStatus.Ok, pdu.Status);
             Assert.AreEqual(16, pdu.SequenceNumber);
             Assert.AreEqual("TEST", pdu.SystemId);
             Assert.AreEqual("PASS", pdu.Password);
@@ -57,7 +56,6 @@ namespace NSmpp.Tests
                 0x00,                         // address range
             };
             var pdu = new BindTransmitter(
-                SmppStatus.Ok,
                 16,
                 "TEST",
                 "PASS",

@@ -1,6 +1,6 @@
 ﻿namespace NSmpp.Pdu
 {
-    internal class BindReceiverResponse : PduBase
+    internal class BindReceiverResponse : ResponsePduBase
     {
         internal override int Length
         {

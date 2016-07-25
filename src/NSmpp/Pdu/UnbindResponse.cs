@@ -1,6 +1,6 @@
 ﻿namespace NSmpp.Pdu
 {
-    internal class UnbindResponse : PduBase
+    internal class UnbindResponse : ResponsePduBase
     {
         public UnbindResponse(SmppStatus status, uint sequenceNumber)
             : base(status, sequenceNumber)

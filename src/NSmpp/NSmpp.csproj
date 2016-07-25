@@ -54,6 +54,7 @@
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
     <Compile Include="Pdu\PduBase.cs" />
+    <Compile Include="Pdu\ResponsePduBase.cs" />
     <Compile Include="Pdu\SmppCommand.cs" />
     <Compile Include="Pdu\SmppStatus.cs" />
     <Compile Include="Pdu\Unbind.cs" />

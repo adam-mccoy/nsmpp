@@ -17,7 +17,7 @@ namespace NSmpp.Serialization
             var reader = new PduReader(bytes);
             int length = reader.ReadInteger();
             var command = (SmppCommand)reader.ReadInteger();
-            var status = (SmppStatus)reader.ReadInteger();
+            reader.ReadInteger(); // skip status
             var sequence = (uint)reader.ReadInteger();
 
             return new Unbind(sequence);
