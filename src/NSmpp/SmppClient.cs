@@ -23,6 +23,11 @@ namespace NSmpp
             return _currentSession.Bind(type, systemId, password);
         }
 
+        public Task<SubmitResult> Submit(string source, string dest, string message)
+        {
+            return _currentSession.Submit(source, dest, message);
+        }
+
         public void Dispose()
         {
             Dispose(true);

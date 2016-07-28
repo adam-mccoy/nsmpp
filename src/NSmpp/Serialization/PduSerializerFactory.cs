@@ -15,7 +15,9 @@ namespace NSmpp.Serialization
             [SmppCommand.BindTransceiver] = new BindTransceiverSerializer(),
             [SmppCommand.BindTransceiverResp] = new BindTransceiverResponseSerializer(),
             [SmppCommand.Unbind] = new UnbindSerializer(),
-            [SmppCommand.UnbindResp] = new UnbindResponseSerializer()
+            [SmppCommand.UnbindResp] = new UnbindResponseSerializer(),
+            [SmppCommand.Submit] = new SubmitSerializer(),
+            [SmppCommand.SubmitResp] = new SubmitResponseSerializer()
         };
 
         internal static IPduSerializer Create(SmppCommand command)

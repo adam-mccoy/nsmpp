@@ -83,10 +83,37 @@ namespace NSmpp
             await tcs.Task.ConfigureAwait(false);
         }
 
+        internal async Task<SubmitResult> Submit(string source, string dest, string message)
+        {
+            EnsureCanTransmit();
+            var sequence = GetNextSequenceNumber();
+            var tcs = RegisterTask<SubmitResult>(sequence);
+            var pdu = new Submit(
+                sequence,
+                null,
+                TypeOfNumber.Unknown,
+                NumericPlanIndicator.Unknown,
+                source,
+                TypeOfNumber.Unknown,
+                NumericPlanIndicator.Unknown,
+                dest,
+                0, 0, 0,
+                message);
+
+            await _pduSender.SendAsync(pdu);
+            return await tcs.Task;
+        }
+
         private void EnsureBound()
         {
             if (!_state.IsBound())
                 throw new InvalidOperationException("This operation can only be performed when the session is in the Bound state.");
+        }
+
+        private void EnsureCanTransmit()
+        {
+            if (_state != SessionState.BoundTransmitter && _state != SessionState.BoundTransceiver)
+                throw new InvalidOperationException("This operation can only be performed when the session is bound as a transmitter or transceiver.");
         }
 
         protected virtual void Dispose(bool disposing)
@@ -192,6 +219,23 @@ namespace NSmpp
             {
                 _state = SessionState.Open;
                 tcs.SetResult(true);
+            }
+        }
+
+        void IPduReceivedHandler.HandlePdu(SubmitResponse pdu)
+        {
+            var tcs = RetrieveTask<SubmitResult>(pdu.SequenceNumber);
+            if (tcs == null)
+                return;
+
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var exception = new Exception("The submit operation failed with error code: " + pdu.Status);
+                tcs.SetException(exception);
+            }
+            else
+            {
+                tcs.SetResult(new SubmitResult(pdu.MessageId));
             }
         }
 

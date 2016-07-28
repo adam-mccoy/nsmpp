@@ -9,6 +9,7 @@ namespace NSmpp
         void HandlePdu(BindTransceiverResponse pdu);
         void HandlePdu(Unbind pdu);
         void HandlePdu(UnbindResponse pdu);
+        void HandlePdu(SubmitResponse pdu);
 
         void HandleError(byte[] buffer, string error);
     }
