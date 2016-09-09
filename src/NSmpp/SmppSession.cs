@@ -11,7 +11,6 @@ namespace NSmpp
     internal class SmppSession : IPduReceivedHandler, IDisposable
     {
         private readonly ConcurrentDictionary<uint, object> _outstandingTasks = new ConcurrentDictionary<uint, object>();
-        private readonly BlockingCollection<PduBase> _sendQueue = new BlockingCollection<PduBase>();
 
         private SessionState _state;
         private int _sequenceNumber = 0;
@@ -29,7 +28,7 @@ namespace NSmpp
 
         internal SmppSession(Stream inputStream, Stream outputStream)
         {
-            _pduSender = new PduSender(_sendQueue, outputStream);
+            _pduSender = new PduSender(outputStream);
             _pduReceiver = new PduReceiver(inputStream, this);
             _receiverTask = _pduReceiver.Start().ContinueWith(t =>
             {
@@ -65,7 +64,7 @@ namespace NSmpp
             var pdu = CreateBindPdu(type, systemId, password, options);
             var tcs = RegisterTask<BindResult>(pdu.SequenceNumber);
 
-            _sendQueue.Add(pdu);
+            _pduSender.Enqueue(pdu);
             return tcs.Task;
         }
 
@@ -82,7 +81,7 @@ namespace NSmpp
             var tcs = RegisterTask<bool>(sequence);
             var pdu = new Unbind(sequence);
 
-            _sendQueue.Add(pdu);
+            _pduSender.Enqueue(pdu);
             return tcs.Task;
         }
 
@@ -103,7 +102,7 @@ namespace NSmpp
                 0, 0, 0,
                 message);
 
-            _sendQueue.Add(pdu);
+            _pduSender.Enqueue(pdu);
             return tcs.Task;
         }
 
@@ -202,7 +201,7 @@ namespace NSmpp
         void IPduReceivedHandler.HandlePdu(Unbind pdu)
         {
             var response = new UnbindResponse(SmppStatus.Ok, pdu.SequenceNumber);
-            _sendQueue.Add(response);
+            _pduSender.Enqueue(response);
             // TODO: cancel outstanding tasks
             _state = SessionState.Open;
         }

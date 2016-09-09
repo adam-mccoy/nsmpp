@@ -12,7 +12,7 @@ namespace NSmpp
     {
         private const int DequeueTimeout = 1000;
 
-        private readonly BlockingCollection<PduBase> _sendQueue;
+        private readonly BlockingCollection<PduBase> _sendQueue = new BlockingCollection<PduBase>();
         private readonly Stream _outputStream;
         private readonly object _lock = new object();
         private readonly CancellationTokenSource _token = new CancellationTokenSource();
@@ -20,10 +20,14 @@ namespace NSmpp
         private Task _task;
         private bool _running;
 
-        internal PduSender(BlockingCollection<PduBase> sendQueue, Stream outputStream)
+        internal PduSender(Stream outputStream)
         {
-            _sendQueue = sendQueue;
             _outputStream = outputStream;
+        }
+
+        internal void Enqueue(PduBase pdu)
+        {
+            _sendQueue.Add(pdu);
         }
 
         internal Task Start()
