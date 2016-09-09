@@ -43,6 +43,7 @@
     <Compile Include="Extensions\SocketExtensions.cs" />
     <Compile Include="Helpers\AsyncHelper.cs" />
     <Compile Include="IPduReceivedHandler.cs" />
+    <Compile Include="MessageState.cs" />
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
     <Compile Include="BindOptions.cs" />
@@ -54,6 +55,8 @@
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
     <Compile Include="Pdu\PduBase.cs" />
+    <Compile Include="Pdu\Query.cs" />
+    <Compile Include="Pdu\QueryResponse.cs" />
     <Compile Include="Pdu\ResponsePduBase.cs" />
     <Compile Include="Pdu\SmppCommand.cs" />
     <Compile Include="Pdu\SmppStatus.cs" />
