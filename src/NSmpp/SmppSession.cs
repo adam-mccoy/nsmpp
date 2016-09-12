@@ -59,8 +59,9 @@ namespace NSmpp
         {
             EnsureOpen();
 
-            var pdu = CreateBindPdu(type, systemId, password, options);
-            var tcs = RegisterTask<BindResult>(pdu.SequenceNumber);
+            var sequence = GetNextSequenceNumber();
+            var pdu = BindHelper.CreateBindPdu(sequence, type, systemId, password, options);
+            var tcs = RegisterTask<BindResult>(sequence);
 
             await _pduSender.SendAsync(pdu);
             return await tcs.Task;
@@ -241,54 +242,6 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
-        }
-
-        private PduBase CreateBindPdu(
-            BindType bindType,
-            string systemId,
-            string password,
-            BindOptions options)
-        {
-            var sequence = GetNextSequenceNumber();
-
-            switch (bindType)
-            {
-                case BindType.Transmitter:
-                    return new BindTransmitter(
-                        sequence,
-                        systemId,
-                        password,
-                        options.SystemType,
-                        options.InterfaceVersion,
-                        options.Ton,
-                        options.Npi,
-                        options.AddressRange);
-
-                case BindType.Receiver:
-                    return new BindReceiver(
-                        sequence,
-                        systemId,
-                        password,
-                        options.SystemType,
-                        options.InterfaceVersion,
-                        options.Ton,
-                        options.Npi,
-                        options.AddressRange);
-
-                case BindType.Transceiver:
-                    return new BindTransceiver(
-                        sequence,
-                        systemId,
-                        password,
-                        options.SystemType,
-                        options.InterfaceVersion,
-                        options.Ton,
-                        options.Npi,
-                        options.AddressRange);
-
-                default:
-                    return null;
-            }
         }
 
         private uint GetNextSequenceNumber()
