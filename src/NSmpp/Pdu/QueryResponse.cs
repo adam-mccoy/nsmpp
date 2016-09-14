@@ -13,6 +13,10 @@ namespace NSmpp.Pdu
             int errorCode)
             : base(status, sequenceNumber)
         {
+            MessageId = messageId;
+            FinalDate = finalDate;
+            MessageState = messageState;
+            ErrorCode = errorCode;
         }
 
         internal override SmppCommand Command
