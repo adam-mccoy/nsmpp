@@ -10,6 +10,7 @@ namespace NSmpp
         void HandlePdu(Unbind pdu);
         void HandlePdu(UnbindResponse pdu);
         void HandlePdu(SubmitResponse pdu);
+        void HandlePdu(QueryResponse pdu);
 
         void HandleError(byte[] buffer, string error);
     }

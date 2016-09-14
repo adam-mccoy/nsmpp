@@ -104,6 +104,18 @@ namespace NSmpp
             return await tcs.Task;
         }
 
+        internal async Task<QueryResult> Query(string messageId, TypeOfNumber sourceTon,
+            NumericPlanIndicator sourceNpi, string sourceAddress)
+        {
+            EnsureCanTransmit();
+            var sequence = GetNextSequenceNumber();
+            var tcs = RegisterTask<QueryResult>(sequence);
+            var pdu = new Query(sequence, messageId, sourceTon, sourceNpi, sourceAddress);
+
+            await _pduSender.SendAsync(pdu);
+            return await tcs.Task;
+        }
+
         private void EnsureBound()
         {
             if (!_state.IsBound())
@@ -236,6 +248,23 @@ namespace NSmpp
             else
             {
                 tcs.SetResult(new SubmitResult(pdu.MessageId));
+            }
+        }
+
+        void IPduReceivedHandler.HandlePdu(QueryResponse pdu)
+        {
+            var tcs = RetrieveTask<QueryResult>(pdu.SequenceNumber);
+            if (tcs == null)
+                return;
+
+            if (pdu.Status == SmppStatus.Ok)
+            {
+                var exception = new Exception("The query operation failed with the error: " + pdu.Status);
+                tcs.SetException(exception);
+            }
+            else
+            {
+                tcs.SetResult(new QueryResult(pdu.MessageState));
             }
         }
 
