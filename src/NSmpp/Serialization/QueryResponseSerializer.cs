@@ -9,7 +9,7 @@ namespace NSmpp.Serialization
             var writer = new PduWriter();
             writer.WritePduHeader(pdu);
             writer.WriteString(pdu.MessageId);
-            writer.WriteByte(0x00); // write date
+            writer.WriteAbsoluteTime(pdu.FinalDate);
             writer.WriteByte((byte)pdu.MessageState);
             writer.WriteByte((byte)pdu.ErrorCode);
 
@@ -25,7 +25,7 @@ namespace NSmpp.Serialization
             var sequence = (uint)reader.ReadInteger();
             var messageId = reader.ReadString();
             // read date
-            var finalDate = reader.ReadString();
+            var finalDate = reader.ReadAbsoluteTime();
             var messageState = (MessageState)reader.ReadByte();
             var errorCode = reader.ReadByte();
 
@@ -33,7 +33,7 @@ namespace NSmpp.Serialization
                 status,
                 sequence,
                 messageId,
-                null,
+                finalDate,
                 messageState,
                 errorCode);
         }

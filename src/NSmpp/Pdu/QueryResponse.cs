@@ -8,7 +8,7 @@ namespace NSmpp.Pdu
             SmppStatus status,
             uint sequenceNumber,
             string messageId,
-            DateTime? finalDate,
+            DateTimeOffset? finalDate,
             MessageState messageState,
             int errorCode)
             : base(status, sequenceNumber)
@@ -25,7 +25,7 @@ namespace NSmpp.Pdu
         }
 
         internal string MessageId { get; private set; }
-        internal DateTime? FinalDate { get; private set; }
+        internal DateTimeOffset? FinalDate { get; private set; }
         internal MessageState MessageState { get; private set; }
         internal int ErrorCode { get; private set; }
     }
