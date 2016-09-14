@@ -113,5 +113,68 @@ namespace NSmpp.Tests
 
             Assert.Throws(typeof(InvalidOperationException), () => reader.ReadByte(), "Buffer does not contain 1 bytes.");
         }
+
+        [Test]
+        public void Read_Absolute_Time_Returns_Null_For_Zero_Byte()
+        {
+            var buffer = new byte[] { 0x00, 0x12, 0xc4 };
+
+            var reader = new PduReader(buffer);
+
+            Assert.IsNull(reader.ReadAbsoluteTime());
+        }
+
+        [Test]
+        public void Read_Absolute_Time_Returns_Correct_DateTimeOffset()
+        {
+            var buffer = new byte[]
+            {
+                0x31, 0x36, 0x31, 0x32, 0x31, 0x30, 0x31, 0x34, 0x35,
+                0x33, 0x32, 0x34, 0x37, 0x34, 0x30, 0x2b, 0x00
+            };
+
+            var reader = new PduReader(buffer);
+            var result = reader.ReadAbsoluteTime();
+
+            Assert.AreEqual(new DateTimeOffset(2016, 12, 10, 14, 53, 24, 700, TimeSpan.FromHours(10)), result);
+        }
+
+        [Test]
+        public void Throw_On_Read_Absolute_Time_When_String_Has_Invalid_Length()
+        {
+            var buffer = new byte[]
+            {
+                0x31, 0x36, 0x31, 0x33, 0x31, 0x30, 0x31, 0x34, 0x35,
+                0x33, 0x32, 0x34, 0x37, 0x00
+            };
+
+            var reader = new PduReader(buffer);
+
+            var testDelegate = new TestDelegate(() =>
+            {
+                reader.ReadAbsoluteTime();
+            });
+            var ex = Assert.Throws(typeof(ArgumentException), testDelegate);
+            Assert.AreEqual(ex.Message, "Absolute time has an invalid length.");
+        }
+
+        [Test]
+        public void Throw_On_Read_Absolute_Time_With_Invalid_Format()
+        {
+            var buffer = new byte[]
+            {
+                0x31, 0x36, 0x31, 0x33, 0x31, 0x30, 0x31, 0x34, 0x35,
+                0x33, 0x32, 0x34, 0x37, 0x34, 0x30, 0x2b, 0x00
+            };
+
+            var reader = new PduReader(buffer);
+
+            var testDelegate = new TestDelegate(() =>
+            {
+                reader.ReadAbsoluteTime();
+            });
+            var ex = Assert.Throws(typeof(ArgumentException), testDelegate);
+            Assert.AreEqual(ex.Message, "Absolute time has an invalid format.");
+        }
     }
 }

@@ -71,6 +71,11 @@ namespace NSmpp.Serialization
             return result;
         }
 
+        internal DateTimeOffset? ReadAbsoluteTime()
+        {
+            throw new NotImplementedException();
+        }
+
         internal static string ReadString(byte[] buffer, int position)
         {
             var builder = new StringBuilder();
