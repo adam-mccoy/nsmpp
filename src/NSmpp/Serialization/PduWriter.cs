@@ -94,6 +94,11 @@ namespace NSmpp.Serialization
             WriteInteger((int)pdu.SequenceNumber);
         }
 
+        internal void WriteAbsoluteTime(DateTimeOffset? time)
+        {
+            throw new NotImplementedException();
+        }
+
         private void EnsureSize(int size)
         {
             if (_buffer.Length - _position > size)
