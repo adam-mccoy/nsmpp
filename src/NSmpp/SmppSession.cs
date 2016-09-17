@@ -257,7 +257,7 @@ namespace NSmpp
             if (tcs == null)
                 return;
 
-            if (pdu.Status == SmppStatus.Ok)
+            if (pdu.Status != SmppStatus.Ok)
             {
                 var exception = new Exception("The query operation failed with the error: " + pdu.Status);
                 tcs.SetException(exception);
