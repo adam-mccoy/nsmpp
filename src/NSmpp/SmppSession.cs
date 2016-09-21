@@ -18,6 +18,7 @@ namespace NSmpp
         private PduSender _pduSender;
         private PduReceiver _pduReceiver;
         private Task _receiverTask;
+        private Task _senderTask;
 
         public void Dispose()
         {
@@ -36,6 +37,7 @@ namespace NSmpp
                 if (t.IsFaulted)
                     Console.WriteLine("Failed with exception: {0}", t.Exception.Flatten());
             });
+            _senderTask = _pduSender.Start();
         }
 
         internal SessionState SessionState
@@ -55,7 +57,7 @@ namespace NSmpp
             return Bind(type, systemId, password, new BindOptions());
         }
 
-        internal async Task<BindResult> Bind(BindType type, string systemId, string password, BindOptions options)
+        internal Task<BindResult> Bind(BindType type, string systemId, string password, BindOptions options)
         {
             EnsureOpen();
 
@@ -63,8 +65,8 @@ namespace NSmpp
             var pdu = BindHelper.CreateBindPdu(sequence, type, systemId, password, options);
             var tcs = RegisterTask<BindResult>(sequence);
 
-            await _pduSender.SendAsync(pdu);
-            return await tcs.Task;
+            _pduSender.Enqueue(pdu);
+            return tcs.Task;
         }
 
         private void EnsureOpen()
@@ -73,18 +75,18 @@ namespace NSmpp
                 throw new InvalidOperationException("This operation can only be performed when the session is in the Open state.");
         }
 
-        internal async Task Unbind()
+        internal Task Unbind()
         {
             EnsureBound();
             var sequence = GetNextSequenceNumber();
             var tcs = RegisterTask<bool>(sequence);
             var pdu = new Unbind(sequence);
 
-            await _pduSender.SendAsync(pdu);
-            await tcs.Task.ConfigureAwait(false);
+            _pduSender.Enqueue(pdu);
+            return tcs.Task;
         }
 
-        internal async Task<SubmitResult> Submit(string source, string dest, string message)
+        internal Task<SubmitResult> Submit(string source, string dest, string message)
         {
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
@@ -101,8 +103,8 @@ namespace NSmpp
                 0, 0, 0,
                 message);
 
-            await _pduSender.SendAsync(pdu);
-            return await tcs.Task;
+            _pduSender.Enqueue(pdu);
+            return tcs.Task;
         }
 
         private void EnsureBound()
@@ -200,7 +202,7 @@ namespace NSmpp
         void IPduReceivedHandler.HandlePdu(Unbind pdu)
         {
             var response = new UnbindResponse(SmppStatus.Ok, pdu.SequenceNumber);
-            AsyncHelper.RunSync(() => _pduSender.SendAsync(response));
+            _pduSender.Enqueue(response);
             // TODO: cancel outstanding tasks
             _state = SessionState.Open;
         }
