@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address.cs" />
     <Compile Include="BindResult.cs" />
     <Compile Include="Extensions\SocketExtensions.cs" />
     <Compile Include="Helpers\AsyncHelper.cs" />
