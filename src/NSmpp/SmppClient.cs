@@ -28,9 +28,9 @@ namespace NSmpp
             return _currentSession.Submit(source, dest, message);
         }
 
-        public Task<QueryResult> Query(string messageId, TypeOfNumber sourceTon, NumericPlanIndicator sourceNpi, string sourceAddress)
+        public Task<QueryResult> Query(string messageId, Address source)
         {
-            return _currentSession.Query(messageId, sourceTon, sourceNpi, sourceAddress);
+            return _currentSession.Query(messageId, source);
         }
 
         public void Dispose()

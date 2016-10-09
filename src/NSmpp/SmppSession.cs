@@ -107,13 +107,12 @@ namespace NSmpp
             return tcs.Task;
         }
 
-        internal Task<QueryResult> Query(string messageId, TypeOfNumber sourceTon,
-            NumericPlanIndicator sourceNpi, string sourceAddress)
+        internal Task<QueryResult> Query(string messageId, Address source)
         {
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
             var tcs = RegisterTask<QueryResult>(sequence);
-            var pdu = new Query(sequence, messageId, sourceTon, sourceNpi, sourceAddress);
+            var pdu = new Query(sequence, messageId, source.Ton, source.Npi, source.Value);
 
             _pduSender.Enqueue(pdu);
             return tcs.Task;

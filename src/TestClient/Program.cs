@@ -51,7 +51,7 @@ namespace TestClient
         public static async Task QueryMessage(SmppClient client, string id)
         {
             Console.WriteLine($"Querying message {id}.");
-            var result = await client.Query(id, TypeOfNumber.Unknown, NumericPlanIndicator.Unknown, FromNumber);
+            var result = await client.Query(id, FromNumber);
             Console.WriteLine($"Status for message {id} is {result.State}.");
         }
     }
