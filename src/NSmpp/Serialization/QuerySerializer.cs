@@ -9,9 +9,9 @@ namespace NSmpp.Serialization
             var writer = new PduWriter();
             writer.WritePduHeader(pdu);
             writer.WriteString(pdu.MessageId);
-            writer.WriteByte((byte)pdu.SourceTon);
-            writer.WriteByte((byte)pdu.SourceNpi);
-            writer.WriteString(pdu.SourceAddress);
+            writer.WriteByte((byte)pdu.Source.Ton);
+            writer.WriteByte((byte)pdu.Source.Npi);
+            writer.WriteString(pdu.Source.Value);
 
             return Finalize(writer);
         }
@@ -31,9 +31,7 @@ namespace NSmpp.Serialization
             return new Query(
                 sequence,
                 messageId,
-                sourceTon,
-                sourceNpi,
-                sourceAddress);
+                new Address(sourceTon, sourceNpi, sourceAddress));
         }
     }
 }

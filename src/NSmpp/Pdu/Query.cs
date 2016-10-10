@@ -5,15 +5,11 @@
         internal Query(
             uint sequence,
             string messageId,
-            TypeOfNumber sourceTon,
-            NumericPlanIndicator sourceNpi,
-            string sourceAddress)
+            Address source)
             : base(sequence)
         {
             MessageId = messageId;
-            SourceTon = sourceTon;
-            SourceNpi = sourceNpi;
-            SourceAddress = sourceAddress;
+            Source = source;
         }
 
         internal override SmppCommand Command
@@ -22,8 +18,6 @@
         }
 
         internal string MessageId { get; private set; }
-        internal TypeOfNumber SourceTon { get; private set; }
-        internal NumericPlanIndicator SourceNpi { get; private set; }
-        internal string SourceAddress { get; private set; }
+        internal Address Source { get; private set; }
     }
 }

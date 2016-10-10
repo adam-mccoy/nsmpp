@@ -29,9 +29,9 @@ namespace NSmpp.Tests
             Assert.AreEqual(SmppCommand.Query, pdu.Command);
             Assert.AreEqual(16, pdu.SequenceNumber);
             Assert.AreEqual("someid", pdu.MessageId);
-            Assert.AreEqual(TypeOfNumber.National, pdu.SourceTon);
-            Assert.AreEqual(NumericPlanIndicator.Internet, pdu.SourceNpi);
-            Assert.AreEqual("1234567890", pdu.SourceAddress);
+            Assert.AreEqual(TypeOfNumber.National, pdu.Source.Ton);
+            Assert.AreEqual(NumericPlanIndicator.Internet, pdu.Source.Npi);
+            Assert.AreEqual("1234567890", pdu.Source.Value);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace NSmpp.Tests
                 0x38, 0x39, 0x30, 0x00
             };
 
-            var pdu = new Query(16, "someid", TypeOfNumber.National, NumericPlanIndicator.Internet, "1234567890");
+            var pdu = new Query(16, "someid", new Address(TypeOfNumber.National, NumericPlanIndicator.Internet, "1234567890"));
             var serializer = new QuerySerializer();
             var result = serializer.Serialize(pdu);
 

@@ -112,7 +112,7 @@ namespace NSmpp
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
             var tcs = RegisterTask<QueryResult>(sequence);
-            var pdu = new Query(sequence, messageId, source.Ton, source.Npi, source.Value);
+            var pdu = new Query(sequence, messageId, source);
 
             _pduSender.Enqueue(pdu);
             return tcs.Task;
