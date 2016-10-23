@@ -23,6 +23,8 @@ namespace TestClient
 
                     var tasks = Enumerable.Range(0, 100).Select(i => SendMessage(client, i));
                     var ids = Task.WhenAll(tasks).Result;
+                    Console.WriteLine("Sending complete. Press ENTER to start queries.");
+                    Console.ReadKey();
 
                     var queryTasks = ids.Select(i => QueryMessage(client, i));
                     Task.WhenAll(queryTasks).Wait();
