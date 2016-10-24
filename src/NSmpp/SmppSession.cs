@@ -266,7 +266,8 @@ namespace NSmpp
             }
             else
             {
-                tcs.SetResult(new QueryResult(pdu.MessageState));
+                var result = new QueryResult(pdu.MessageId, pdu.FinalDate, pdu.MessageState, pdu.ErrorCode);
+                tcs.SetResult(result);
             }
         }
 
