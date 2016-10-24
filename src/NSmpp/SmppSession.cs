@@ -107,6 +107,17 @@ namespace NSmpp
             return tcs.Task;
         }
 
+        internal Task<QueryResult> Query(string messageId, Address source)
+        {
+            EnsureCanTransmit();
+            var sequence = GetNextSequenceNumber();
+            var tcs = RegisterTask<QueryResult>(sequence);
+            var pdu = new Query(sequence, messageId, source);
+
+            _pduSender.Enqueue(pdu);
+            return tcs.Task;
+        }
+
         private void EnsureBound()
         {
             if (!_state.IsBound())
@@ -239,6 +250,24 @@ namespace NSmpp
             else
             {
                 tcs.SetResult(new SubmitResult(pdu.MessageId));
+            }
+        }
+
+        void IPduReceivedHandler.HandlePdu(QueryResponse pdu)
+        {
+            var tcs = RetrieveTask<QueryResult>(pdu.SequenceNumber);
+            if (tcs == null)
+                return;
+
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var exception = new Exception("The query operation failed with the error: " + pdu.Status);
+                tcs.SetException(exception);
+            }
+            else
+            {
+                var result = new QueryResult(pdu.MessageId, pdu.FinalDate, pdu.MessageState, pdu.ErrorCode);
+                tcs.SetResult(result);
             }
         }
 

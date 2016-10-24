@@ -29,9 +29,7 @@ namespace NSmpp.Serialization
             writer.WriteByte((byte)pdu.ShortMessage.Length);
             writer.WriteBytes(Encoding.ASCII.GetBytes(pdu.ShortMessage));
 
-            var bytes = writer.GetBytes();
-            PduWriter.WriteInteger(bytes, 0, bytes.Length);
-            return bytes;
+            return Finalize(writer);
         }
 
         internal override Submit Deserialize(byte[] bytes)

@@ -276,5 +276,32 @@ namespace NSmpp.Tests
             var builder = new PduWriter();
             Assert.Throws(typeof(ArgumentNullException), () => builder.WriteBytes(null), "Value cannot be null.\r\nParameter name: bytes");
         }
+
+        [Test]
+        public void Write_Absolute_Time_Writes_Zero_Byte_For_Null_Value()
+        {
+            var expectedResult = new byte[] { 0x00 };
+            var builder = new PduWriter();
+            builder.WriteAbsoluteTime(null);
+            var buffer = builder.GetBytes();
+
+            CollectionAssert.AreEqual(expectedResult, buffer);
+        }
+
+        [Test]
+        public void Write_Aboslute_Time_Writes_Correct_String()
+        {
+            var expectedResult = new byte[] {
+                0x31, 0x36, 0x30, 0x38, 0x31, 0x38, 0x31, 0x36, 0x33,
+                0x34, 0x35, 0x36, 0x34, 0x34, 0x30, 0x2b, 0x00
+            };
+
+            var builder = new PduWriter();
+            var time = new DateTimeOffset(2016, 8, 18, 16, 34, 56, 400, TimeSpan.FromHours(10));
+            builder.WriteAbsoluteTime(time);
+            var buffer = builder.GetBytes();
+
+            CollectionAssert.AreEqual(expectedResult, buffer);
+        }
     }
 }

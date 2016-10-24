@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 
 namespace NSmpp.Serialization
 {
     internal class PduReader
     {
+        private const int AbsoluteTimeLength = 16;
+
         private readonly byte[] _buffer;
         private int _position = 0;
 
@@ -69,6 +72,28 @@ namespace NSmpp.Serialization
             var result = ReadString(_buffer, _position);
             _position += (result?.Length ?? 0) + 1;
             return result;
+        }
+
+        internal DateTimeOffset? ReadAbsoluteTime()
+        {
+            var timeString = ReadString();
+            if (timeString == null)
+                return null;
+
+            if (timeString.Length != AbsoluteTimeLength)
+                throw new ArgumentException("Absolute time has an invalid length.");
+
+            DateTime dateTime;
+            if (!DateTime.TryParseExact(timeString.Substring(0, 13), "yyMMddHHmmssf",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                throw new ArgumentException("Absolute time has an invalid format.");
+
+            float quarterHours;
+            if (!float.TryParse(timeString.Substring(13, 2), out quarterHours))
+                throw new ArgumentException("Absolute time has an invalid format.");
+
+            var multiplier = timeString[timeString.Length - 1] == '-' ? -15.0f : 15.0f;
+            return new DateTimeOffset(dateTime, TimeSpan.FromMinutes(quarterHours * multiplier));
         }
 
         internal static string ReadString(byte[] buffer, int position)

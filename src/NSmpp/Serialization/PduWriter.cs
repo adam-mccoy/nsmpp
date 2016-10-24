@@ -94,6 +94,23 @@ namespace NSmpp.Serialization
             WriteInteger((int)pdu.SequenceNumber);
         }
 
+        internal void WriteAbsoluteTime(DateTimeOffset? time)
+        {
+            if (!time.HasValue)
+            {
+                WriteString(null);
+                return;
+            }
+
+            var timeValue = time.Value;
+            var timeString = timeValue.ToString("yyMMddHHmmssf");
+
+            var offsetString = (timeValue.Offset.TotalMinutes / 15).ToString("00");
+            offsetString += timeValue.Offset.Ticks < 0 ? "-" : "+";
+
+            WriteString(timeString + offsetString);
+        }
+
         private void EnsureSize(int size)
         {
             if (_buffer.Length - _position > size)

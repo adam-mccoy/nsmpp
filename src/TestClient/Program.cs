@@ -7,6 +7,8 @@ namespace TestClient
 {
     class Program
     {
+        private const string FromNumber = "1234567890";
+
         static void Main(string[] args)
         {
             try
@@ -20,7 +22,12 @@ namespace TestClient
                     Console.ReadKey();
 
                     var tasks = Enumerable.Range(0, 100).Select(i => SendMessage(client, i));
-                    Task.WhenAll(tasks).Wait();
+                    var ids = Task.WhenAll(tasks).Result;
+                    Console.WriteLine("Sending complete. Press ENTER to start queries.");
+                    Console.ReadKey();
+
+                    var queryTasks = ids.Select(i => QueryMessage(client, i));
+                    Task.WhenAll(queryTasks).Wait();
 
                     Console.WriteLine("Done. Press ENTER to quit.");
                     Console.ReadKey(true);
@@ -33,13 +40,21 @@ namespace TestClient
             }
         }
 
-        public static async Task SendMessage(SmppClient client, int i)
+        public static async Task<string> SendMessage(SmppClient client, int i)
         {
             var number = i.ToString("0000000000");
             var message = $"This is test message #{i}";
             Console.WriteLine($"Submitting message {i}...");
-            var result = await client.Submit(number, number, message);
+            var result = await client.Submit(FromNumber, number, message);
             Console.WriteLine($"Message {i} submitted with message ID {result.MessageId}.");
+            return result.MessageId;
+        }
+
+        public static async Task QueryMessage(SmppClient client, string id)
+        {
+            Console.WriteLine($"Querying message {id}.");
+            var result = await client.Query(id, FromNumber);
+            Console.WriteLine($"Status for message {id} is {result.State}.");
         }
     }
 }

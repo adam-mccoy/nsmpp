@@ -18,5 +18,12 @@ namespace NSmpp.Serialization
         {
             return Deserialize(bytes);
         }
+
+        protected byte[] Finalize(PduWriter writer)
+        {
+            var bytes = writer.GetBytes();
+            PduWriter.WriteInteger(bytes, 0, bytes.Length);
+            return bytes;
+        }
     }
 }
