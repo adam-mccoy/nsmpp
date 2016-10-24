@@ -6,12 +6,21 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(GenericNack pdu)
         {
-            throw new NotImplementedException();
+            var writer = new PduWriter();
+            writer.WritePduHeader(pdu);
+
+            return Finalize(writer);
         }
 
         internal override GenericNack Deserialize(byte[] bytes)
         {
-            throw new NotImplementedException();
+            var reader = new PduReader(bytes);
+            reader.ReadInteger(); // read length
+            reader.ReadInteger(); // read command
+            var status = (SmppStatus)reader.ReadInteger();
+            var sequence = (uint)reader.ReadInteger();
+
+            return new GenericNack(status, sequence);
         }
     }
 }
