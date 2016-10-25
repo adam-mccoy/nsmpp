@@ -92,6 +92,7 @@
     <Compile Include="SmppClient.cs" />
     <Compile Include="SmppSession.cs" />
     <Compile Include="SubmitResult.cs" />
+    <Compile Include="TaskRegistry.cs" />
     <Compile Include="TypeOfNumber.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
