@@ -6,6 +6,8 @@ namespace NSmpp
 {
     internal class TaskRegistry
     {
+        private static readonly Type DefaultTaskType = typeof(bool);
+
         internal class OutstandingTask
         {
             private Delegate _getTask;
@@ -19,6 +21,12 @@ namespace NSmpp
             }
 
             internal Type ResultType { get; private set; }
+
+            internal Task GetTask()
+            {
+                var result = _getTask.DynamicInvoke();
+                return (Task)result;
+            }
 
             internal Task<T> GetTask<T>()
             {
@@ -62,6 +70,11 @@ namespace NSmpp
         }
 
         private readonly ConcurrentDictionary<uint, OutstandingTask> _registry = new ConcurrentDictionary<uint, OutstandingTask>();
+
+        internal OutstandingTask Register(uint sequence)
+        {
+            return RegisterInternal(sequence, DefaultTaskType);
+        }
 
         internal OutstandingTask Register<T>(uint sequence)
         {

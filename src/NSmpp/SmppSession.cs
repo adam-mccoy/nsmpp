@@ -78,11 +78,11 @@ namespace NSmpp
         {
             EnsureBound();
             var sequence = GetNextSequenceNumber();
-            var task = _taskRegistry.Register<bool>(sequence);
+            var task = _taskRegistry.Register(sequence);
             var pdu = new Unbind(sequence);
 
             _pduSender.Enqueue(pdu);
-            return task.GetTask<bool>();
+            return task.GetTask();
         }
 
         internal Task<SubmitResult> Submit(string source, string dest, string message)
