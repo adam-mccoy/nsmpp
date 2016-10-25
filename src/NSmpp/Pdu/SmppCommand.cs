@@ -2,6 +2,7 @@
 {
     internal enum SmppCommand : uint
     {
+        GenericNack         = 0x80000000,
         BindReceiver        = 0x00000001,
         BindReceiverResp    = 0x80000001,
         BindTransmitter     = 0x00000002,

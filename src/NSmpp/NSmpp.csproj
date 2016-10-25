@@ -56,6 +56,7 @@
     <Compile Include="Pdu\BindReceiverResponse.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
+    <Compile Include="Pdu\GenericNack.cs" />
     <Compile Include="Pdu\PduBase.cs" />
     <Compile Include="Pdu\Query.cs" />
     <Compile Include="Pdu\QueryResponse.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Pdu\UnbindResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryResult.cs" />
+    <Compile Include="Serialization\GenericNackSerializer.cs" />
     <Compile Include="Serialization\QueryResponseSerializer.cs" />
     <Compile Include="Serialization\QuerySerializer.cs" />
     <Compile Include="Serialization\SubmitResponseSerializer.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="SmppClient.cs" />
     <Compile Include="SmppSession.cs" />
     <Compile Include="SubmitResult.cs" />
+    <Compile Include="TaskRegistry.cs" />
     <Compile Include="TypeOfNumber.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

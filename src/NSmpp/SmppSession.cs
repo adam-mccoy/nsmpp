@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ namespace NSmpp
 {
     internal class SmppSession : IPduReceivedHandler, IDisposable
     {
-        private readonly ConcurrentDictionary<uint, object> _outstandingTasks = new ConcurrentDictionary<uint, object>();
+        private readonly TaskRegistry _taskRegistry = new TaskRegistry();
 
         private SessionState _state;
         private int _sequenceNumber = 0;
@@ -63,10 +62,10 @@ namespace NSmpp
 
             var sequence = GetNextSequenceNumber();
             var pdu = BindHelper.CreateBindPdu(sequence, type, systemId, password, options);
-            var tcs = RegisterTask<BindResult>(sequence);
+            var task = _taskRegistry.Register<BindResult>(sequence);
 
             _pduSender.Enqueue(pdu);
-            return tcs.Task;
+            return task.GetTask<BindResult>();
         }
 
         private void EnsureOpen()
@@ -79,18 +78,18 @@ namespace NSmpp
         {
             EnsureBound();
             var sequence = GetNextSequenceNumber();
-            var tcs = RegisterTask<bool>(sequence);
+            var task = _taskRegistry.Register(sequence);
             var pdu = new Unbind(sequence);
 
             _pduSender.Enqueue(pdu);
-            return tcs.Task;
+            return task.GetTask();
         }
 
         internal Task<SubmitResult> Submit(string source, string dest, string message)
         {
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
-            var tcs = RegisterTask<SubmitResult>(sequence);
+            var task = _taskRegistry.Register<SubmitResult>(sequence);
             var pdu = new Submit(
                 sequence,
                 null,
@@ -104,18 +103,18 @@ namespace NSmpp
                 message);
 
             _pduSender.Enqueue(pdu);
-            return tcs.Task;
+            return task.GetTask<SubmitResult>();
         }
 
         internal Task<QueryResult> Query(string messageId, Address source)
         {
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
-            var tcs = RegisterTask<QueryResult>(sequence);
+            var task = _taskRegistry.Register<QueryResult>(sequence);
             var pdu = new Query(sequence, messageId, source);
 
             _pduSender.Enqueue(pdu);
-            return tcs.Task;
+            return task.GetTask<QueryResult>();
         }
 
         private void EnsureBound()
@@ -138,75 +137,67 @@ namespace NSmpp
             }
         }
 
-        private TaskCompletionSource<T> RegisterTask<T>(uint sequenceNumber)
+        void IPduReceivedHandler.HandlePdu(GenericNack pdu)
         {
-            var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
-            if (!_outstandingTasks.TryAdd(sequenceNumber, tcs))
-                throw new ArgumentException("A task with the same sequence number has already been registerd.");
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
+                return;
 
-            return tcs;
-        }
-
-        private TaskCompletionSource<T> RetrieveTask<T>(uint sequenceNumber)
-        {
-            object tcs;
-            if (!_outstandingTasks.TryRemove(sequenceNumber, out tcs))
-                return null;
-
-            return (TaskCompletionSource<T>)tcs;
+            var exception = new Exception("The operation failed with a generic error: " + pdu.Status);
+            task.SetException(exception);
         }
 
         void IPduReceivedHandler.HandlePdu(BindReceiverResponse pdu)
         {
-            var tcs = RetrieveTask<BindResult>(pdu.SequenceNumber);
-            if (tcs == null)
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
                 return;
 
             if (pdu.Status != SmppStatus.Ok)
             {
                 var bindException = new Exception("The bind operation failed with error code: " + pdu.Status);
-                tcs.SetException(bindException);
+                task.SetException(bindException);
             }
             else
             {
                 _state = SessionState.BoundReceiver;
-                tcs.SetResult(new BindResult(pdu.SystemId));
+                task.SetResult(new BindResult(pdu.SystemId));
             }
         }
 
         void IPduReceivedHandler.HandlePdu(BindTransmitterResponse pdu)
         {
-            var tcs = RetrieveTask<BindResult>(pdu.SequenceNumber);
-            if (tcs == null)
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
                 return;
 
             if (pdu.Status != SmppStatus.Ok)
             {
                 var bindException = new Exception("The bind operation failed with error code: " + pdu.Status);
-                tcs.SetException(bindException);
+                task.SetException(bindException);
             }
             else
             {
                 _state = SessionState.BoundTransmitter;
-                tcs.SetResult(new BindResult(pdu.SystemId));
+                task.SetResult(new BindResult(pdu.SystemId));
             }
         }
 
         void IPduReceivedHandler.HandlePdu(BindTransceiverResponse pdu)
         {
-            var tcs = RetrieveTask<BindResult>(pdu.SequenceNumber);
-            if (tcs == null)
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
                 return;
 
             if (pdu.Status != SmppStatus.Ok)
             {
                 var unbindException = new Exception("The unbind operation failed with error code: " + pdu.Status);
-                tcs.SetException(unbindException);
+                task.SetException(unbindException);
             }
             else
             {
                 _state = SessionState.BoundTransceiver;
-                tcs.SetResult(new BindResult(pdu.SystemId));
+                task.SetResult(new BindResult(pdu.SystemId));
             }
         }
 
@@ -220,54 +211,54 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(UnbindResponse pdu)
         {
-            var tcs = RetrieveTask<bool>(pdu.SequenceNumber);
-            if (tcs == null)
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
                 return;
 
             if (pdu.Status != SmppStatus.Ok)
             {
                 var unbindException = new Exception("The unbind operation failed with error code: " + pdu.Status);
-                tcs.SetException(unbindException);
+                task.SetException(unbindException);
             }
             else
             {
                 _state = SessionState.Open;
-                tcs.SetResult(true);
+                task.SetResult(true);
             }
         }
 
         void IPduReceivedHandler.HandlePdu(SubmitResponse pdu)
         {
-            var tcs = RetrieveTask<SubmitResult>(pdu.SequenceNumber);
-            if (tcs == null)
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
                 return;
 
             if (pdu.Status != SmppStatus.Ok)
             {
                 var exception = new Exception("The submit operation failed with error code: " + pdu.Status);
-                tcs.SetException(exception);
+                task.SetException(exception);
             }
             else
             {
-                tcs.SetResult(new SubmitResult(pdu.MessageId));
+                task.SetResult(new SubmitResult(pdu.MessageId));
             }
         }
 
         void IPduReceivedHandler.HandlePdu(QueryResponse pdu)
         {
-            var tcs = RetrieveTask<QueryResult>(pdu.SequenceNumber);
-            if (tcs == null)
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
                 return;
 
             if (pdu.Status != SmppStatus.Ok)
             {
                 var exception = new Exception("The query operation failed with the error: " + pdu.Status);
-                tcs.SetException(exception);
+                task.SetException(exception);
             }
             else
             {
                 var result = new QueryResult(pdu.MessageId, pdu.FinalDate, pdu.MessageState, pdu.ErrorCode);
-                tcs.SetResult(result);
+                task.SetResult(result);
             }
         }
 
