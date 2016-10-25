@@ -4,6 +4,7 @@ namespace NSmpp
 {
     internal interface IPduReceivedHandler
     {
+        void HandlePdu(GenericNack pdu);
         void HandlePdu(BindReceiverResponse pdu);
         void HandlePdu(BindTransmitterResponse pdu);
         void HandlePdu(BindTransceiverResponse pdu);

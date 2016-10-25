@@ -137,6 +137,16 @@ namespace NSmpp
             }
         }
 
+        void IPduReceivedHandler.HandlePdu(GenericNack pdu)
+        {
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
+                return;
+
+            var exception = new Exception("The operation failed with a generic error: " + pdu.Status);
+            task.SetException(exception);
+        }
+
         void IPduReceivedHandler.HandlePdu(BindReceiverResponse pdu)
         {
             var task = _taskRegistry.Unregister(pdu.SequenceNumber);
