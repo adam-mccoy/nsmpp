@@ -53,7 +53,7 @@ namespace TestClient
         {
             Console.WriteLine($"Querying message {id}.");
             var result = await client.Query(id, FromNumber);
-            Console.WriteLine($"Status for message {id} is {result.State}.");
+            Console.WriteLine($"Status for message {id} is {result.State}, completed at {result.FinalDate}.");
         }
     }
 }
