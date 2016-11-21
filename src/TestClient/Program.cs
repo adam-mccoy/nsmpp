@@ -28,9 +28,6 @@ namespace TestClient
 
                     var queryTasks = ids.Select(i => QueryMessage(client, i));
                     Task.WhenAll(queryTasks).Wait();
-
-                    Console.WriteLine("Done. Press ENTER to quit.");
-                    Console.ReadKey(true);
                 }
             }
             catch (Exception ex)
@@ -38,6 +35,8 @@ namespace TestClient
                 Console.WriteLine("Ruh Roh!");
                 Console.WriteLine(ex);
             }
+            Console.WriteLine("Done. Press ENTER to quit.");
+            Console.ReadKey(true);
         }
 
         public static async Task<string> SendMessage(SmppClient client, int i)
