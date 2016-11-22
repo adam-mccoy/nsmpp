@@ -117,6 +117,17 @@ namespace NSmpp
             return task.GetTask<QueryResult>();
         }
 
+        internal Task Cancel(string messageId, Address source, Address destination)
+        {
+            EnsureCanTransmit();
+            var sequence = GetNextSequenceNumber();
+            var task = _taskRegistry.Register(sequence);
+            var pdu = new Cancel(sequence, null, messageId, source, destination);
+
+            _pduSender.Enqueue(pdu);
+            return task.GetTask();
+        }
+
         private void EnsureBound()
         {
             if (!_state.IsBound())
