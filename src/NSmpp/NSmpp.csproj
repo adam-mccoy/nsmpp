@@ -57,6 +57,7 @@
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
     <Compile Include="Pdu\Cancel.cs" />
+    <Compile Include="Pdu\CancelResponse.cs" />
     <Compile Include="Pdu\GenericNack.cs" />
     <Compile Include="Pdu\PduBase.cs" />
     <Compile Include="Pdu\Query.cs" />
