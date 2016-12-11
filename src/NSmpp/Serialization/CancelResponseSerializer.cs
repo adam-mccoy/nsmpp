@@ -7,12 +7,20 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(CancelResponse pdu)
         {
-            throw new NotImplementedException();
+            var writer = new PduWriter();
+            writer.WritePduHeader(pdu);
+
+            return Finalize(writer);
         }
 
         internal override CancelResponse Deserialize(byte[] bytes)
         {
-            throw new NotImplementedException();
+            var reader = new PduReader(bytes);
+            reader.Skip(8); // skip length and command
+            var status = (SmppStatus)reader.ReadInteger();
+            var sequence = (uint)reader.ReadInteger();
+
+            return new CancelResponse(status, sequence);
         }
     }
 }
