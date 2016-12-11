@@ -71,6 +71,7 @@
     <Compile Include="Pdu\UnbindResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryResult.cs" />
+    <Compile Include="Serialization\CancelResponseSerializer.cs" />
     <Compile Include="Serialization\CancelSerializer.cs" />
     <Compile Include="Serialization\GenericNackSerializer.cs" />
     <Compile Include="Serialization\QueryResponseSerializer.cs" />
