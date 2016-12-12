@@ -273,6 +273,23 @@ namespace NSmpp
             }
         }
 
+        void IPduReceivedHandler.HandlePdu(CancelResponse pdu)
+        {
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
+                return;
+
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var exception = new Exception("The cancel operation failed with the error: " + pdu.Status);
+                task.SetException(exception);
+            }
+            else
+            {
+                task.SetResult();
+            }
+        }
+
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
         }
