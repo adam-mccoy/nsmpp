@@ -16,8 +16,8 @@ namespace TestClient
                 using (var client = new SmppClient())
                 {
 
-                    client.Connect("localhost", 2775).Wait();
-                    client.Bind(BindType.Transmitter, "smppclient1", "password").Wait();
+                    client.Connect("localhost", 2775).GetAwaiter().GetResult();
+                    client.Bind(BindType.Transmitter, "smppclient1", "password").GetAwaiter().GetResult();
                     Console.WriteLine("Session bound. Press ENTER to start sending.");
                     Console.ReadKey();
 
@@ -27,7 +27,12 @@ namespace TestClient
                     Console.ReadKey();
 
                     var queryTasks = ids.Select(i => QueryMessage(client, i));
-                    Task.WhenAll(queryTasks).Wait();
+                    Task.WhenAll(queryTasks).GetAwaiter().GetResult();
+                    Console.WriteLine("Querying complete. Press ENTER to start cancellations.");
+                    Console.ReadKey();
+
+                    var cancelTasks = ids.Select((id, i)  => CancelMessage(client, id, i));
+                    Task.WhenAll(cancelTasks).GetAwaiter().GetResult();
                 }
             }
             catch (Exception ex)
@@ -54,6 +59,14 @@ namespace TestClient
             Console.WriteLine($"Querying message {id}.");
             var result = await client.Query(id, FromNumber);
             Console.WriteLine($"Status for message {id} is {result.State}, completed at {result.FinalDate}.");
+        }
+
+        private static async Task CancelMessage(SmppClient client, string id, int index)
+        {
+            var toNumber = index.ToString("0000000000");
+            Console.WriteLine($"Cancelling message {id}.");
+            await client.Cancel(id, FromNumber, toNumber);
+            Console.WriteLine($"Cancelled message {id}.");
         }
     }
 }
