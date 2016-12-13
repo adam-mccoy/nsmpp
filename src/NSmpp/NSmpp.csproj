@@ -56,8 +56,13 @@
     <Compile Include="Pdu\BindReceiverResponse.cs" />
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
+    <Compile Include="Pdu\Deliver.cs" />
     <Compile Include="Pdu\GenericNack.cs" />
+    <Compile Include="Pdu\MessageType.cs" />
+    <Compile Include="Pdu\MessagingMode.cs" />
+    <Compile Include="Pdu\NetworkSpecificFeatures.cs" />
     <Compile Include="Pdu\PduBase.cs" />
+    <Compile Include="Pdu\PriorityFlag.cs" />
     <Compile Include="Pdu\Query.cs" />
     <Compile Include="Pdu\QueryResponse.cs" />
     <Compile Include="Pdu\ResponsePduBase.cs" />
