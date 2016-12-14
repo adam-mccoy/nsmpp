@@ -120,6 +120,30 @@ namespace NSmpp.Serialization
             return bytes;
         }
 
+        internal Address ReadAddress()
+        {
+            var result = ReadAddress(_buffer, _position);
+            _position += result == null ? 3 : result.Value.Length + 3;
+            return result;
+        }
+
+        internal static Address ReadAddress(byte[] buffer, int position)
+        {
+            var ton = (TypeOfNumber)ReadByte(buffer, position++);
+            var npi = (NumericPlanIndicator)ReadByte(buffer, position++);
+            var value = ReadString(buffer, position);
+
+            if (value == null)
+                return null;
+            return new Address(ton, npi, value);
+        }
+
+        internal void Skip(int numBytes)
+        {
+            EnsureSize(_buffer, _position, numBytes);
+            _position += numBytes;
+        }
+
         private static void EnsureSize(byte[] buffer, int position, int size)
         {
             if (buffer.Length - position < size)

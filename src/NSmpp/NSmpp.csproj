@@ -44,6 +44,7 @@
     <Compile Include="Extensions\SocketExtensions.cs" />
     <Compile Include="Helpers\AsyncHelper.cs" />
     <Compile Include="Helpers\BindHelper.cs" />
+    <Compile Include="Helpers\PduHelper.cs" />
     <Compile Include="IPduReceivedHandler.cs" />
     <Compile Include="MessageState.cs" />
     <Compile Include="NumericPlanIndicator.cs" />

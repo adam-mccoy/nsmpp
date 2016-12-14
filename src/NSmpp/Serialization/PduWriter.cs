@@ -8,6 +8,8 @@ namespace NSmpp.Serialization
     {
         const int DefaultBufferSize = 200;
 
+        private static byte[] EmptyAddress = new byte[] { 0x00, 0x00, 0x00 };
+
         private byte[] _buffer;
         private int _position = 0;
 
@@ -109,6 +111,20 @@ namespace NSmpp.Serialization
             offsetString += timeValue.Offset.Ticks < 0 ? "-" : "+";
 
             WriteString(timeString + offsetString);
+        }
+
+        internal void WriteAddress(Address address)
+        {
+            if (address == null)
+            {
+                WriteBytes(EmptyAddress);
+            }
+            else
+            {
+                WriteByte((byte)address.Ton);
+                WriteByte((byte)address.Npi);
+                WriteString(address.Value);
+            }
         }
 
         private void EnsureSize(int size)
