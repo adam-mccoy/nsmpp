@@ -58,6 +58,7 @@
     <Compile Include="Pdu\BindTransmitterResponse.cs" />
     <Compile Include="BindType.cs" />
     <Compile Include="Pdu\Deliver.cs" />
+    <Compile Include="Pdu\DeliverResponse.cs" />
     <Compile Include="Pdu\GenericNack.cs" />
     <Compile Include="Pdu\MessageType.cs" />
     <Compile Include="Pdu\MessagingMode.cs" />
