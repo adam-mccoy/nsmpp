@@ -19,7 +19,9 @@ namespace NSmpp.Serialization
             [SmppCommand.Submit] = new SubmitSerializer(),
             [SmppCommand.SubmitResp] = new SubmitResponseSerializer(),
             [SmppCommand.Query] = new QuerySerializer(),
-            [SmppCommand.QueryResp] = new QueryResponseSerializer()
+            [SmppCommand.QueryResp] = new QueryResponseSerializer(),
+            [SmppCommand.Deliver] = new DeliverSerializer(),
+            [SmppCommand.DeliverResp] = new DeliverResponseSerializer()
         };
 
         internal static IPduSerializer Create(SmppCommand command)
