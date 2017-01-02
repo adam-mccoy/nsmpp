@@ -15,9 +15,9 @@ namespace TestClient
             {
                 using (var client = new SmppClient())
                 {
-
-                    client.Connect("localhost", 2775).Wait();
-                    client.Bind(BindType.Transmitter, "smppclient1", "password").Wait();
+                    client.DeliverReceived += Client_DeliverReceived;
+                    client.Connect("localhost", 2775).GetAwaiter().GetResult();
+                    client.Bind(BindType.Transceiver, "smppclient1", "password").GetAwaiter().GetResult();
                     Console.WriteLine("Session bound. Press ENTER to start sending.");
                     Console.ReadKey();
 
@@ -38,6 +38,11 @@ namespace TestClient
                 Console.WriteLine("Ruh Roh!");
                 Console.WriteLine(ex);
             }
+        }
+
+        private static void Client_DeliverReceived(object sender, DeliverReceivedEventArgs e)
+        {
+            Console.WriteLine("Deliver received - Message = {0}", e.ShortMessage);
         }
 
         public static async Task<string> SendMessage(SmppClient client, int i)
