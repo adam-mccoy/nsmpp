@@ -35,6 +35,11 @@ namespace NSmpp
                 return (Task<T>)result;
             }
 
+            internal void SetResult()
+            {
+                _setResult.DynamicInvoke(false);
+            }
+
             internal void SetResult(object result)
             {
                 VerifyType(result.GetType());

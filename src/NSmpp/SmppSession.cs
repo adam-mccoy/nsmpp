@@ -117,6 +117,17 @@ namespace NSmpp
             return task.GetTask<QueryResult>();
         }
 
+        internal Task Cancel(string messageId, Address source, Address destination)
+        {
+            EnsureCanTransmit();
+            var sequence = GetNextSequenceNumber();
+            var task = _taskRegistry.Register(sequence);
+            var pdu = new Cancel(sequence, null, messageId, source, destination);
+
+            _pduSender.Enqueue(pdu);
+            return task.GetTask();
+        }
+
         private void EnsureBound()
         {
             if (!_state.IsBound())
@@ -259,6 +270,23 @@ namespace NSmpp
             {
                 var result = new QueryResult(pdu.MessageId, pdu.FinalDate, pdu.MessageState, pdu.ErrorCode);
                 task.SetResult(result);
+            }
+        }
+
+        void IPduReceivedHandler.HandlePdu(CancelResponse pdu)
+        {
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
+                return;
+
+            if (pdu.Status != SmppStatus.Ok)
+            {
+                var exception = new Exception("The cancel operation failed with the error: " + pdu.Status);
+                task.SetException(exception);
+            }
+            else
+            {
+                task.SetResult();
             }
         }
 
