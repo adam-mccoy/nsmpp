@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="BindResult.cs" />
+    <Compile Include="DeliverReceivedEventArgs.cs" />
     <Compile Include="Extensions\SocketExtensions.cs" />
     <Compile Include="Helpers\AsyncHelper.cs" />
     <Compile Include="Helpers\BindHelper.cs" />

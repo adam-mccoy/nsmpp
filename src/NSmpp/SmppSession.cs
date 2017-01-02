@@ -19,6 +19,8 @@ namespace NSmpp
         private Task _receiverTask;
         private Task _senderTask;
 
+        internal event EventHandler<DeliverReceivedEventArgs> DeliverReceived;
+
         public void Dispose()
         {
             Dispose(true);
@@ -262,6 +264,14 @@ namespace NSmpp
             }
         }
 
+        void IPduReceivedHandler.HandlePdu(Deliver pdu)
+        {
+            OnDeliverReceived(pdu.Source, pdu.Destination, pdu.ShortMessage);
+
+            var response = new DeliverResponse(SmppStatus.Ok, pdu.SequenceNumber);
+            _pduSender.Enqueue(response);
+        }
+
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
         }
@@ -269,6 +279,11 @@ namespace NSmpp
         private uint GetNextSequenceNumber()
         {
             return (uint)Interlocked.Increment(ref _sequenceNumber);
+        }
+
+        private void OnDeliverReceived(Address source, Address destination, string message)
+        {
+            DeliverReceived?.Invoke(this, new DeliverReceivedEventArgs(source, destination, message));
         }
     }
 }
