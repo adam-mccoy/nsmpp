@@ -60,6 +60,8 @@
     <Compile Include="BindType.cs" />
     <Compile Include="Pdu\Deliver.cs" />
     <Compile Include="Pdu\DeliverResponse.cs" />
+    <Compile Include="Pdu\Cancel.cs" />
+    <Compile Include="Pdu\CancelResponse.cs" />
     <Compile Include="Pdu\GenericNack.cs" />
     <Compile Include="Pdu\MessageType.cs" />
     <Compile Include="Pdu\MessagingMode.cs" />
@@ -79,6 +81,8 @@
     <Compile Include="QueryResult.cs" />
     <Compile Include="Serialization\DeliverResponseSerializer.cs" />
     <Compile Include="Serialization\DeliverSerializer.cs" />
+    <Compile Include="Serialization\CancelResponseSerializer.cs" />
+    <Compile Include="Serialization\CancelSerializer.cs" />
     <Compile Include="Serialization\GenericNackSerializer.cs" />
     <Compile Include="Serialization\QueryResponseSerializer.cs" />
     <Compile Include="Serialization\QuerySerializer.cs" />

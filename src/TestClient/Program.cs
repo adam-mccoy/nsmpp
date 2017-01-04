@@ -27,10 +27,12 @@ namespace TestClient
                     Console.ReadKey();
 
                     var queryTasks = ids.Select(i => QueryMessage(client, i));
-                    Task.WhenAll(queryTasks).Wait();
+                    Task.WhenAll(queryTasks).GetAwaiter().GetResult();
+                    Console.WriteLine("Querying complete. Press ENTER to start cancellations.");
+                    Console.ReadKey();
 
-                    Console.WriteLine("Done. Press ENTER to quit.");
-                    Console.ReadKey(true);
+                    var cancelTasks = ids.Select((id, i)  => CancelMessage(client, id, i));
+                    Task.WhenAll(cancelTasks).GetAwaiter().GetResult();
                 }
             }
             catch (Exception ex)
@@ -38,6 +40,8 @@ namespace TestClient
                 Console.WriteLine("Ruh Roh!");
                 Console.WriteLine(ex);
             }
+            Console.WriteLine("Done. Press ENTER to quit.");
+            Console.ReadKey(true);
         }
 
         private static void Client_DeliverReceived(object sender, DeliverReceivedEventArgs e)
@@ -59,7 +63,15 @@ namespace TestClient
         {
             Console.WriteLine($"Querying message {id}.");
             var result = await client.Query(id, FromNumber);
-            Console.WriteLine($"Status for message {id} is {result.State}.");
+            Console.WriteLine($"Status for message {id} is {result.State}, completed at {result.FinalDate}.");
+        }
+
+        private static async Task CancelMessage(SmppClient client, string id, int index)
+        {
+            var toNumber = index.ToString("0000000000");
+            Console.WriteLine($"Cancelling message {id}.");
+            await client.Cancel(id, FromNumber, toNumber);
+            Console.WriteLine($"Cancelled message {id}.");
         }
     }
 }

@@ -15,6 +15,8 @@
         DeliverResp         = 0x80000005,
         Unbind              = 0x00000006,
         UnbindResp          = 0x80000006,
+        Cancel              = 0x00000008,
+        CancelResp          = 0x80000008,
         BindTransceiver     = 0x00000009,
         BindTransceiverResp = 0x80000009
     }
