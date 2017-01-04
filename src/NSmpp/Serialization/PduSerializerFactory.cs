@@ -20,6 +20,8 @@ namespace NSmpp.Serialization
             [SmppCommand.SubmitResp] = new SubmitResponseSerializer(),
             [SmppCommand.Query] = new QuerySerializer(),
             [SmppCommand.QueryResp] = new QueryResponseSerializer(),
+            [SmppCommand.Deliver] = new DeliverSerializer(),
+            [SmppCommand.DeliverResp] = new DeliverResponseSerializer(),
             [SmppCommand.Cancel] = new CancelSerializer(),
             [SmppCommand.CancelResp] = new CancelResponseSerializer()
         };

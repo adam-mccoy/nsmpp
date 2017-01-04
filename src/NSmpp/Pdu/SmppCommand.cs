@@ -11,6 +11,8 @@
         QueryResp           = 0x80000003,
         Submit              = 0x00000004,
         SubmitResp          = 0x80000004,
+        Deliver             = 0x00000005,
+        DeliverResp         = 0x80000005,
         Unbind              = 0x00000006,
         UnbindResp          = 0x80000006,
         Cancel              = 0x00000008,

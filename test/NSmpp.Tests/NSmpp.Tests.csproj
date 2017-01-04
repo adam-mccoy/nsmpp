@@ -53,6 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeliverResponseSerializerTests.cs" />
+    <Compile Include="DeliverSerializerTests.cs" />
     <Compile Include="CancelSerializerTests.cs" />
     <Compile Include="CancelResponseSerializerTests.cs" />
     <Compile Include="GenericNackSerializerTests.cs" />

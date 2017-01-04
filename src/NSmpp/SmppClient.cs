@@ -7,6 +7,8 @@ namespace NSmpp
 {
     public class SmppClient : IDisposable
     {
+        public event EventHandler<DeliverReceivedEventArgs> DeliverReceived;
+
         private SmppSession _currentSession = null;
 
         public async Task Connect(string host, int port)
@@ -16,6 +18,7 @@ namespace NSmpp
 
             var stream = new NetworkStream(socket, true);
             _currentSession = new SmppSession(stream, stream);
+            _currentSession.DeliverReceived += Session_DeliverReceived;
         }
 
         public Task<BindResult> Bind(BindType type, string systemId, string password)
@@ -51,6 +54,16 @@ namespace NSmpp
                 _currentSession.Dispose();
                 _currentSession = null;
             }
+        }
+
+        private void Session_DeliverReceived(object sender, DeliverReceivedEventArgs e)
+        {
+            OnDeliverReceived(e);
+        }
+
+        private void OnDeliverReceived(DeliverReceivedEventArgs e)
+        {
+            DeliverReceived?.Invoke(this, e);
         }
     }
 }
