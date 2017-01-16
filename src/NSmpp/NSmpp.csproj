@@ -63,6 +63,7 @@
     <Compile Include="Pdu\Cancel.cs" />
     <Compile Include="Pdu\CancelResponse.cs" />
     <Compile Include="Pdu\EnquireLink.cs" />
+    <Compile Include="Pdu\EnquireLinkResponse.cs" />
     <Compile Include="Pdu\GenericNack.cs" />
     <Compile Include="Pdu\MessageType.cs" />
     <Compile Include="Pdu\MessagingMode.cs" />
