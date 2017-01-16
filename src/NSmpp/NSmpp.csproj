@@ -84,6 +84,7 @@
     <Compile Include="Serialization\DeliverSerializer.cs" />
     <Compile Include="Serialization\CancelResponseSerializer.cs" />
     <Compile Include="Serialization\CancelSerializer.cs" />
+    <Compile Include="Serialization\EnquireLinkSerializer.cs" />
     <Compile Include="Serialization\GenericNackSerializer.cs" />
     <Compile Include="Serialization\QueryResponseSerializer.cs" />
     <Compile Include="Serialization\QuerySerializer.cs" />
