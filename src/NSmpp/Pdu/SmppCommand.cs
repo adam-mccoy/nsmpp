@@ -18,6 +18,8 @@
         Cancel              = 0x00000008,
         CancelResp          = 0x80000008,
         BindTransceiver     = 0x00000009,
-        BindTransceiverResp = 0x80000009
+        BindTransceiverResp = 0x80000009,
+        EnquireLink         = 0x00000015,
+        EnquireLinkResp     = 0x80000015
     }
 }
