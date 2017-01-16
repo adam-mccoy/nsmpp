@@ -1,5 +1,4 @@
-﻿using System;
-using NSmpp.Pdu;
+﻿using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -7,12 +6,20 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(EnquireLinkResponse pdu)
         {
-            throw new NotImplementedException();
+            var writer = new PduWriter(16);
+            writer.WritePduHeader(pdu);
+
+            return Finalize(writer);
         }
 
         internal override EnquireLinkResponse Deserialize(byte[] bytes)
         {
-            throw new NotImplementedException();
+            var reader = new PduReader(bytes);
+            reader.Skip(8); // skip length and command id
+            var status = (SmppStatus)reader.ReadInteger();
+            var sequence = (uint)reader.ReadInteger();
+
+            return new EnquireLinkResponse(status, sequence);
         }
     }
 }
