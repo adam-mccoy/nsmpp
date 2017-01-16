@@ -6,12 +6,19 @@ namespace NSmpp.Serialization
     {
         internal override byte[] Serialize(EnquireLink pdu)
         {
-            throw new NotImplementedException();
+            var writer = new PduWriter();
+            writer.WritePduHeader(pdu);
+
+            return Finalize(writer);
         }
 
         internal override EnquireLink Deserialize(byte[] bytes)
         {
-            throw new NotImplementedException();
+            var reader = new PduReader(bytes);
+            reader.Skip(12);
+            var sequence = (uint)reader.ReadInteger();
+
+            return new EnquireLink(sequence);
         }
     }
 }
