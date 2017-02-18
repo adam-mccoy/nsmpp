@@ -300,6 +300,12 @@ namespace NSmpp
             }
         }
 
+        void IPduReceivedHandler.HandlePdu(EnquireLink pdu)
+        {
+            var response = new EnquireLinkResponse(SmppStatus.Ok, pdu.SequenceNumber);
+            _pduSender.Enqueue(response);
+        }
+
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
         }
