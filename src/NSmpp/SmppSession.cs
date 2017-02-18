@@ -306,6 +306,15 @@ namespace NSmpp
             _pduSender.Enqueue(response);
         }
 
+        void IPduReceivedHandler.HandlePdu(EnquireLinkResponse pdu)
+        {
+            var task = _taskRegistry.Unregister(pdu.SequenceNumber);
+            if (task == null)
+                return;
+
+            task.SetResult();
+        }
+
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
         }
