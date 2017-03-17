@@ -41,6 +41,11 @@ namespace NSmpp
             return _currentSession.Cancel(messageId, source, destination);
         }
 
+        public Task EnquireLink()
+        {
+            return _currentSession.EnquireLink();
+        }
+
         public void Dispose()
         {
             Dispose(true);

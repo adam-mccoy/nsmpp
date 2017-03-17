@@ -130,6 +130,17 @@ namespace NSmpp
             return task.GetTask();
         }
 
+        internal Task EnquireLink()
+        {
+            EnsureBound();
+            var sequence = GetNextSequenceNumber();
+            var task = _taskRegistry.Register(sequence);
+            var pdu = new EnquireLink(sequence);
+
+            _pduSender.Enqueue(pdu);
+            return task.GetTask();
+        }
+
         private void EnsureBound()
         {
             if (!_state.IsBound())
