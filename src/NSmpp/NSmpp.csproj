@@ -79,6 +79,7 @@
     <Compile Include="Pdu\SubmitResponse.cs" />
     <Compile Include="Pdu\Unbind.cs" />
     <Compile Include="Pdu\UnbindResponse.cs" />
+    <Compile Include="PeriodicCaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryResult.cs" />
     <Compile Include="Serialization\DeliverResponseSerializer.cs" />

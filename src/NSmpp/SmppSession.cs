@@ -19,6 +19,8 @@ namespace NSmpp
         private Task _receiverTask;
         private Task _senderTask;
 
+        private PeriodicCaller _enquireLinkRunner;
+
         internal event EventHandler<DeliverReceivedEventArgs> DeliverReceived;
 
         public void Dispose()
@@ -46,10 +48,35 @@ namespace NSmpp
             get { return _state; }
         }
 
+        internal TimeSpan EnquireLinkFrequency
+        {
+            get
+            {
+                return _enquireLinkRunner?.Delay ?? Timeout.InfiniteTimeSpan;
+            }
+            set
+            {
+                if (value == Timeout.InfiniteTimeSpan)
+                {
+                    _enquireLinkRunner?.Stop();
+                    _enquireLinkRunner = null;
+                }
+                else
+                {
+                    _enquireLinkRunner = new PeriodicCaller(value, async () => await EnquireLink());
+                    if (SessionState.IsBound())
+                        _enquireLinkRunner.Reset();
+                }
+
+            }
+        }
+
         internal void Close()
         {
             if (_state != SessionState.Open && _state != SessionState.Closed)
                 AsyncHelper.RunSync(Unbind);
+            _enquireLinkRunner?.Stop();
+            _pduSender.Stop();
             _pduReceiver.Stop();
         }
 
@@ -67,6 +94,7 @@ namespace NSmpp
             var task = _taskRegistry.Register<BindResult>(sequence);
 
             _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
             return task.GetTask<BindResult>();
         }
 
@@ -84,6 +112,7 @@ namespace NSmpp
             var pdu = new Unbind(sequence);
 
             _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
             return task.GetTask();
         }
 
@@ -105,6 +134,7 @@ namespace NSmpp
                 message);
 
             _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
             return task.GetTask<SubmitResult>();
         }
 
@@ -116,6 +146,7 @@ namespace NSmpp
             var pdu = new Query(sequence, messageId, source);
 
             _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
             return task.GetTask<QueryResult>();
         }
 
@@ -127,6 +158,7 @@ namespace NSmpp
             var pdu = new Cancel(sequence, null, messageId, source, destination);
 
             _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
             return task.GetTask();
         }
 
@@ -138,6 +170,7 @@ namespace NSmpp
             var pdu = new EnquireLink(sequence);
 
             _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
             return task.GetTask();
         }
 
@@ -158,11 +191,13 @@ namespace NSmpp
             if (disposing)
             {
                 Close();
+                _enquireLinkRunner?.Dispose();
             }
         }
 
         void IPduReceivedHandler.HandlePdu(GenericNack pdu)
         {
+            _enquireLinkRunner?.Reset();
             var task = _taskRegistry.Unregister(pdu.SequenceNumber);
             if (task == null)
                 return;
@@ -184,6 +219,7 @@ namespace NSmpp
             }
             else
             {
+                _enquireLinkRunner?.Reset();
                 _state = SessionState.BoundReceiver;
                 task.SetResult(new BindResult(pdu.SystemId));
             }
@@ -202,6 +238,7 @@ namespace NSmpp
             }
             else
             {
+                _enquireLinkRunner?.Reset();
                 _state = SessionState.BoundTransmitter;
                 task.SetResult(new BindResult(pdu.SystemId));
             }
@@ -221,6 +258,7 @@ namespace NSmpp
             else
             {
                 _state = SessionState.BoundTransceiver;
+                _enquireLinkRunner?.Reset();
                 task.SetResult(new BindResult(pdu.SystemId));
             }
         }
@@ -230,6 +268,7 @@ namespace NSmpp
             var response = new UnbindResponse(SmppStatus.Ok, pdu.SequenceNumber);
             _pduSender.Enqueue(response);
             // TODO: cancel outstanding tasks
+            _enquireLinkRunner?.Stop();
             _state = SessionState.Open;
         }
 
@@ -246,6 +285,7 @@ namespace NSmpp
             }
             else
             {
+                _enquireLinkRunner?.Stop();
                 _state = SessionState.Open;
                 task.SetResult(true);
             }
@@ -253,6 +293,7 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(SubmitResponse pdu)
         {
+            _enquireLinkRunner?.Reset();
             var task = _taskRegistry.Unregister(pdu.SequenceNumber);
             if (task == null)
                 return;
@@ -270,6 +311,7 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(QueryResponse pdu)
         {
+            _enquireLinkRunner?.Reset();
             var task = _taskRegistry.Unregister(pdu.SequenceNumber);
             if (task == null)
                 return;
@@ -288,6 +330,7 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(Deliver pdu)
         {
+            _enquireLinkRunner?.Reset();
             OnDeliverReceived(pdu.Source, pdu.Destination, pdu.ShortMessage);
 
             var response = new DeliverResponse(SmppStatus.Ok, pdu.SequenceNumber);
@@ -296,6 +339,7 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(CancelResponse pdu)
         {
+            _enquireLinkRunner?.Reset();
             var task = _taskRegistry.Unregister(pdu.SequenceNumber);
             if (task == null)
                 return;
@@ -313,12 +357,14 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(EnquireLink pdu)
         {
+            _enquireLinkRunner?.Reset();
             var response = new EnquireLinkResponse(SmppStatus.Ok, pdu.SequenceNumber);
             _pduSender.Enqueue(response);
         }
 
         void IPduReceivedHandler.HandlePdu(EnquireLinkResponse pdu)
         {
+            _enquireLinkRunner?.Reset();
             var task = _taskRegistry.Unregister(pdu.SequenceNumber);
             if (task == null)
                 return;
