@@ -11,6 +11,20 @@ namespace NSmpp
 
         private SmppSession _currentSession = null;
 
+        public TimeSpan EnquireLinkFrequency
+        {
+            get
+            {
+                EnsureSession();
+                return _currentSession.EnquireLinkFrequency;
+            }
+            set
+            {
+                EnsureSession();
+                _currentSession.EnquireLinkFrequency = value;
+            }
+        }
+
         public async Task Connect(string host, int port)
         {
             var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
@@ -41,6 +55,11 @@ namespace NSmpp
             return _currentSession.Cancel(messageId, source, destination);
         }
 
+        public Task EnquireLink()
+        {
+            return _currentSession.EnquireLink();
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -51,9 +70,18 @@ namespace NSmpp
         {
             if (disposing)
             {
-                _currentSession.Dispose();
-                _currentSession = null;
+                if (_currentSession != null)
+                {
+                    _currentSession.Dispose();
+                    _currentSession = null;
+                }
             }
+        }
+
+        private void EnsureSession()
+        {
+            if (_currentSession == null)
+                throw new InvalidOperationException("Client is not connected.");
         }
 
         private void Session_DeliverReceived(object sender, DeliverReceivedEventArgs e)

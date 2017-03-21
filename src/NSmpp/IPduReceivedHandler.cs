@@ -14,6 +14,8 @@ namespace NSmpp
         void HandlePdu(QueryResponse pdu);
         void HandlePdu(Deliver pdu);
         void HandlePdu(CancelResponse pdu);
+        void HandlePdu(EnquireLink pdu);
+        void HandlePdu(EnquireLinkResponse pdu);
 
         void HandleError(byte[] buffer, string error);
     }

@@ -57,6 +57,8 @@
     <Compile Include="DeliverSerializerTests.cs" />
     <Compile Include="CancelSerializerTests.cs" />
     <Compile Include="CancelResponseSerializerTests.cs" />
+    <Compile Include="EnquireLinkResponseSerializerTests.cs" />
+    <Compile Include="EnquireLinkSerializerTests.cs" />
     <Compile Include="GenericNackSerializerTests.cs" />
     <Compile Include="QueryResponseSerializerTests.cs" />
     <Compile Include="QuerySerializerTests.cs" />
