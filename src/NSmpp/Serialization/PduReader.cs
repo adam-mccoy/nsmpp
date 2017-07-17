@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -136,6 +137,23 @@ namespace NSmpp.Serialization
             if (value == null)
                 return null;
             return new Address(ton, npi, value);
+        }
+
+        internal SmppHeader ReadHeader()
+        {
+            var result = ReadHeader(_buffer, _position);
+            _position += 16;
+            return result;
+        }
+
+        internal static SmppHeader ReadHeader(byte[] buffer, int position)
+        {
+            var length = ReadInteger(buffer, position);
+            var command = (SmppCommand)ReadInteger(buffer, position + 4);
+            var status = (SmppStatus)ReadInteger(buffer, position + 8);
+            var sequence = (uint)ReadInteger(buffer, position + 12);
+
+            return new SmppHeader(length, command, status, sequence);
         }
 
         internal void Skip(int numBytes)

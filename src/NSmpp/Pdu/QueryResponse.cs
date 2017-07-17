@@ -4,6 +4,11 @@ namespace NSmpp.Pdu
 {
     internal class QueryResponse : ResponsePduBase
     {
+        public QueryResponse(SmppStatus status, uint sequenceNumber)
+            : base(status, sequenceNumber)
+        {
+        }
+
         public QueryResponse(
             SmppStatus status,
             uint sequenceNumber,

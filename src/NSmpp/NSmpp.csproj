@@ -74,6 +74,7 @@
     <Compile Include="Pdu\QueryResponse.cs" />
     <Compile Include="Pdu\ResponsePduBase.cs" />
     <Compile Include="Pdu\SmppCommand.cs" />
+    <Compile Include="Pdu\SmppHeader.cs" />
     <Compile Include="Pdu\SmppStatus.cs" />
     <Compile Include="Pdu\Submit.cs" />
     <Compile Include="Pdu\SubmitResponse.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Serialization\EnquireLinkResponseSerializer.cs" />
     <Compile Include="Serialization\EnquireLinkSerializer.cs" />
     <Compile Include="Serialization\GenericNackSerializer.cs" />
+    <Compile Include="Serialization\PduSerializationException.cs" />
     <Compile Include="Serialization\QueryResponseSerializer.cs" />
     <Compile Include="Serialization\QuerySerializer.cs" />
     <Compile Include="Serialization\SubmitResponseSerializer.cs" />
