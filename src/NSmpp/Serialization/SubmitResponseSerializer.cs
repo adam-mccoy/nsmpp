@@ -1,4 +1,5 @@
-﻿using NSmpp.Pdu;
+﻿using System;
+using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -19,15 +20,22 @@ namespace NSmpp.Serialization
 
         internal override SubmitResponse Deserialize(byte[] bytes)
         {
-            var reader = new PduReader(bytes);
-            var length = reader.ReadInteger();
-            var command = (SmppCommand)reader.ReadInteger();
-            var status = (SmppStatus)reader.ReadInteger();
-            var sequence = (uint)reader.ReadInteger();
+            try
+            {
+                var reader = new PduReader(bytes);
+                var header = reader.ReadHeader();
 
-            var messageId = status == SmppStatus.Ok ? reader.ReadString() : null;
+                if (header.Status != SmppStatus.Ok)
+                    return new SubmitResponse(header.Status, header.Sequence);
 
-            return new SubmitResponse(status, sequence, messageId);
+                var messageId = reader.ReadString();
+
+                return new SubmitResponse(header.Status, header.Sequence, messageId);
+            }
+            catch (Exception ex)
+            {
+                throw new PduSerializationException(ex);
+            }
         }
     }
 }
