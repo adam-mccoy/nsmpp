@@ -49,12 +49,12 @@ namespace NSmpp.Tests
             Assert.AreEqual(SmppCommand.Submit, pdu.Command);
             Assert.AreEqual(16, pdu.SequenceNumber);
             Assert.IsNull(pdu.ServiceType);
-            Assert.AreEqual(TypeOfNumber.National, pdu.SourceTon);
-            Assert.AreEqual(NumericPlanIndicator.National, pdu.SourceNpi);
-            Assert.AreEqual("1234567890", pdu.SourceAddress);
-            Assert.AreEqual(TypeOfNumber.NetworkSpecific, pdu.DestTon);
-            Assert.AreEqual(NumericPlanIndicator.Internet, pdu.DestNpi);
-            Assert.AreEqual("9876543210", pdu.DestAddress);
+            Assert.AreEqual(TypeOfNumber.National, pdu.Source.Ton);
+            Assert.AreEqual(NumericPlanIndicator.National, pdu.Source.Npi);
+            Assert.AreEqual("1234567890", pdu.Source.Value);
+            Assert.AreEqual(TypeOfNumber.NetworkSpecific, pdu.Destination.Ton);
+            Assert.AreEqual(NumericPlanIndicator.Internet, pdu.Destination.Npi);
+            Assert.AreEqual("9876543210", pdu.Destination.Value);
             Assert.AreEqual(0, pdu.EsmClass);
             Assert.AreEqual("This is a test message.", pdu.ShortMessage);
         }
@@ -97,12 +97,8 @@ namespace NSmpp.Tests
             var pdu = new Submit(
                 16,
                 null,
-                TypeOfNumber.National,
-                NumericPlanIndicator.National,
-                "1234567890",
-                TypeOfNumber.NetworkSpecific,
-                NumericPlanIndicator.Internet,
-                "9876543210",
+                new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
+                new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
                 0, 0, 0,
                 "This is a test message.");
 

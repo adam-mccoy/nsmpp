@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Text;
 using NSmpp.Pdu;
-using System.Text;
 
 namespace NSmpp.Serialization
 {
@@ -11,12 +10,12 @@ namespace NSmpp.Serialization
             var writer = new PduWriter();
             writer.WritePduHeader(pdu);
             writer.WriteString(pdu.ServiceType);
-            writer.WriteByte((byte)pdu.SourceTon);
-            writer.WriteByte((byte)pdu.SourceNpi);
-            writer.WriteString(pdu.SourceAddress);
-            writer.WriteByte((byte)pdu.DestTon);
-            writer.WriteByte((byte)pdu.DestNpi);
-            writer.WriteString(pdu.DestAddress);
+            writer.WriteByte((byte)pdu.Source.Ton);
+            writer.WriteByte((byte)pdu.Source.Npi);
+            writer.WriteString(pdu.Source.Value);
+            writer.WriteByte((byte)pdu.Destination.Ton);
+            writer.WriteByte((byte)pdu.Destination.Npi);
+            writer.WriteString(pdu.Destination.Value);
             writer.WriteByte((byte)pdu.EsmClass);
             writer.WriteByte((byte)pdu.ProtocolId);
             writer.WriteByte((byte)pdu.PriorityFlag);
@@ -42,10 +41,10 @@ namespace NSmpp.Serialization
             var serviceType = reader.ReadString();
             var sourceTon = (TypeOfNumber)reader.ReadByte();
             var sourceNpi = (NumericPlanIndicator)reader.ReadByte();
-            var sourceAddress = reader.ReadString();
+            var sourceValue = reader.ReadString();
             var destTon = (TypeOfNumber)reader.ReadByte();
             var destNpi = (NumericPlanIndicator)reader.ReadByte();
-            var destAddress = reader.ReadString();
+            var destValue = reader.ReadString();
             var esmClass = reader.ReadByte();
             var protocolId = reader.ReadByte();
             var priorityFlag = reader.ReadByte();
@@ -56,12 +55,8 @@ namespace NSmpp.Serialization
             return new Submit(
                 sequence,
                 serviceType,
-                sourceTon,
-                sourceNpi,
-                sourceAddress,
-                destTon,
-                destNpi,
-                destAddress,
+                new Address(sourceTon, sourceNpi, sourceValue),
+                new Address(destTon, destNpi, destValue),
                 esmClass,
                 protocolId,
                 priorityFlag,

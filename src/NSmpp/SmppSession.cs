@@ -124,11 +124,7 @@ namespace NSmpp
             var pdu = new Submit(
                 sequence,
                 null,
-                TypeOfNumber.Unknown,
-                NumericPlanIndicator.Unknown,
                 source,
-                TypeOfNumber.Unknown,
-                NumericPlanIndicator.Unknown,
                 dest,
                 0, 0, 0,
                 message);
