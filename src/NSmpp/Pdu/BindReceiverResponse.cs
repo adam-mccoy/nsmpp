@@ -9,6 +9,11 @@
 
         public string SystemId { get; private set; }
 
+        public BindReceiverResponse(SmppStatus status, uint sequenceNumber)
+            : base(status, sequenceNumber)
+        {
+        }
+
         public BindReceiverResponse(
             SmppStatus status,
             uint sequenceNumber,

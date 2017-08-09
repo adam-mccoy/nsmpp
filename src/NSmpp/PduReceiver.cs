@@ -100,6 +100,10 @@ namespace NSmpp
                 var pdu = serializer.Deserialize(pduBuffer);
                 _handler.HandlePdu((dynamic)pdu);
             }
+            catch (PduSerializationException ex)
+            {
+                _handler.HandleError(pduBuffer, ex.ToString());
+            }
             catch (ArgumentException ex)
             {
                 _handler.HandleError(pduBuffer, ex.Message);

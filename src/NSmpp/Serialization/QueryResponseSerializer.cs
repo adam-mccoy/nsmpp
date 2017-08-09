@@ -1,4 +1,5 @@
-﻿using NSmpp.Pdu;
+﻿using System;
+using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -8,34 +9,45 @@ namespace NSmpp.Serialization
         {
             var writer = new PduWriter();
             writer.WritePduHeader(pdu);
-            writer.WriteString(pdu.MessageId);
-            writer.WriteAbsoluteTime(pdu.FinalDate);
-            writer.WriteByte((byte)pdu.MessageState);
-            writer.WriteByte((byte)pdu.ErrorCode);
+
+            if (pdu.Status == SmppStatus.Ok)
+            {
+                writer.WriteString(pdu.MessageId);
+                writer.WriteAbsoluteTime(pdu.FinalDate);
+                writer.WriteByte((byte)pdu.MessageState);
+                writer.WriteByte((byte)pdu.ErrorCode);
+            }
 
             return Finalize(writer);
         }
 
         internal override QueryResponse Deserialize(byte[] bytes)
         {
-            var reader = new PduReader(bytes);
-            var length = reader.ReadInteger();
-            var command = (SmppCommand)reader.ReadInteger();
-            var status = (SmppStatus)reader.ReadInteger();
-            var sequence = (uint)reader.ReadInteger();
-            var messageId = reader.ReadString();
-            // read date
-            var finalDate = reader.ReadAbsoluteTime();
-            var messageState = (MessageState)reader.ReadByte();
-            var errorCode = reader.ReadByte();
+            try
+            {
+                var reader = new PduReader(bytes);
+                var header = reader.ReadHeader();
 
-            return new QueryResponse(
-                status,
-                sequence,
-                messageId,
-                finalDate,
-                messageState,
-                errorCode);
+                if (header.Status != SmppStatus.Ok)
+                    return new QueryResponse(header.Status, header.Sequence);
+
+                var messageId = reader.ReadString();
+                var finalDate = reader.ReadAbsoluteTime();
+                var messageState = (MessageState)reader.ReadByte();
+                var errorCode = reader.ReadByte();
+
+                return new QueryResponse(
+                    header.Status,
+                    header.Sequence,
+                    messageId,
+                    finalDate,
+                    messageState,
+                    errorCode);
+            }
+            catch (Exception ex)
+            {
+                throw new PduSerializationException(ex);
+            }
         }
     }
 }

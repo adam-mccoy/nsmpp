@@ -1,4 +1,5 @@
-﻿using NSmpp.Pdu;
+﻿using System;
+using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -8,23 +9,30 @@ namespace NSmpp.Serialization
         {
             var writer = new PduWriter();
             writer.WritePduHeader(pdu);
-            writer.WriteString(pdu.SystemId);
 
-            var bytes = writer.GetBytes();
-            PduWriter.WriteInteger(bytes, 0, bytes.Length);
-            return bytes;
+            if (pdu.Status == SmppStatus.Ok)
+                writer.WriteString(pdu.SystemId);
+
+            return Finalize(writer);
         }
 
         internal override BindTransmitterResponse Deserialize(byte[] bytes)
         {
-            var reader = new PduReader(bytes);
-            var length = reader.ReadInteger();
-            var command = (SmppCommand)reader.ReadInteger();
-            var status = (SmppStatus)reader.ReadInteger();
-            var sequence = (uint)reader.ReadInteger();
-            var systemId = reader.ReadString();
+            try
+            {
+                var reader = new PduReader(bytes);
+                var header = reader.ReadHeader();
 
-            return new BindTransmitterResponse(status, sequence, systemId);
+                if (header.Status != SmppStatus.Ok)
+                    return new BindTransmitterResponse(header.Status, header.Sequence);
+
+                var systemId = reader.ReadString();
+                return new BindTransmitterResponse(header.Status, header.Sequence, systemId);
+            }
+            catch (Exception ex)
+            {
+                throw new PduSerializationException(ex);
+            }
         }
     }
 }

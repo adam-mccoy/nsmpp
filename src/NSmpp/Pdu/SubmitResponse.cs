@@ -2,6 +2,11 @@
 {
     internal class SubmitResponse : ResponsePduBase
     {
+        public SubmitResponse(SmppStatus status, uint sequenceNumber)
+            : base(status, sequenceNumber)
+        {
+        }
+
         public SubmitResponse(
             SmppStatus status,
             uint sequenceNumber,
