@@ -28,10 +28,12 @@ namespace NSmpp.Serialization
             var sourceNpi = (NumericPlanIndicator)reader.ReadByte();
             var sourceAddress = reader.ReadString();
 
-            return new Query(
-                sequence,
-                messageId,
-                new Address(sourceTon, sourceNpi, sourceAddress));
+            return new Query
+            {
+                SequenceNumber = sequence,
+                MessageId = messageId,
+                Source = new Address(sourceTon, sourceNpi, sourceAddress)
+            };
         }
     }
 }

@@ -18,7 +18,10 @@ namespace NSmpp.Serialization
             reader.Skip(12);
             var sequence = (uint)reader.ReadInteger();
 
-            return new EnquireLink(sequence);
+            return new EnquireLink
+            {
+                SequenceNumber = sequence
+            };
         }
     }
 }

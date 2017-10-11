@@ -51,6 +51,7 @@
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
     <Compile Include="BindOptions.cs" />
+    <Compile Include="Pdu\BindPduBase.cs" />
     <Compile Include="Pdu\BindTransceiverResponse.cs" />
     <Compile Include="Pdu\BindTransceiver.cs" />
     <Compile Include="Pdu\BindReceiver.cs" />

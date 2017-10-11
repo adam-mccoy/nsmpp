@@ -22,7 +22,10 @@ namespace NSmpp.Serialization
             reader.ReadInteger(); // skip status
             var sequence = (uint)reader.ReadInteger();
 
-            return new Unbind(sequence);
+            return new Unbind
+            {
+                SequenceNumber = sequence
+            };
         }
     }
 }

@@ -20,7 +20,11 @@ namespace NSmpp.Serialization
             var status = (SmppStatus)reader.ReadInteger();
             var sequence = (uint)reader.ReadInteger();
 
-            return new GenericNack(status, sequence);
+            return new GenericNack
+            {
+                SequenceNumber = sequence,
+                Status = status
+            };
         }
     }
 }

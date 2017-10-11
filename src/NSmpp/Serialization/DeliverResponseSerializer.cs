@@ -20,7 +20,11 @@ namespace NSmpp.Serialization
             var status = (SmppStatus)reader.ReadInteger();
             var sequence = (uint)reader.ReadInteger();
 
-            return new DeliverResponse(status, sequence);
+            return new DeliverResponse
+            {
+                SequenceNumber = sequence,
+                Status = status
+            };
         }
     }
 }

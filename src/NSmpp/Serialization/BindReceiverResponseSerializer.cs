@@ -24,12 +24,16 @@ namespace NSmpp.Serialization
                 var reader = new PduReader(bytes);
                 var header = reader.ReadHeader();
 
-                if (header.Status != SmppStatus.Ok)
-                    return new BindReceiverResponse(header.Status, header.Sequence);
+                var pdu = new BindReceiverResponse
+                {
+                    Status = header.Status,
+                    SequenceNumber = header.Sequence
+                };
 
-                var systemId = reader.ReadString();
+                if (header.Status == SmppStatus.Ok)
+                    pdu.SystemId = reader.ReadString();
 
-                return new BindReceiverResponse(header.Status, header.Sequence, systemId);
+                return pdu;
             }
             catch (Exception ex)
             {

@@ -109,7 +109,7 @@ namespace NSmpp
             EnsureBound();
             var sequence = GetNextSequenceNumber();
             var task = _taskRegistry.Register(sequence);
-            var pdu = new Unbind(sequence);
+            var pdu = new Unbind { SequenceNumber = sequence };
 
             _pduSender.Enqueue(pdu);
             _enquireLinkRunner?.Reset();
@@ -121,13 +121,17 @@ namespace NSmpp
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
             var task = _taskRegistry.Register<SubmitResult>(sequence);
-            var pdu = new Submit(
-                sequence,
-                null,
-                source,
-                dest,
-                0, 0, 0,
-                message);
+            var pdu = new Submit
+            {
+                SequenceNumber = seq,
+                ServiceType = null,
+                Source = source,
+                Destination = dest,
+                EsmClass = 0,
+                PriorityFlag = 0,
+                ProtocolId = 0,
+                ShortMessage = System.Text.Encoding.ASCII.GetBytes(message)
+            };
 
             _pduSender.Enqueue(pdu);
             _enquireLinkRunner?.Reset();
@@ -139,7 +143,12 @@ namespace NSmpp
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
             var task = _taskRegistry.Register<QueryResult>(sequence);
-            var pdu = new Query(sequence, messageId, source);
+            var pdu = new Query
+            {
+                SequenceNumber = seq,
+                MessageId = messageId,
+                Source = source
+            };
 
             _pduSender.Enqueue(pdu);
             _enquireLinkRunner?.Reset();
@@ -151,7 +160,14 @@ namespace NSmpp
             EnsureCanTransmit();
             var sequence = GetNextSequenceNumber();
             var task = _taskRegistry.Register(sequence);
-            var pdu = new Cancel(sequence, null, messageId, source, destination);
+            var pdu = new Cancel
+            {
+                SequenceNumber = seq,
+                ServiceType = null,
+                MessageId = messageId,
+                Source = source,
+                Destination = destination
+            };
 
             _pduSender.Enqueue(pdu);
             _enquireLinkRunner?.Reset();
@@ -163,7 +179,7 @@ namespace NSmpp
             EnsureBound();
             var sequence = GetNextSequenceNumber();
             var task = _taskRegistry.Register(sequence);
-            var pdu = new EnquireLink(sequence);
+            var pdu = new EnquireLink { SequenceNumber = sequence };
 
             _pduSender.Enqueue(pdu);
             _enquireLinkRunner?.Reset();
@@ -261,7 +277,11 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandlePdu(Unbind pdu)
         {
-            var response = new UnbindResponse(SmppStatus.Ok, pdu.SequenceNumber);
+            var response = new UnbindResponse
+            {
+                SequenceNumber = pdu.SequenceNumber,
+                Status = SmppStatus.Ok
+            };
             _pduSender.Enqueue(response);
             // TODO: cancel outstanding tasks
             _enquireLinkRunner?.Stop();
@@ -329,7 +349,11 @@ namespace NSmpp
             _enquireLinkRunner?.Reset();
             OnDeliverReceived(pdu.Source, pdu.Destination, pdu.ShortMessage);
 
-            var response = new DeliverResponse(SmppStatus.Ok, pdu.SequenceNumber);
+            var response = new DeliverResponse
+            {
+                SequenceNumber = pdu.SequenceNumber,
+                Status = SmppStatus.Ok
+            };
             _pduSender.Enqueue(response);
         }
 
@@ -354,7 +378,11 @@ namespace NSmpp
         void IPduReceivedHandler.HandlePdu(EnquireLink pdu)
         {
             _enquireLinkRunner?.Reset();
-            var response = new EnquireLinkResponse(SmppStatus.Ok, pdu.SequenceNumber);
+            var response = new EnquireLinkResponse
+            {
+                SequenceNumber = pdu.SequenceNumber,
+                Status = SmppStatus.Ok
+            };
             _pduSender.Enqueue(response);
         }
 

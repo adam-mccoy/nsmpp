@@ -2,36 +2,6 @@
 {
     internal class Deliver : PduBase
     {
-        public Deliver(
-            uint sequenceNumber,
-            string serviceType,
-            Address source,
-            Address destination,
-            MessagingMode mode,
-            MessageType type,
-            NetworkSpecificFeatures features,
-            byte protocolId,
-            PriorityFlag priority,
-            byte registeredDelivery,
-            byte dataCoding,
-            int length,
-            string shortMessage)
-            : base(sequenceNumber)
-        {
-            ServiceType = serviceType;
-            Source = source;
-            Destination = destination;
-            Mode = mode;
-            Type = type;
-            Features = features;
-            ProtocolId = protocolId;
-            Priority = priority;
-            RegisteredDelivery = registeredDelivery;
-            DataCoding = dataCoding;
-            Length = length;
-            ShortMessage = shortMessage;
-        }
-
         internal override SmppCommand Command
         {
             get { return SmppCommand.Deliver; }

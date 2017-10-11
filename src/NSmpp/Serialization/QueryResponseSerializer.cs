@@ -28,21 +28,16 @@ namespace NSmpp.Serialization
                 var reader = new PduReader(bytes);
                 var header = reader.ReadHeader();
 
-                if (header.Status != SmppStatus.Ok)
-                    return new QueryResponse(header.Status, header.Sequence);
+                var pdu = new QueryResponse();
+                if (header.Status == SmppStatus.Ok)
+                {
+                    pdu.MessageId = reader.ReadString();
+                    pdu.FinalDate = reader.ReadAbsoluteTime();
+                    pdu.MessageState = (MessageState)reader.ReadByte();
+                    pdu.ErrorCode = reader.ReadByte();
+                }
 
-                var messageId = reader.ReadString();
-                var finalDate = reader.ReadAbsoluteTime();
-                var messageState = (MessageState)reader.ReadByte();
-                var errorCode = reader.ReadByte();
-
-                return new QueryResponse(
-                    header.Status,
-                    header.Sequence,
-                    messageId,
-                    finalDate,
-                    messageState,
-                    errorCode);
+                return pdu;
             }
             catch (Exception ex)
             {

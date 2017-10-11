@@ -2,26 +2,12 @@
 {
     internal class BindTransmitterResponse : ResponsePduBase
     {
-        public BindTransmitterResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
-
-        public BindTransmitterResponse(
-            SmppStatus status,
-            uint sequenceNumber,
-            string systemId)
-            : base(status, sequenceNumber)
-        {
-            SystemId = systemId;
-        }
-
         internal override SmppCommand Command
         {
             get { return SmppCommand.BindTransmitterResp; }
         }
 
-        public string SystemId { get; private set; }
+        public string SystemId { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -25,12 +25,11 @@ namespace NSmpp.Serialization
                 var reader = new PduReader(bytes);
                 var header = reader.ReadHeader();
 
-                if (header.Status != SmppStatus.Ok)
-                    return new SubmitResponse(header.Status, header.Sequence);
+                var pdu = new SubmitResponse();
+                if (header.Status == SmppStatus.Ok)
+                    pdu.MessageId = reader.ReadString();
 
-                var messageId = reader.ReadString();
-
-                return new SubmitResponse(header.Status, header.Sequence, messageId);
+                return pdu;
             }
             catch (Exception ex)
             {

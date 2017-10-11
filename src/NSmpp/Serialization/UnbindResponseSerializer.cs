@@ -22,7 +22,11 @@ namespace NSmpp.Serialization
             var status = (SmppStatus)reader.ReadInteger();
             var sequence = (uint)reader.ReadInteger();
 
-            return new UnbindResponse(status, sequence);
+            return new UnbindResponse
+            {
+                SequenceNumber = sequence,
+                Status = status
+            };
         }
     }
 }

@@ -5,12 +5,7 @@
         protected const int HeaderLength = 16;
 
         internal abstract SmppCommand Command { get; }
-        internal uint SequenceNumber { get; private set; }
-
-        protected PduBase(uint sequenceNumber)
-        {
-            SequenceNumber = sequenceNumber;
-        }
+        internal uint SequenceNumber { get; set; }
 
         public override bool Equals(object obj)
         {

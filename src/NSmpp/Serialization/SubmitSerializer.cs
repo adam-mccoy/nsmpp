@@ -1,5 +1,4 @@
-﻿using System.Text;
-using NSmpp.Pdu;
+﻿using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -26,7 +25,7 @@ namespace NSmpp.Serialization
             writer.WriteByte(0x00); // data coding
             writer.WriteByte(0x00); // sm default msg id
             writer.WriteByte((byte)pdu.ShortMessage.Length);
-            writer.WriteBytes(Encoding.ASCII.GetBytes(pdu.ShortMessage));
+            writer.WriteBytes(pdu.ShortMessage);
 
             return Finalize(writer);
         }
@@ -52,15 +51,17 @@ namespace NSmpp.Serialization
             var msgLength = reader.ReadByte();
             var shortMessage = reader.ReadBytes(msgLength);
 
-            return new Submit(
-                sequence,
-                serviceType,
-                new Address(sourceTon, sourceNpi, sourceValue),
-                new Address(destTon, destNpi, destValue),
-                esmClass,
-                protocolId,
-                priorityFlag,
-                Encoding.ASCII.GetString(shortMessage));
+            return new Submit
+            {
+                SequenceNumber = sequence,
+                ServiceType = serviceType,
+                Source = new Address(sourceTon, sourceNpi, sourceValue),
+                Destination = new Address(destTon, destNpi, destValue),
+                EsmClass = esmClass,
+                ProtocolId = protocolId,
+                PriorityFlag = (PriorityFlag)priorityFlag,
+                ShortMessage = shortMessage
+            };
         }
     }
 }

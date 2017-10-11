@@ -100,7 +100,7 @@ namespace NSmpp.Tests
                 new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
                 new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
                 0, 0, 0,
-                "This is a test message.");
+                System.Text.Encoding.ASCII.GetBytes("This is a test message."));
 
             var serializer = new SubmitSerializer();
             var result = serializer.Serialize(pdu);

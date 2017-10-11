@@ -7,21 +7,7 @@
             get { return SmppCommand.BindReceiverResp; }
         }
 
-        public string SystemId { get; private set; }
-
-        public BindReceiverResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
-
-        public BindReceiverResponse(
-            SmppStatus status,
-            uint sequenceNumber,
-            string systemId)
-            : base(status, sequenceNumber)
-        {
-            SystemId = systemId;
-        }
+        public string SystemId { get; set; }
 
         public override bool Equals(object obj)
         {

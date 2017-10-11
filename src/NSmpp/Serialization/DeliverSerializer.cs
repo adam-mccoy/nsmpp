@@ -46,20 +46,22 @@ namespace NSmpp.Serialization
             var length = (int)reader.ReadByte();
             var shortMessage = reader.ReadString();
 
-            return new Deliver(
-                sequence,
-                serviceType,
-                source,
-                dest,
-                (MessagingMode)(esmClass & 0x03),
-                (MessageType)(esmClass >> 2 & 0x0f),
-                (NetworkSpecificFeatures)(esmClass >> 6 & 0x03),
-                protocolId,
-                priority,
-                registeredDelivery,
-                dataCoding,
-                length,
-                shortMessage);
+            return new Deliver
+            {
+                SequenceNumber = sequence,
+                ServiceType = serviceType,
+                Source = source,
+                Destination = dest,
+                Mode = (MessagingMode)(esmClass & 0x03),
+                Type = (MessageType)(esmClass >> 2 & 0x0f),
+                Features = (NetworkSpecificFeatures)(esmClass >> 6 & 0x03),
+                ProtocolId = protocolId,
+                Priority = priority,
+                RegisteredDelivery = registeredDelivery,
+                DataCoding = dataCoding,
+                Length = length,
+                ShortMessage = shortMessage
+            };
         }
     }
 }

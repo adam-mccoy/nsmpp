@@ -36,15 +36,17 @@ namespace NSmpp.Serialization
             var addressNpi = (NumericPlanIndicator)reader.ReadByte();
             var addressRange = reader.ReadString();
 
-            return new BindTransceiver(
-                sequence,
-                systemId,
-                password,
-                systemType,
-                interfaceVersion,
-                addressTon,
-                addressNpi,
-                addressRange);
+            return new BindTransceiver
+            {
+                SequenceNumber = sequence,
+                SystemId = systemId,
+                Password = password,
+                SystemType = systemType,
+                InterfaceVersion = interfaceVersion,
+                AddressTon = addressTon,
+                AddressNpi = addressNpi,
+                AddressRange = addressRange
+            };
         }
     }
 }

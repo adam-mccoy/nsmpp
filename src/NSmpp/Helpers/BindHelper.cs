@@ -1,9 +1,18 @@
-﻿using NSmpp.Pdu;
+﻿using System;
+using System.Collections.Generic;
+using NSmpp.Pdu;
 
 namespace NSmpp.Helpers
 {
     internal static class BindHelper
     {
+        private static readonly Dictionary<BindType, Func<BindPduBase>> Factories = new Dictionary<BindType, Func<BindPduBase>>
+        {
+            { BindType.Receiver, () => new BindReceiver() },
+            { BindType.Transmitter, () => new BindTransmitter() },
+            { BindType.Transceiver, () => new BindTransceiver() }
+        };
+
         internal static PduBase CreateBindPdu(
             uint sequenceNumber,
             BindType bindType,
@@ -11,44 +20,17 @@ namespace NSmpp.Helpers
             string password,
             BindOptions options)
         {
-            switch (bindType)
-            {
-                case BindType.Transmitter:
-                    return new BindTransmitter(
-                        sequenceNumber,
-                        systemId,
-                        password,
-                        options.SystemType,
-                        options.InterfaceVersion,
-                        options.Ton,
-                        options.Npi,
-                        options.AddressRange);
+            var pdu = Factories[bindType]();
 
-                case BindType.Receiver:
-                    return new BindReceiver(
-                        sequenceNumber,
-                        systemId,
-                        password,
-                        options.SystemType,
-                        options.InterfaceVersion,
-                        options.Ton,
-                        options.Npi,
-                        options.AddressRange);
+            pdu.SequenceNumber = sequenceNumber;
+            pdu.SystemId = systemId;
+            pdu.Password = password;
+            pdu.SystemType = options.SystemType;
+            pdu.AddressTon = options.Ton;
+            pdu.AddressNpi = options.Npi;
+            pdu.AddressRange = options.AddressRange;
 
-                case BindType.Transceiver:
-                    return new BindTransceiver(
-                        sequenceNumber,
-                        systemId,
-                        password,
-                        options.SystemType,
-                        options.InterfaceVersion,
-                        options.Ton,
-                        options.Npi,
-                        options.AddressRange);
-
-                default:
-                    return null;
-            }
+            return pdu;
         }
     }
 }

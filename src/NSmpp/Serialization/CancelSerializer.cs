@@ -1,5 +1,4 @@
-﻿using System;
-using NSmpp.Pdu;
+﻿using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -26,7 +25,14 @@ namespace NSmpp.Serialization
             var source = reader.ReadAddress();
             var dest = reader.ReadAddress();
 
-            return new Cancel(sequence, serviceType, messageId, source, dest);
+            return new Cancel
+            {
+                SequenceNumber = sequence,
+                ServiceType = serviceType,
+                MessageId = messageId,
+                Source = source,
+                Destination = dest
+            };
         }
     }
 }

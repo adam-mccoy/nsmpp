@@ -27,6 +27,7 @@ namespace NSmpp.Serialization
             int length = reader.ReadInteger();
             var command = (SmppCommand)reader.ReadInteger();
             reader.ReadInteger(); // skip status
+
             var sequence = (uint)reader.ReadInteger();
             var systemId = reader.ReadString();
             var password = reader.ReadString();
@@ -36,15 +37,17 @@ namespace NSmpp.Serialization
             var addressNpi = (NumericPlanIndicator)reader.ReadByte();
             var addressRange = reader.ReadString();
 
-            return new BindReceiver(
-                sequence,
-                systemId,
-                password,
-                systemType,
-                interfaceVersion,
-                addressTon,
-                addressNpi,
-                addressRange);
+            return new BindReceiver
+            {
+                SequenceNumber = sequence,
+                SystemId = systemId,
+                Password = password,
+                SystemType = systemType,
+                InterfaceVersion = interfaceVersion,
+                AddressTon = addressTon,
+                AddressNpi = addressNpi,
+                AddressRange = addressRange
+            };
         }
     }
 }

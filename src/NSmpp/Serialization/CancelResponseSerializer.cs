@@ -1,5 +1,4 @@
-﻿using System;
-using NSmpp.Pdu;
+﻿using NSmpp.Pdu;
 
 namespace NSmpp.Serialization
 {
@@ -20,7 +19,11 @@ namespace NSmpp.Serialization
             var status = (SmppStatus)reader.ReadInteger();
             var sequence = (uint)reader.ReadInteger();
 
-            return new CancelResponse(status, sequence);
+            return new CancelResponse
+            {
+                SequenceNumber = sequence,
+                Status = status
+            };
         }
     }
 }
