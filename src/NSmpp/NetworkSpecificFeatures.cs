@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace NSmpp.Pdu
+namespace NSmpp
 {
     [Flags]
-    internal enum NetworkSpecificFeatures
+    public enum NetworkSpecificFeatures
     {
         None          = 0,
         UdhiIndicator = 1,

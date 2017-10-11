@@ -1,6 +1,6 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp
 {
-    internal enum MessagingMode
+    public enum MessagingMode
     {
         Default         = 0,
         Datagram        = 1,

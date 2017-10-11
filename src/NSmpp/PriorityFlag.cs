@@ -1,6 +1,6 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp
 {
-    internal enum PriorityFlag
+    public enum PriorityFlag
     {
         Bulk       = 0,
         Normal     = 1,

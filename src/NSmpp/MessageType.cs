@@ -1,6 +1,6 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp
 {
-    internal enum MessageType
+    public enum MessageType
     {
         Default                   = 0,
         DeliveryAcknowledgement   = 2,
