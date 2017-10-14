@@ -47,6 +47,7 @@
     <Compile Include="Helpers\BindHelper.cs" />
     <Compile Include="Helpers\PduHelper.cs" />
     <Compile Include="IPduReceivedHandler.cs" />
+    <Compile Include="ISubmitBuilder.cs" />
     <Compile Include="MessageState.cs" />
     <Compile Include="NumericPlanIndicator.cs" />
     <Compile Include="PduSender.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="SessionState.cs" />
     <Compile Include="SmppClient.cs" />
     <Compile Include="SmppSession.cs" />
+    <Compile Include="DeliveryReceiptOption.cs" />
     <Compile Include="SubmitResult.cs" />
     <Compile Include="TaskRegistry.cs" />
     <Compile Include="TypeOfNumber.cs" />
