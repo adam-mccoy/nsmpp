@@ -117,6 +117,7 @@
     <Compile Include="SmppClient.cs" />
     <Compile Include="SmppSession.cs" />
     <Compile Include="DeliveryReceiptOption.cs" />
+    <Compile Include="SubmitBuilder.cs" />
     <Compile Include="SubmitResult.cs" />
     <Compile Include="TaskRegistry.cs" />
     <Compile Include="TypeOfNumber.cs" />
