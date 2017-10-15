@@ -50,10 +50,7 @@ namespace NSmpp
 
         internal TimeSpan EnquireLinkFrequency
         {
-            get
-            {
-                return _enquireLinkRunner?.Delay ?? Timeout.InfiniteTimeSpan;
-            }
+            get => _enquireLinkRunner?.Delay ?? Timeout.InfiniteTimeSpan;
             set
             {
                 if (value == Timeout.InfiniteTimeSpan)
@@ -67,7 +64,6 @@ namespace NSmpp
                     if (SessionState.IsBound())
                         _enquireLinkRunner.Reset();
                 }
-
             }
         }
 
@@ -80,24 +76,6 @@ namespace NSmpp
             _pduReceiver.Stop();
         }
 
-        internal Task<BindResult> Bind(BindType type, string systemId, string password)
-        {
-            return Bind(type, systemId, password, new BindOptions());
-        }
-
-        internal Task<BindResult> Bind(BindType type, string systemId, string password, BindOptions options)
-        {
-            EnsureOpen();
-
-            var sequence = GetNextSequenceNumber();
-            var pdu = BindHelper.CreateBindPdu(sequence, type, systemId, password, options);
-            var task = _taskRegistry.Register<BindResult>(sequence);
-
-            _pduSender.Enqueue(pdu);
-            _enquireLinkRunner?.Reset();
-            return task.GetTask<BindResult>();
-        }
-
         private void EnsureOpen()
         {
             if (_state != SessionState.Open)
@@ -107,71 +85,13 @@ namespace NSmpp
         internal Task Unbind()
         {
             EnsureBound();
-            var sequence = GetNextSequenceNumber();
-            var task = _taskRegistry.Register(sequence);
-            var pdu = new Unbind(sequence);
-
-            _pduSender.Enqueue(pdu);
-            _enquireLinkRunner?.Reset();
-            return task.GetTask();
-        }
-
-        internal Task<SubmitResult> Submit(string source, string dest, string message)
-        {
-            EnsureCanTransmit();
-            var sequence = GetNextSequenceNumber();
-            var task = _taskRegistry.Register<SubmitResult>(sequence);
-            var pdu = new Submit(
-                sequence,
-                null,
-                TypeOfNumber.Unknown,
-                NumericPlanIndicator.Unknown,
-                source,
-                TypeOfNumber.Unknown,
-                NumericPlanIndicator.Unknown,
-                dest,
-                0, 0, 0,
-                message);
-
-            _pduSender.Enqueue(pdu);
-            _enquireLinkRunner?.Reset();
-            return task.GetTask<SubmitResult>();
-        }
-
-        internal Task<QueryResult> Query(string messageId, Address source)
-        {
-            EnsureCanTransmit();
-            var sequence = GetNextSequenceNumber();
-            var task = _taskRegistry.Register<QueryResult>(sequence);
-            var pdu = new Query(sequence, messageId, source);
-
-            _pduSender.Enqueue(pdu);
-            _enquireLinkRunner?.Reset();
-            return task.GetTask<QueryResult>();
-        }
-
-        internal Task Cancel(string messageId, Address source, Address destination)
-        {
-            EnsureCanTransmit();
-            var sequence = GetNextSequenceNumber();
-            var task = _taskRegistry.Register(sequence);
-            var pdu = new Cancel(sequence, null, messageId, source, destination);
-
-            _pduSender.Enqueue(pdu);
-            _enquireLinkRunner?.Reset();
-            return task.GetTask();
+            return SendPdu(new Unbind());
         }
 
         internal Task EnquireLink()
         {
             EnsureBound();
-            var sequence = GetNextSequenceNumber();
-            var task = _taskRegistry.Register(sequence);
-            var pdu = new EnquireLink(sequence);
-
-            _pduSender.Enqueue(pdu);
-            _enquireLinkRunner?.Reset();
-            return task.GetTask();
+            return SendPdu(new EnquireLink());
         }
 
         private void EnsureBound()
@@ -374,6 +294,28 @@ namespace NSmpp
 
         void IPduReceivedHandler.HandleError(byte[] buffer, string error)
         {
+        }
+
+        internal Task SendPdu(PduBase pdu)
+        {
+            var sequence = GetNextSequenceNumber();
+            pdu.SequenceNumber = sequence;
+            var task = _taskRegistry.Register(sequence);
+
+            _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
+            return task.GetTask();
+        }
+
+        internal Task<TResult> SendPdu<TResult>(PduBase pdu)
+        {
+            var sequence = GetNextSequenceNumber();
+            pdu.SequenceNumber = sequence;
+            var task = _taskRegistry.Register<TResult>(sequence);
+
+            _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
+            return task.GetTask<TResult>();
         }
 
         private uint GetNextSequenceNumber()

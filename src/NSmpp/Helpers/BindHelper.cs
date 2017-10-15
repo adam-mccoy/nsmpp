@@ -5,7 +5,6 @@ namespace NSmpp.Helpers
     internal static class BindHelper
     {
         internal static PduBase CreateBindPdu(
-            uint sequenceNumber,
             BindType bindType,
             string systemId,
             string password,
@@ -15,7 +14,7 @@ namespace NSmpp.Helpers
             {
                 case BindType.Transmitter:
                     return new BindTransmitter(
-                        sequenceNumber,
+                        0,
                         systemId,
                         password,
                         options.SystemType,
@@ -26,7 +25,7 @@ namespace NSmpp.Helpers
 
                 case BindType.Receiver:
                     return new BindReceiver(
-                        sequenceNumber,
+                        0,
                         systemId,
                         password,
                         options.SystemType,
@@ -37,7 +36,7 @@ namespace NSmpp.Helpers
 
                 case BindType.Transceiver:
                     return new BindTransceiver(
-                        sequenceNumber,
+                        0,
                         systemId,
                         password,
                         options.SystemType,

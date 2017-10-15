@@ -2,6 +2,8 @@
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using NSmpp.Extensions;
+using NSmpp.Helpers;
+using NSmpp.Pdu;
 
 namespace NSmpp
 {
@@ -37,22 +39,45 @@ namespace NSmpp
 
         public Task<BindResult> Bind(BindType type, string systemId, string password)
         {
-            return _currentSession.Bind(type, systemId, password);
+            var pdu = BindHelper.CreateBindPdu(type, systemId, password, new BindOptions());
+            return _currentSession.SendPdu<BindResult>(pdu);
         }
 
         public Task<SubmitResult> Submit(string source, string dest, string message)
         {
-            return _currentSession.Submit(source, dest, message);
+            var pdu = new Submit
+            {
+                ServiceType = null,
+                Source = source,
+                Destination = dest,
+                EsmClass = 0,
+                PriorityFlag = 0,
+                ProtocolId = 0,
+                ShortMessage = System.Text.Encoding.ASCII.GetBytes(message)
+            };
+            return _currentSession.SendPdu<SubmitResult>(pdu);
         }
 
         public Task<QueryResult> Query(string messageId, Address source)
         {
-            return _currentSession.Query(messageId, source);
+            var pdu = new Query
+            {
+                MessageId = messageId,
+                Source = source
+            };
+            return _currentSession.SendPdu<QueryResult>(pdu);
         }
 
         public Task Cancel(string messageId, Address source, Address destination)
         {
-            return _currentSession.Cancel(messageId, source, destination);
+            var pdu = new Cancel
+            {
+                ServiceType = null,
+                MessageId = messageId,
+                Source = source,
+                Destination = destination
+            };
+            return _currentSession.SendPdu(pdu);
         }
 
         public Task EnquireLink()
