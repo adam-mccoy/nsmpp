@@ -65,7 +65,7 @@ namespace NSmpp.Serialization
             EnsureSize((value ?? string.Empty).Length + 1);
             if (!string.IsNullOrEmpty(value))
             {
-                var encoded = Encoding.ASCII.GetBytes(value, 0, value.Length, _buffer, _position);
+                var encoded = System.Text.Encoding.ASCII.GetBytes(value, 0, value.Length, _buffer, _position);
                 _position += encoded;
             }
             _buffer[_position++] = 0x00;
