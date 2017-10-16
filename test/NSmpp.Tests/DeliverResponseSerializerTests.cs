@@ -23,7 +23,11 @@ namespace NSmpp.Tests
         {
             var expectedResult = EncodedPdu;
 
-            var pdu = new DeliverResponse(SmppStatus.Ok, 16);
+            var pdu = new DeliverResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 16
+            };
             var serializer = new DeliverResponseSerializer();
             var result = serializer.Serialize(pdu);
 

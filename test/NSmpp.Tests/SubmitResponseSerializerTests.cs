@@ -70,10 +70,12 @@ namespace NSmpp.Tests
                 0x34, 0x32, 0x36, 0x31,
                 0x00                    // message id
             };
-            var pdu = new SubmitResponse(
-                SmppStatus.Ok,
-                32,
-                "6b3169e65e98466fb20d149b56e74261");
+            var pdu = new SubmitResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 32,
+                MessageId = "6b3169e65e98466fb20d149b56e74261"
+            };
             var serializer = new SubmitResponseSerializer();
 
             var result = serializer.Serialize(pdu);
@@ -91,7 +93,11 @@ namespace NSmpp.Tests
                 0x00, 0x00, 0x00, 0x20, // sequence
             };
             var serializer = new SubmitResponseSerializer();
-            var pdu = new SubmitResponse(SmppStatus.MessageQueueFull, 32, null);
+            var pdu = new SubmitResponse
+            {
+                Status = SmppStatus.MessageQueueFull,
+                SequenceNumber = 32
+            };
 
             var result = serializer.Serialize(pdu);
 

@@ -123,7 +123,7 @@ namespace NSmpp
             var task = _taskRegistry.Register<SubmitResult>(sequence);
             var pdu = new Submit
             {
-                SequenceNumber = seq,
+                SequenceNumber = sequence,
                 ServiceType = null,
                 Source = source,
                 Destination = dest,
@@ -145,7 +145,7 @@ namespace NSmpp
             var task = _taskRegistry.Register<QueryResult>(sequence);
             var pdu = new Query
             {
-                SequenceNumber = seq,
+                SequenceNumber = sequence,
                 MessageId = messageId,
                 Source = source
             };
@@ -162,7 +162,7 @@ namespace NSmpp
             var task = _taskRegistry.Register(sequence);
             var pdu = new Cancel
             {
-                SequenceNumber = seq,
+                SequenceNumber = sequence,
                 ServiceType = null,
                 MessageId = messageId,
                 Source = source,

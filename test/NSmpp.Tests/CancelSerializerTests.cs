@@ -52,7 +52,14 @@ namespace NSmpp.Tests
                 0x39, 0x38, 0x37, 0x36, 0x35, 0x34, 0x33, 0x32, 0x31, 0x30, 0x00 // dest address
             };
 
-            var pdu = new Cancel(32, "Banana", "999888", "1234567890", "9876543210");
+            var pdu = new Cancel
+            {
+                SequenceNumber = 32,
+                ServiceType = "Banana",
+                MessageId = "999888",
+                Source = "1234567890",
+                Destination = "9876543210"
+            };
 
             var serializer = new CancelSerializer();
             var result = serializer.Serialize(pdu);

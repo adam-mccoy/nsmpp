@@ -28,7 +28,7 @@ namespace NSmpp.Serialization
                 var reader = new PduReader(bytes);
                 var header = reader.ReadHeader();
 
-                var pdu = new QueryResponse();
+                var pdu = new QueryResponse { SequenceNumber = header.Sequence, Status = header.Status };
                 if (header.Status == SmppStatus.Ok)
                 {
                     pdu.MessageId = reader.ReadString();

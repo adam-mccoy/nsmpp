@@ -41,7 +41,11 @@ namespace NSmpp.Tests
                 0x00, 0x00, 0x00, 0x20, // sequence
             };
 
-            var pdu = new CancelResponse((SmppStatus)statusByte, 32);
+            var pdu = new CancelResponse
+            {
+                Status = (SmppStatus)statusByte,
+                SequenceNumber = 32
+            };
             var serializer = new CancelResponseSerializer();
 
             var result = serializer.Serialize(pdu);

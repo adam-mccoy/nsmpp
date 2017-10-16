@@ -41,20 +41,21 @@ namespace NSmpp.Tests
         {
             var expectedResult = EncodedPdu;
 
-            var pdu = new Deliver(
-                16,
-                "Test",
-                new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
-                new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
-                MessagingMode.Default,
-                MessageType.DeliveryAcknowledgement,
-                NetworkSpecificFeatures.None,
-                0x12,
-                PriorityFlag.Urgent,
-                0x00,
-                0x03,
-                25,
-                "This is a short message.");
+            var pdu = new Deliver
+            {
+                SequenceNumber = 16,
+                ServiceType = "Test",
+                Source = new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
+                Destination = new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
+                Mode = MessagingMode.Default,
+                Type = MessageType.DeliveryAcknowledgement,
+                Features = NetworkSpecificFeatures.None,
+                ProtocolId = 0x12,
+                Priority = PriorityFlag.Urgent,
+                DataCoding = 0x03,
+                Length = 25,
+                ShortMessage = "This is a short message."
+            };
             var serializer = new DeliverSerializer();
             var result = serializer.Serialize(pdu);
 

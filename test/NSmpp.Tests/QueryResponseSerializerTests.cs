@@ -53,13 +53,15 @@ namespace NSmpp.Tests
                 0xff                                      // error_code
             };
 
-            var pdu = new QueryResponse(
-                SmppStatus.Ok,
-                16,
-                "someid",
-                new DateTimeOffset(2016, 8, 18, 16, 34, 56, 400, TimeSpan.FromHours(10)),
-                MessageState.Undeliverable,
-                255);
+            var pdu = new QueryResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 16,
+                MessageId = "someid",
+                FinalDate = new DateTimeOffset(2016, 8, 18, 16, 34, 56, 400, TimeSpan.FromHours(10)),
+                MessageState = MessageState.Undeliverable,
+                ErrorCode = 255
+            };
             var serializer = new QueryResponseSerializer();
             var result = serializer.Serialize(pdu);
 

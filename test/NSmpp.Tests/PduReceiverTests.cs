@@ -21,7 +21,12 @@ namespace NSmpp.Tests
                 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x00 // system ID
             };
 
-            var expectedPdu = new BindTransmitterResponse(SmppStatus.Ok, 32, "System");
+            var expectedPdu = new BindTransmitterResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 32,
+                SystemId = "System"
+            };
 
             PduReceiver receiver = null;
             var handler = new Mock<IPduReceivedHandler>();

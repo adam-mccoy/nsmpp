@@ -37,10 +37,12 @@ namespace NSmpp.Tests
                 0x00, 0x00, 0x00, 0x20, // sequence
                 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x00 // system ID
             };
-            var pdu = new BindReceiverResponse(
-                SmppStatus.Ok,
-                32,
-                "System");
+            var pdu = new BindReceiverResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 32,
+                SystemId = "System"
+            };
             var serializer = new BindReceiverResponseSerializer();
 
             var result = serializer.Serialize(pdu);

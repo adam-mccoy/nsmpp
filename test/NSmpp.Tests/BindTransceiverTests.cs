@@ -54,15 +54,16 @@ namespace NSmpp.Tests
                 0x03,                         // address npi
                 0x00,                         // address range
             };
-            var pdu = new BindTransceiver(
-                16,
-                "TEST",
-                "PASS",
-                "SMS",
-                52,
-                TypeOfNumber.National,
-                NumericPlanIndicator.Telex,
-                null);
+            var pdu = new BindTransceiver
+            {
+                SequenceNumber = 16,
+                SystemId = "TEST",
+                Password = "PASS",
+                SystemType = "SMS",
+                InterfaceVersion = 52,
+                AddressTon = TypeOfNumber.National,
+                AddressNpi = NumericPlanIndicator.Telex
+            };
 
             var serializer = new BindTransceiverSerializer();
             var result = serializer.Serialize(pdu);

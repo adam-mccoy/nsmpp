@@ -32,7 +32,11 @@ namespace NSmpp.Tests
                 0x00, 0x00, 0x00, 0x00,       // status
                 0x00, 0x00, 0x00, 0x10,       // sequence
             };
-            var pdu = new EnquireLinkResponse(SmppStatus.Ok, 16);
+            var pdu = new EnquireLinkResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 16
+            };
 
             var serializer = new EnquireLinkResponseSerializer();
             var result = serializer.Serialize(pdu);

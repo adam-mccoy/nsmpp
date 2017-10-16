@@ -34,9 +34,11 @@ namespace NSmpp.Tests
                 0x00, 0x00, 0x00, 0x00, // status
                 0x00, 0x00, 0x00, 0x20, // sequence
             };
-            var pdu = new UnbindResponse(
-                SmppStatus.Ok,
-                32);
+            var pdu = new UnbindResponse
+            {
+                Status = SmppStatus.Ok,
+                SequenceNumber = 32
+            };
             var serializer = new UnbindResponseSerializer();
 
             var result = serializer.Serialize(pdu);

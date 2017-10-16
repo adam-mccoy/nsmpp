@@ -94,13 +94,13 @@ namespace NSmpp.Tests
                 0x6d, 0x65, 0x73, 0x73, 0x61,
                 0x67, 0x65, 0x2e              // short message
             };
-            var pdu = new Submit(
-                16,
-                null,
-                new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
-                new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
-                0, 0, 0,
-                System.Text.Encoding.ASCII.GetBytes("This is a test message."));
+            var pdu = new Submit
+            {
+                SequenceNumber = 16,
+                Source = new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
+                Destination = new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
+                ShortMessage = System.Text.Encoding.ASCII.GetBytes("This is a test message.")
+            };
 
             var serializer = new SubmitSerializer();
             var result = serializer.Serialize(pdu);

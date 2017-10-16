@@ -50,7 +50,12 @@ namespace NSmpp.Tests
                 0x38, 0x39, 0x30, 0x00
             };
 
-            var pdu = new Query(16, "someid", new Address(TypeOfNumber.National, NumericPlanIndicator.Internet, "1234567890"));
+            var pdu = new Query
+            {
+                SequenceNumber = 16,
+                MessageId = "someid",
+                Source = new Address(TypeOfNumber.National, NumericPlanIndicator.Internet, "1234567890")
+            };
             var serializer = new QuerySerializer();
             var result = serializer.Serialize(pdu);
 

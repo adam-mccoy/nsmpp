@@ -41,7 +41,11 @@ namespace NSmpp.Tests
                 0x00, 0x00, 0x00, 0x20, // sequence
             };
 
-            var pdu = new GenericNack((SmppStatus)statusByte, 32);
+            var pdu = new GenericNack
+            {
+                Status = (SmppStatus)statusByte,
+                SequenceNumber = 32
+            };
             var serializer = new GenericNackSerializer();
 
             var result = serializer.Serialize(pdu);
