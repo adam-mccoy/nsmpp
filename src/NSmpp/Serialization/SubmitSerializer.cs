@@ -19,7 +19,7 @@ namespace NSmpp.Serialization
             writer.WriteByte((byte)pdu.ProtocolId);
             writer.WriteByte((byte)pdu.PriorityFlag);
             writer.WriteString(pdu.ScheduleDeliveryTime);
-            writer.WriteByte(0x00); // validity period
+            writer.WriteString(pdu.ValidityPeriod);
             writer.WriteByte(0x00); // registered delivery
             writer.WriteByte(0x00); // replace if present
             writer.WriteByte(0x00); // data coding
@@ -48,7 +48,8 @@ namespace NSmpp.Serialization
             var protocolId = reader.ReadByte();
             var priorityFlag = reader.ReadByte();
             var scheduleDeliveryTime = reader.ReadString();
-            reader.ReadBytes(5); // skip unsupported functions
+            var validityPeriod = reader.ReadString();
+            reader.ReadBytes(4); // skip unsupported functions
             var msgLength = reader.ReadByte();
             var shortMessage = reader.ReadBytes(msgLength);
 
@@ -62,6 +63,7 @@ namespace NSmpp.Serialization
                 ProtocolId = protocolId,
                 PriorityFlag = (PriorityFlag)priorityFlag,
                 ScheduleDeliveryTime = scheduleDeliveryTime,
+                ValidityPeriod = validityPeriod,
                 ShortMessage = shortMessage
             };
         }
