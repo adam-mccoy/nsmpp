@@ -81,7 +81,7 @@ namespace NSmpp
         public ISubmitBuilder UseValidityPeriod(DateTimeOffset absolute)
         {
             var offset = Math.Abs(absolute.Offset.TotalMinutes) / 15;
-            string validityPeriod = absolute.ToString("YYMMddHHmmssf") +
+            _pdu.ValidityPeriod = absolute.ToString("yyMMddHHmmssf") +
                 offset.ToString("00") +
                 (absolute.Offset < TimeSpan.Zero ? "-" : "+");
             return this;
