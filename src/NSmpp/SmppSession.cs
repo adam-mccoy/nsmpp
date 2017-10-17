@@ -138,6 +138,18 @@ namespace NSmpp
             return task.GetTask<SubmitResult>();
         }
 
+        internal Task<SubmitResult> Submit(Submit pdu)
+        {
+            EnsureCanTransmit();
+            var sequence = GetNextSequenceNumber();
+            var task = _taskRegistry.Register<SubmitResult>(sequence);
+            pdu.SequenceNumber = sequence;
+
+            _pduSender.Enqueue(pdu);
+            _enquireLinkRunner?.Reset();
+            return task.GetTask<SubmitResult>();
+        }
+
         internal Task<QueryResult> Query(string messageId, Address source)
         {
             EnsureCanTransmit();

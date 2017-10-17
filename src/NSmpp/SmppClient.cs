@@ -45,6 +45,11 @@ namespace NSmpp
             return _currentSession.Submit(source, dest, message);
         }
 
+        public Task<SubmitResult> Submit(SubmitBuilder builder)
+        {
+            return _currentSession.Submit(builder.Build());
+        }
+
         public Task<QueryResult> Query(string messageId, Address source)
         {
             return _currentSession.Query(messageId, source);
