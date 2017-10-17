@@ -54,7 +54,12 @@ namespace TestClient
             var number = i.ToString("0000000000");
             var message = $"This is test message #{i}";
             Console.WriteLine($"Submitting message {i}...");
-            var result = await client.Submit(FromNumber, number, message);
+            var builder = new SubmitBuilder();
+            builder
+                .UseSource(FromNumber)
+                .UseDestination(number)
+                .UseShortMessage(message);
+            var result = await client.Submit(builder);
             Console.WriteLine($"Message {i} submitted with message ID {result.MessageId}.");
             return result.MessageId;
         }
