@@ -66,10 +66,9 @@ namespace NSmpp
         public ISubmitBuilder UseScheduledDeliveryTime(DateTimeOffset absolute)
         {
             var offset = Math.Abs(absolute.Offset.TotalMinutes) / 15;
-            var scheduleDeliveryTime = absolute.ToString("yyMMddHHmmssf") +
+            _pdu.ScheduleDeliveryTime = absolute.ToString("yyMMddHHmmssf") +
                 offset.ToString("00") +
                 (absolute.Offset < TimeSpan.Zero ? "-" : "+");
-            _pdu.ScheduleDeliveryTime = scheduleDeliveryTime;
             return this;
         }
 
