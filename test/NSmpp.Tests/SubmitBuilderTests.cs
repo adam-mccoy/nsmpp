@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace NSmpp.Tests
 {
@@ -44,6 +45,16 @@ namespace NSmpp.Tests
             Assert.AreEqual(0xc0, builder.Build().EsmClass);
             builder.UseGsmFeatures(NetworkSpecificFeatures.None);
             Assert.AreEqual(0x00, builder.Build().EsmClass);
+        }
+
+        [Test]
+        public void Sets_Absolute_Schedule_Delivery_Time()
+        {
+            var builder = new SubmitBuilder();
+
+            builder.UseScheduledDeliveryTime(new DateTimeOffset(2017, 8, 18, 1, 23, 45, 720, TimeSpan.FromHours(10.0)));
+
+            Assert.AreEqual("170818012345740+", builder.Build().ScheduleDeliveryTime);
         }
     }
 }
