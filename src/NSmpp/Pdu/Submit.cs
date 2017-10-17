@@ -14,6 +14,7 @@
         internal int ProtocolId { get; set; }
         internal PriorityFlag PriorityFlag { get; set; }
         internal string ScheduleDeliveryTime { get; set; }
+        internal string ValidityPeriod { get; set; }
         internal byte[] ShortMessage { get; set; }
     }
 }

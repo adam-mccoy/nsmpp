@@ -11,7 +11,7 @@ namespace NSmpp.Tests
         public void Deserializes_Pdu()
         {
             var data = new byte[] {
-                0x00, 0x00, 0x00, 0x5c,       // length
+                0x00, 0x00, 0x00, 0x6c,       // length
                 0x00, 0x00, 0x00, 0x04,       // command
                 0x00, 0x00, 0x00, 0x00,       // status
                 0x00, 0x00, 0x00, 0x10,       // sequence
@@ -33,7 +33,10 @@ namespace NSmpp.Tests
                 0x38, 0x30, 0x31, 0x32, 0x33,
                 0x34, 0x35, 0x37, 0x34, 0x30,
                 0x2b, 0x00,
-                0x00,                         // validity period
+                0x31, 0x37, 0x30, 0x38, 0x32, // validity period
+                0x30, 0x30, 0x31, 0x32, 0x33,
+                0x34, 0x35, 0x37, 0x34, 0x30,
+                0x2b, 0x00,
                 0x00,                         // registered delivery
                 0x00,                         // replace if present
                 0x00,                         // data coding
@@ -60,6 +63,7 @@ namespace NSmpp.Tests
             Assert.AreEqual("9876543210", pdu.Destination.Value);
             Assert.AreEqual(0, pdu.EsmClass);
             Assert.AreEqual("170818012345740+", pdu.ScheduleDeliveryTime);
+            Assert.AreEqual("170820012345740+", pdu.ValidityPeriod);
             Assert.AreEqual("This is a test message.", pdu.ShortMessage);
         }
 
@@ -67,7 +71,7 @@ namespace NSmpp.Tests
         public void Serializes_Pdu()
         {
             var expectedResult = new byte[] {
-                0x00, 0x00, 0x00, 0x5c,       // length
+                0x00, 0x00, 0x00, 0x6c,       // length
                 0x00, 0x00, 0x00, 0x04,       // command
                 0x00, 0x00, 0x00, 0x00,       // status
                 0x00, 0x00, 0x00, 0x10,       // sequence
@@ -89,7 +93,10 @@ namespace NSmpp.Tests
                 0x38, 0x30, 0x31, 0x32, 0x33,
                 0x34, 0x35, 0x37, 0x34, 0x30,
                 0x2b, 0x00,
-                0x00,                         // validity period
+                0x31, 0x37, 0x30, 0x38, 0x32, // validity period
+                0x30, 0x30, 0x31, 0x32, 0x33,
+                0x34, 0x35, 0x37, 0x34, 0x30,
+                0x2b, 0x00,
                 0x00,                         // registered delivery
                 0x00,                         // replace if present
                 0x00,                         // data coding
@@ -107,6 +114,7 @@ namespace NSmpp.Tests
                 Source = new Address(TypeOfNumber.National, NumericPlanIndicator.National, "1234567890"),
                 Destination = new Address(TypeOfNumber.NetworkSpecific, NumericPlanIndicator.Internet, "9876543210"),
                 ScheduleDeliveryTime = "170818012345740+",
+                ValidityPeriod = "170820012345740+",
                 ShortMessage = System.Text.Encoding.ASCII.GetBytes("This is a test message.")
             };
 
