@@ -32,17 +32,23 @@ namespace NSmpp
 
         public ISubmitBuilder UseMessagingMode(MessagingMode mode)
         {
-            throw new NotImplementedException();
+            _pdu.EsmClass &= (byte)(~(_pdu.EsmClass & 0x03));
+            _pdu.EsmClass |= (byte)mode;
+            return this;
         }
 
         public ISubmitBuilder UseMessageType(MessageType type)
         {
-            throw new NotImplementedException();
+            _pdu.EsmClass &= (byte)(~(_pdu.EsmClass & 0x3c));
+            _pdu.EsmClass |= (byte)type;
+            return this;
         }
 
         public ISubmitBuilder UseGsmFeatures(NetworkSpecificFeatures features)
         {
-            throw new NotImplementedException();
+            _pdu.EsmClass &= (byte)(~(_pdu.EsmClass & 0xc0));
+            _pdu.EsmClass |= (byte)features;
+            return this;
         }
 
         public ISubmitBuilder UseProtocolId(int protocolId)

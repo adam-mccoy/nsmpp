@@ -10,7 +10,7 @@
         internal string ServiceType { get; set; }
         internal Address Source { get; set; }
         internal Address Destination { get; set; }
-        internal int EsmClass { get; set; }
+        internal byte EsmClass { get; set; }
         internal int ProtocolId { get; set; }
         internal PriorityFlag PriorityFlag { get; set; }
         internal byte[] ShortMessage { get; set; }
