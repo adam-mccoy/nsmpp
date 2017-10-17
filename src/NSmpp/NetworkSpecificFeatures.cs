@@ -3,10 +3,10 @@
 namespace NSmpp
 {
     [Flags]
-    public enum NetworkSpecificFeatures
+    public enum NetworkSpecificFeatures : byte
     {
-        None          = 0,
-        UdhiIndicator = 1,
-        SetReplyPath  = 2,
+        None          = 0x00,
+        UdhiIndicator = 0x40,
+        SetReplyPath  = 0x80,
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace NSmpp
 {
-    public enum MessagingMode
+    public enum MessagingMode : byte
     {
-        Default         = 0,
-        Datagram        = 1,
-        Forward         = 2,
-        StoreAndForward = 3
+        Default         = 0x00,
+        Datagram        = 0x01,
+        Forward         = 0x02,
+        StoreAndForward = 0x03
     }
 }
