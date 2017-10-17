@@ -59,6 +59,7 @@
     <Compile Include="GenericNackSerializerTests.cs" />
     <Compile Include="QueryResponseSerializerTests.cs" />
     <Compile Include="QuerySerializerTests.cs" />
+    <Compile Include="SubmitBuilderTests.cs" />
     <Compile Include="SubmitResponseSerializerTests.cs" />
     <Compile Include="SubmitSerializerTests.cs" />
     <Compile Include="UnbindSerializerTests.cs" />
