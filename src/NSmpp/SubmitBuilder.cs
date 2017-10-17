@@ -74,7 +74,8 @@ namespace NSmpp
 
         public ISubmitBuilder UseScheduledDeliveryTime(RelativeTime relative)
         {
-            throw new NotImplementedException();
+            _pdu.ScheduleDeliveryTime = relative.ToString();
+            return this;
         }
 
         public ISubmitBuilder UseValidityPeriod(DateTimeOffset absolute)
@@ -88,7 +89,8 @@ namespace NSmpp
 
         public ISubmitBuilder UseValidityPeriod(RelativeTime relative)
         {
-            throw new NotImplementedException();
+            _pdu.ValidityPeriod = relative.ToString();
+            return this;
         }
 
         public ISubmitBuilder UseDeliveryReceiptOption(DeliveryReceiptOption option)
