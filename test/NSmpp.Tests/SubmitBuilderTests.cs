@@ -56,5 +56,15 @@ namespace NSmpp.Tests
 
             Assert.AreEqual("170818012345740+", builder.Build().ScheduleDeliveryTime);
         }
+
+        [Test]
+        public void Sets_Absolute_Validity_Period()
+        {
+            var builder = new SubmitBuilder();
+
+            builder.UseValidityPeriod(new DateTimeOffset(2017, 8, 20, 1, 23, 45, 720, TimeSpan.FromHours(10.0)));
+
+            Assert.AreEqual("170820012345740+", builder.Build().ValidityPeriod);
+        }
     }
 }
