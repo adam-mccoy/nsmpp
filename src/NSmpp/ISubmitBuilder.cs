@@ -17,10 +17,10 @@ namespace NSmpp
         ISubmitBuilder UsePriorityFlag(PriorityFlag priority);
 
         ISubmitBuilder UseScheduledDeliveryTime(DateTimeOffset absolute);
-        ISubmitBuilder UseScheduledDeliveryTime(TimeSpan relative);
+        ISubmitBuilder UseScheduledDeliveryTime(RelativeTime relative);
 
         ISubmitBuilder UseValidityPeriod(DateTimeOffset absolute);
-        ISubmitBuilder UseValidityPeriod(TimeSpan relative);
+        ISubmitBuilder UseValidityPeriod(RelativeTime relative);
 
         ISubmitBuilder UseDeliveryReceiptOption(DeliveryReceiptOption option);
 

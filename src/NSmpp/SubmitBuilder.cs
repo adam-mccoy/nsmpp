@@ -72,7 +72,7 @@ namespace NSmpp
             return this;
         }
 
-        public ISubmitBuilder UseScheduledDeliveryTime(TimeSpan relative)
+        public ISubmitBuilder UseScheduledDeliveryTime(RelativeTime relative)
         {
             throw new NotImplementedException();
         }
@@ -86,7 +86,7 @@ namespace NSmpp
             return this;
         }
 
-        public ISubmitBuilder UseValidityPeriod(TimeSpan relative)
+        public ISubmitBuilder UseValidityPeriod(RelativeTime relative)
         {
             throw new NotImplementedException();
         }

@@ -87,6 +87,7 @@
     <Compile Include="PeriodicCaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryResult.cs" />
+    <Compile Include="RelativeTime.cs" />
     <Compile Include="Serialization\DeliverResponseSerializer.cs" />
     <Compile Include="Serialization\DeliverSerializer.cs" />
     <Compile Include="Serialization\CancelResponseSerializer.cs" />
