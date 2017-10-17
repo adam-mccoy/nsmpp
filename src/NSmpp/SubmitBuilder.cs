@@ -7,26 +7,26 @@ namespace NSmpp
 {
     public class SubmitBuilder : ISubmitBuilder
     {
-        private Submit pdu = new Submit();
+        private Submit _pdu = new Submit();
 
         public ISubmitBuilder UseServiceType(string serviceType)
         {
             if (serviceType != null && serviceType.Length > 5)
                 throw new ArgumentOutOfRangeException(nameof(serviceType), "Cannot exceed 5 characters.");
 
-            pdu.ServiceType = serviceType;
+            _pdu.ServiceType = serviceType;
             return this;
         }
 
         public ISubmitBuilder UseSource(Address source)
         {
-            pdu.Source = source ?? throw new ArgumentNullException(nameof(source));
+            _pdu.Source = source ?? throw new ArgumentNullException(nameof(source));
             return this;
         }
 
         public ISubmitBuilder UseDestination(Address destination)
         {
-            pdu.Destination = destination ?? throw new ArgumentNullException(nameof(destination));
+            _pdu.Destination = destination ?? throw new ArgumentNullException(nameof(destination));
             return this;
         }
 
@@ -47,13 +47,13 @@ namespace NSmpp
 
         public ISubmitBuilder UseProtocolId(int protocolId)
         {
-            pdu.ProtocolId = protocolId;
+            _pdu.ProtocolId = protocolId;
             return this;
         }
 
         public ISubmitBuilder UsePriorityFlag(PriorityFlag priority)
         {
-            pdu.PriorityFlag = priority;
+            _pdu.PriorityFlag = priority;
             return this;
         }
 
@@ -99,7 +99,7 @@ namespace NSmpp
 
         public ISubmitBuilder UseShortMessage(string message)
         {
-            pdu.ShortMessage = DataCoding.Default.Encode(message);
+            _pdu.ShortMessage = DataCoding.Default.Encode(message);
             return this;
         }
 
@@ -115,13 +115,13 @@ namespace NSmpp
             {
                 buffer = new byte[0];
             }
-            pdu.ShortMessage = buffer;
+            _pdu.ShortMessage = buffer;
             return this;
         }
 
         internal Submit Build()
         {
-            return pdu;
+            return _pdu;
         }
     }
 }
