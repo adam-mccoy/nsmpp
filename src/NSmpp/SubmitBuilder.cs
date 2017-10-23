@@ -99,9 +99,9 @@ namespace NSmpp
             return this;
         }
 
-        public ISubmitBuilder UseReplacement(bool replaceIfPresent)
+        public ISubmitBuilder UseReplacement(bool replaceIfPresent = true)
         {
-            bool replaceIfPresentFlag = replaceIfPresent;
+            _pdu.ReplaceIfPresent = replaceIfPresent;
             return this;
         }
 
