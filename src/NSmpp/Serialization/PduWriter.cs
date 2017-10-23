@@ -54,10 +54,10 @@ namespace NSmpp.Serialization
             _buffer[_position++] = (byte)(value & 0xff);
         }
 
-        internal void WriteByte(byte value)
+        internal void WriteByte(int value)
         {
             EnsureSize(1);
-            _buffer[_position++] = value;
+            _buffer[_position++] = (byte)value;
         }
 
         internal void WriteString(string value)
