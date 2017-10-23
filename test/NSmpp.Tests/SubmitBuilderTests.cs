@@ -86,5 +86,15 @@ namespace NSmpp.Tests
 
             Assert.AreEqual("010203121650000R", builder.Build().ValidityPeriod);
         }
+
+        [Test]
+        public void Sets_Delivery_Receipt_Option()
+        {
+            var builder = new SubmitBuilder();
+
+            builder.UseDeliveryReceiptOption(DeliveryReceiptOption.FailureOnly);
+
+            Assert.AreEqual(0x02, builder.Build().RegisteredDelivery);
+        }
     }
 }
