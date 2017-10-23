@@ -98,5 +98,14 @@ namespace NSmpp.Tests
 
             Assert.AreEqual(expected, builder.Build().RegisteredDelivery);
         }
+
+        [Test]
+        public void Sets_Replace_If_Present()
+        {
+            var builder = new SubmitBuilder();
+            builder.UseReplacement(true);
+
+            Assert.AreEqual(true, builder.Build().ReplaceIfPresent);
+        }
     }
 }
