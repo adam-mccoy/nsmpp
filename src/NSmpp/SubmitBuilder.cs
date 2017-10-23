@@ -95,7 +95,7 @@ namespace NSmpp
 
         public ISubmitBuilder UseDeliveryReceiptOption(DeliveryReceiptOption option)
         {
-            var registeredDelivery = (byte)option;
+            _pdu.RegisteredDelivery = (byte)option;
             return this;
         }
 
