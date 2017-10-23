@@ -38,7 +38,7 @@ namespace NSmpp.Tests
                 0x34, 0x35, 0x37, 0x34, 0x30,
                 0x2b, 0x00,
                 0x02,                         // registered delivery
-                0x00,                         // replace if present
+                0x01,                         // replace if present
                 0x00,                         // data coding
                 0x00,                         // sm default msg id
                 0x17,
@@ -65,6 +65,7 @@ namespace NSmpp.Tests
             Assert.AreEqual("170818012345740+", pdu.ScheduleDeliveryTime);
             Assert.AreEqual("170820012345740+", pdu.ValidityPeriod);
             Assert.AreEqual(0x02, pdu.RegisteredDelivery);
+            Assert.AreEqual(true, pdu.ReplaceIfPresent);
             Assert.AreEqual("This is a test message.", pdu.ShortMessage);
         }
 
@@ -99,7 +100,7 @@ namespace NSmpp.Tests
                 0x34, 0x35, 0x37, 0x34, 0x30,
                 0x2b, 0x00,
                 0x02,                         // registered delivery
-                0x00,                         // replace if present
+                0x01,                         // replace if present
                 0x00,                         // data coding
                 0x00,                         // sm default msg id
                 0x17,
@@ -117,6 +118,7 @@ namespace NSmpp.Tests
                 ScheduleDeliveryTime = "170818012345740+",
                 ValidityPeriod = "170820012345740+",
                 RegisteredDelivery = 0x02,
+                ReplaceIfPresent = true,
                 ShortMessage = System.Text.Encoding.ASCII.GetBytes("This is a test message.")
             };
 

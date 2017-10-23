@@ -16,6 +16,7 @@
         internal string ScheduleDeliveryTime { get; set; }
         internal string ValidityPeriod { get; set; }
         internal byte RegisteredDelivery { get; set; }
+        internal bool ReplaceIfPresent { get; set; }
         internal byte[] ShortMessage { get; set; }
     }
 }
