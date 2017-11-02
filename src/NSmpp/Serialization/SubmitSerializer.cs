@@ -23,7 +23,7 @@ namespace NSmpp.Serialization
             writer.WriteByte(pdu.RegisteredDelivery); // registered delivery
             writer.WriteByte(pdu.ReplaceIfPresent ? 0x01 : 0x00); // replace if present
             writer.WriteByte(0x00); // data coding
-            writer.WriteByte(0x00); // sm default msg id
+            writer.WriteByte(pdu.DefaultMessageId); // sm default msg id
             writer.WriteByte((byte)pdu.ShortMessage.Length);
             writer.WriteBytes(pdu.ShortMessage);
 
@@ -51,7 +51,8 @@ namespace NSmpp.Serialization
             var validityPeriod = reader.ReadString();
             var registeredDelivery = reader.ReadByte();
             var replaceIfPresent = reader.ReadByte() == 0x01;
-            reader.ReadBytes(2); // skip unsupported functions
+            reader.ReadBytes(1); // skip unsupported functions
+            var defaultMsgId = reader.ReadByte();
             var msgLength = reader.ReadByte();
             var shortMessage = reader.ReadBytes(msgLength);
 
@@ -68,6 +69,7 @@ namespace NSmpp.Serialization
                 ValidityPeriod = validityPeriod,
                 RegisteredDelivery = registeredDelivery,
                 ReplaceIfPresent = replaceIfPresent,
+                DefaultMessageId = defaultMsgId,
                 ShortMessage = shortMessage
             };
         }
