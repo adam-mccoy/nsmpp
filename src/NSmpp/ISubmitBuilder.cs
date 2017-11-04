@@ -25,6 +25,7 @@ namespace NSmpp
         ISubmitBuilder UseDeliveryReceiptOption(DeliveryReceiptOption option);
 
         ISubmitBuilder UseReplacement(bool replaceIfPresent = true);
+        ISubmitBuilder UseDefaultMessage(int defaultMessageId);
 
         ISubmitBuilder UseShortMessage(string message);
         ISubmitBuilder UseShortMessage(Stream stream);

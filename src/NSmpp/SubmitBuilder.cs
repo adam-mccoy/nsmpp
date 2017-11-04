@@ -105,6 +105,11 @@ namespace NSmpp
             return this;
         }
 
+        public ISubmitBuilder UseDefaultMessage(int defaultMessageId)
+        {
+            throw new NotImplementedException();
+        }
+
         public ISubmitBuilder UseShortMessage(string message)
         {
             _pdu.ShortMessage = DataCoding.Default.Encode(message);

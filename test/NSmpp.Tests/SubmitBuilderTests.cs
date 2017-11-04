@@ -107,5 +107,14 @@ namespace NSmpp.Tests
 
             Assert.AreEqual(true, builder.Build().ReplaceIfPresent);
         }
+
+        [Test]
+        public void Sets_Default_Message_Id()
+        {
+            var builder = new SubmitBuilder();
+            builder.UseDefaultMessage(45);
+
+            Assert.AreEqual(45, builder.Build().DefaultMessageId);
+        }
     }
 }
