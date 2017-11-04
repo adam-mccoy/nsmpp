@@ -107,7 +107,8 @@ namespace NSmpp
 
         public ISubmitBuilder UseDefaultMessage(int defaultMessageId)
         {
-            throw new NotImplementedException();
+            _pdu.DefaultMessageId = defaultMessageId;
+            return this;
         }
 
         public ISubmitBuilder UseShortMessage(string message)
