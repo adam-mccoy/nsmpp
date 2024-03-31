@@ -1,9 +1,8 @@
-﻿namespace NSmpp
+﻿namespace NSmpp;
+
+public enum BindType
 {
-    public enum BindType
-    {
-        Transmitter,
-        Receiver,
-        Transceiver
-    }
+    Transmitter,
+    Receiver,
+    Transceiver
 }

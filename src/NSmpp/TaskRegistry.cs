@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 namespace NSmpp
 {
@@ -10,9 +8,9 @@ namespace NSmpp
 
         internal class OutstandingTask
         {
-            private Delegate _getTask;
-            private Delegate _setResult;
-            private Delegate _setException;
+            private Delegate _getTask = null!;
+            private Delegate _setResult = null!;
+            private Delegate _setException = null!;
 
             internal OutstandingTask(Type resultType)
             {
@@ -20,7 +18,7 @@ namespace NSmpp
                 CreateSource();
             }
 
-            internal Type ResultType { get; private set; }
+            private Type ResultType { get; }
 
             internal Task GetTask()
             {
@@ -57,13 +55,13 @@ namespace NSmpp
                 var taskType = typeof(Task<>).MakeGenericType(ResultType);
                 var source = Activator.CreateInstance(sourceType, TaskContinuationOptions.RunContinuationsAsynchronously);
 
-                var getTask = sourceType.GetProperty("Task").GetGetMethod();
+                var getTask = sourceType.GetProperty("Task")!.GetGetMethod();
                 _getTask = Delegate.CreateDelegate(typeof(Func<>).MakeGenericType(taskType), source, getTask);
 
-                var setResultMethod = sourceType.GetMethod("SetResult");
+                var setResultMethod = sourceType.GetMethod("SetResult")!;
                 _setResult = Delegate.CreateDelegate(typeof(Action<>).MakeGenericType(ResultType), source, setResultMethod);
 
-                var setExceptionMethod = sourceType.GetMethod("SetException", new[] { typeof(Exception) });
+                var setExceptionMethod = sourceType.GetMethod("SetException", [typeof(Exception)])!;
                 _setException = Delegate.CreateDelegate(typeof(Action<Exception>), source, setExceptionMethod);
             }
 
@@ -74,7 +72,7 @@ namespace NSmpp
             }
         }
 
-        private readonly ConcurrentDictionary<uint, OutstandingTask> _registry = new ConcurrentDictionary<uint, OutstandingTask>();
+        private readonly ConcurrentDictionary<uint, OutstandingTask> _registry = new();
 
         internal OutstandingTask Register(uint sequence)
         {
@@ -86,12 +84,9 @@ namespace NSmpp
             return RegisterInternal(sequence, typeof(T));
         }
 
-        internal OutstandingTask Unregister(uint sequence)
+        internal OutstandingTask? Unregister(uint sequence)
         {
-            OutstandingTask task;
-            if (!_registry.TryRemove(sequence, out task))
-                return null;
-            return task;
+            return !_registry.TryRemove(sequence, out var task) ? null : task;
         }
 
         private OutstandingTask RegisterInternal(uint sequence, Type resultType)

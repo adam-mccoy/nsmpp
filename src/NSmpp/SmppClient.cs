@@ -1,97 +1,87 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
-using System.Threading.Tasks;
-using NSmpp.Extensions;
 
-namespace NSmpp
+namespace NSmpp;
+
+public class SmppClient : IAsyncDisposable
 {
-    public class SmppClient : IDisposable
+    public event EventHandler<DeliverReceivedEventArgs>? DeliverReceived;
+
+    private SmppSession? _currentSession;
+
+    public TimeSpan EnquireLinkFrequency
     {
-        public event EventHandler<DeliverReceivedEventArgs> DeliverReceived;
-
-        private SmppSession _currentSession = null;
-
-        public TimeSpan EnquireLinkFrequency
+        get
         {
-            get
-            {
-                EnsureSession();
-                return _currentSession.EnquireLinkFrequency;
-            }
-            set
-            {
-                EnsureSession();
-                _currentSession.EnquireLinkFrequency = value;
-            }
+            EnsureSession();
+            return _currentSession.EnquireLinkFrequency;
         }
-
-        public async Task Connect(string host, int port)
+        set
         {
-            var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-            await socket.ConnectAsync(host, port);
-
-            var stream = new NetworkStream(socket, true);
-            _currentSession = new SmppSession(stream, stream);
-            _currentSession.DeliverReceived += Session_DeliverReceived;
+            EnsureSession();
+            _currentSession.EnquireLinkFrequency = value;
         }
+    }
 
-        public Task<BindResult> Bind(BindType type, string systemId, string password)
-        {
-            return _currentSession.Bind(type, systemId, password);
-        }
+    public async Task Connect(string host, int port)
+    {
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        await socket.ConnectAsync(host, port);
 
-        public Task<SubmitResult> Submit(string source, string dest, string message)
-        {
-            return _currentSession.Submit(source, dest, message);
-        }
+        var stream = new NetworkStream(socket, true);
+        _currentSession = new SmppSession(stream, stream);
+        _currentSession.DeliverReceived += Session_DeliverReceived;
+    }
 
-        public Task<QueryResult> Query(string messageId, Address source)
-        {
-            return _currentSession.Query(messageId, source);
-        }
+    public Task<BindResult> Bind(BindType type, string systemId, string password)
+    {
+        EnsureSession();
+        return _currentSession.Bind(type, systemId, password);
+    }
 
-        public Task Cancel(string messageId, Address source, Address destination)
-        {
-            return _currentSession.Cancel(messageId, source, destination);
-        }
+    public Task<SubmitResult> Submit(string source, string dest, string message)
+    {
+        EnsureSession();
+        return _currentSession.Submit(source, dest, message);
+    }
 
-        public Task EnquireLink()
-        {
-            return _currentSession.EnquireLink();
-        }
+    public Task<QueryResult> Query(string messageId, Address source)
+    {
+        EnsureSession();
+        return _currentSession.Query(messageId, source);
+    }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    public Task Cancel(string messageId, Address source, Address destination)
+    {
+        EnsureSession();
+        return _currentSession.Cancel(messageId, source, destination);
+    }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_currentSession != null)
-                {
-                    _currentSession.Dispose();
-                    _currentSession = null;
-                }
-            }
-        }
+    public Task EnquireLink()
+    {
+        EnsureSession();
+        return _currentSession.EnquireLink();
+    }
 
-        private void EnsureSession()
-        {
-            if (_currentSession == null)
-                throw new InvalidOperationException("Client is not connected.");
-        }
+    [MemberNotNull(nameof(_currentSession))]
+    private void EnsureSession()
+    {
+        if (_currentSession == null)
+            throw new InvalidOperationException("Client is not connected.");
+    }
 
-        private void Session_DeliverReceived(object sender, DeliverReceivedEventArgs e)
-        {
-            OnDeliverReceived(e);
-        }
+    private void Session_DeliverReceived(object sender, DeliverReceivedEventArgs e)
+    {
+        OnDeliverReceived(e);
+    }
 
-        private void OnDeliverReceived(DeliverReceivedEventArgs e)
-        {
-            DeliverReceived?.Invoke(this, e);
-        }
+    private void OnDeliverReceived(DeliverReceivedEventArgs e)
+    {
+        DeliverReceived?.Invoke(this, e);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_currentSession != null) await _currentSession.DisposeAsync();
     }
 }

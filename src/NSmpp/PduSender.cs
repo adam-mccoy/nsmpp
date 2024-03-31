@@ -1,83 +1,73 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using System.Threading;
+﻿using System.Collections.Concurrent;
 using NSmpp.Pdu;
 using NSmpp.Serialization;
 
-namespace NSmpp
+namespace NSmpp;
+
+internal class PduSender
 {
-    internal class PduSender
+    private const int DequeueTimeout = 1000;
+
+    private readonly BlockingCollection<PduBase> _sendQueue = new();
+    private readonly Stream _outputStream;
+    private readonly object _lock = new();
+    private readonly CancellationTokenSource _token = new();
+
+    private Task? _task;
+
+    internal PduSender(Stream outputStream)
     {
-        private const int DequeueTimeout = 1000;
+        _outputStream = outputStream;
+    }
 
-        private readonly BlockingCollection<PduBase> _sendQueue = new BlockingCollection<PduBase>();
-        private readonly Stream _outputStream;
-        private readonly object _lock = new object();
-        private readonly CancellationTokenSource _token = new CancellationTokenSource();
+    internal void Enqueue(PduBase pdu)
+    {
+        _sendQueue.Add(pdu);
+    }
 
-        private Task _task;
-        private bool _running;
-
-        internal PduSender(Stream outputStream)
+    internal Task Start()
+    {
+        lock (_lock)
         {
-            _outputStream = outputStream;
-        }
+            if (_task is not null) return _task;
 
-        internal void Enqueue(PduBase pdu)
-        {
-            _sendQueue.Add(pdu);
-        }
+            _task = Task.Factory.StartNew(
+                function: Run,
+                cancellationToken: _token.Token,
+                creationOptions: TaskCreationOptions.LongRunning,
+                scheduler: TaskScheduler.Default).Unwrap();
 
-        internal Task Start()
-        {
-            if (_running) return _task;
-            lock (_lock)
-            {
-                if (_running) return _task;
-
-                _task = Task.Factory.StartNew(
-                    function: Run,
-                    cancellationToken: _token.Token,
-                    creationOptions: TaskCreationOptions.LongRunning,
-                    scheduler: TaskScheduler.Default).Unwrap();
-
-                _running = true;
-            }
             return _task;
         }
+    }
 
-        internal void Stop()
+    internal void Stop()
+    {
+        lock (_lock)
         {
-            if (!_running) return;
-            lock (_lock)
-            {
-                if (!_running) return;
-                _token.Cancel();
-                _task.Wait();
-                _task = null;
-            }
+            if (_task is null) return;
+            _token.Cancel();
+            _task.Wait();
+            _task = null;
         }
+    }
 
-        private async Task Run()
+    private async Task Run()
+    {
+        while (!_token.IsCancellationRequested)
         {
-            PduBase pdu;
-            while (!_token.IsCancellationRequested)
+            try
             {
-                try
-                {
-                    if (!_sendQueue.TryTake(out pdu, DequeueTimeout, _token.Token))
-                        continue;
+                if (!_sendQueue.TryTake(out var pdu, DequeueTimeout, _token.Token))
+                    continue;
 
-                    var serializer = PduSerializerFactory.Create(pdu.Command);
-                    var bytes = serializer.Serialize(pdu);
-                    await _outputStream.WriteAsync(bytes, 0, bytes.Length);
-                }
-                catch (OperationCanceledException)
-                {
-                    // shutting down
-                }
+                var serializer = PduSerializerFactory.Create(pdu.Command);
+                var bytes = serializer.Serialize(pdu);
+                await _outputStream.WriteAsync(bytes, 0, bytes.Length);
+            }
+            catch (OperationCanceledException)
+            {
+                // shutting down
             }
         }
     }

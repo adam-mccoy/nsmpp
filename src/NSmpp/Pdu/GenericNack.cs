@@ -1,15 +1,7 @@
-﻿namespace NSmpp.Pdu
-{
-    internal class GenericNack : ResponsePduBase
-    {
-        public GenericNack(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
+﻿namespace NSmpp.Pdu;
 
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.GenericNack; }
-        }
-    }
+internal class GenericNack(SmppStatus status, uint sequenceNumber)
+    : ResponsePduBase(status, sequenceNumber)
+{
+    internal override SmppCommand Command => SmppCommand.GenericNack;
 }

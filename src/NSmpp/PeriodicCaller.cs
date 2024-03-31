@@ -1,67 +1,62 @@
-﻿using System;
-using System.Threading;
+﻿namespace NSmpp;
 
-namespace NSmpp
+internal class PeriodicCaller : IDisposable
 {
-    internal class PeriodicCaller : IDisposable
+    private bool _isDisposed;
+    private readonly Timer _timer;
+
+    public PeriodicCaller(TimeSpan delay, Action callback)
     {
-        private TimeSpan _delay;
-        private bool _isDisposed;
-        private readonly Timer _timer;
+        Delay = delay;
+        _timer = new Timer(OnTick, callback, Timeout.InfiniteTimeSpan, delay);
+    }
 
-        public PeriodicCaller(TimeSpan delay, Action callback)
+    public TimeSpan Delay { get; }
+
+    public void Reset()
+    {
+        EnsureNotDisposed();
+        _timer.Change(Delay, Delay);
+    }
+
+    public void Stop()
+    {
+        EnsureNotDisposed();
+        _timer.Change(Timeout.InfiniteTimeSpan, Delay);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+            return;
+
+        if (disposing)
         {
-            _delay = delay;
-            _timer = new Timer(OnTick, callback, Timeout.InfiniteTimeSpan, delay);
+            var e = new ManualResetEvent(false);
+            _timer.Dispose(e);
+            e.WaitOne();
+            _isDisposed = true;
         }
+    }
 
-        public TimeSpan Delay => _delay;
+    private void OnTick(object state)
+    {
+        if (_isDisposed)
+            return;
 
-        public void Reset()
-        {
-            EnsureNotDisposed();
-            _timer.Change(_delay, _delay);
-        }
+        var callback = (Action)state;
+        callback();
+    }
 
-        public void Stop()
-        {
-            EnsureNotDisposed();
-            _timer.Change(Timeout.InfiniteTimeSpan, _delay);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed)
-                return;
-
-            if (disposing)
-            {
-                var e = new ManualResetEvent(false);
-                _timer.Dispose(e);
-                e.WaitOne();
-                _isDisposed = true;
-            }
-        }
-
-        private void OnTick(object state)
-        {
-            if (_isDisposed)
-                return;
-
-            var callback = (Action)state;
-            callback();
-        }
-
-        private void EnsureNotDisposed()
-        {
-            if (_isDisposed)
-                throw new ObjectDisposedException("PeriodicCaller");
-        }
+    private void EnsureNotDisposed()
+    {
+        if (_isDisposed)
+            throw new ObjectDisposedException("PeriodicCaller");
     }
 }

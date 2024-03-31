@@ -1,43 +1,44 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
 using NSmpp.Pdu;
 using NSmpp.Serialization;
 
-namespace NSmpp.Tests
+namespace NSmpp.Tests;
+
+[TestFixture]
+public class EnquireLinkResponseSerializerTests
 {
-    [TestFixture]
-    public class EnquireLinkResponseSerializerTests
+    [Test]
+    public void Deserializes_Pdu()
     {
-        [Test]
-        public void Deserializes_Pdu()
-        {
-            var data = new byte[] {
-                0x00, 0x00, 0x00, 0x10,       // length
-                0x80, 0x00, 0x00, 0x15,       // command
-                0x00, 0x00, 0x00, 0x00,       // status
-                0x00, 0x00, 0x00, 0x10,       // sequence
-            };
+        byte[] data =
+        [
+            0x00, 0x00, 0x00, 0x10,       // length
+            0x80, 0x00, 0x00, 0x15,       // command
+            0x00, 0x00, 0x00, 0x00,       // status
+            0x00, 0x00, 0x00, 0x10        // sequence
+        ];
 
-            var serializer = new EnquireLinkResponseSerializer();
-            var pdu = serializer.Deserialize(data);
+        var serializer = new EnquireLinkResponseSerializer();
+        var pdu = serializer.Deserialize(data);
 
-            Assert.AreEqual(16, pdu.SequenceNumber);
-        }
+        pdu.SequenceNumber.Should().Be(16);
+    }
 
-        [Test]
-        public void Serializes_Pdu()
-        {
-            var expectedResult = new byte[] {
-                0x00, 0x00, 0x00, 0x10,       // length
-                0x80, 0x00, 0x00, 0x15,       // command
-                0x00, 0x00, 0x00, 0x00,       // status
-                0x00, 0x00, 0x00, 0x10,       // sequence
-            };
-            var pdu = new EnquireLinkResponse(SmppStatus.Ok, 16);
+    [Test]
+    public void Serializes_Pdu()
+    {
+        byte[] expectedResult =
+        [
+            0x00, 0x00, 0x00, 0x10,       // length
+            0x80, 0x00, 0x00, 0x15,       // command
+            0x00, 0x00, 0x00, 0x00,       // status
+            0x00, 0x00, 0x00, 0x10        // sequence
+        ];
+        var pdu = new EnquireLinkResponse(SmppStatus.Ok, 16);
 
-            var serializer = new EnquireLinkResponseSerializer();
-            var result = serializer.Serialize(pdu);
+        var serializer = new EnquireLinkResponseSerializer();
+        var result = serializer.Serialize(pdu);
 
-            CollectionAssert.AreEqual(expectedResult, result);
-        }
+        result.Should().Equal(expectedResult);
     }
 }

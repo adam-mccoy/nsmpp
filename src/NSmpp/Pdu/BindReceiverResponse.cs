@@ -1,47 +1,29 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp.Pdu;
+
+internal class BindReceiverResponse(
+    SmppStatus status,
+    uint sequenceNumber,
+    string? systemId = null)
+    : ResponsePduBase(status, sequenceNumber)
 {
-    internal class BindReceiverResponse : ResponsePduBase
+    internal override SmppCommand Command => SmppCommand.BindReceiverResp;
+
+    public string? SystemId { get; } = systemId;
+
+    public override bool Equals(object? obj)
     {
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.BindReceiverResp; }
-        }
+        if (obj == this)
+            return true;
 
-        public string SystemId { get; private set; }
+        if (obj is not BindReceiverResponse rhs)
+            return false;
 
-        public BindReceiverResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
-
-        public BindReceiverResponse(
-            SmppStatus status,
-            uint sequenceNumber,
-            string systemId)
-            : base(status, sequenceNumber)
-        {
-            SystemId = systemId;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == this)
-                return true;
-
-            var rhs = obj as BindReceiverResponse;
-            if (rhs == null)
-                return false;
-
-            return
-                rhs.Command == Command &&
-                rhs.Status == Status &&
-                rhs.SequenceNumber == SequenceNumber &&
-                rhs.SystemId == SystemId;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode() * 17 ^ SystemId.GetHashCode();
-        }
+        return
+            rhs.Command == Command &&
+            rhs.Status == Status &&
+            rhs.SequenceNumber == SequenceNumber &&
+            rhs.SystemId == SystemId;
     }
+
+    public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), SystemId);
 }

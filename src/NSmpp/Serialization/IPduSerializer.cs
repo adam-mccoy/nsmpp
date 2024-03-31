@@ -1,10 +1,9 @@
 ﻿using NSmpp.Pdu;
 
-namespace NSmpp.Serialization
+namespace NSmpp.Serialization;
+
+internal interface IPduSerializer
 {
-    internal interface IPduSerializer
-    {
-        byte[] Serialize(PduBase pdu);
-        PduBase Deserialize(byte[] bytes);
-    }
+    byte[] Serialize(PduBase pdu);
+    PduBase Deserialize(byte[] bytes);
 }

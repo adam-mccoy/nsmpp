@@ -1,26 +1,12 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp.Pdu;
+
+internal class SubmitResponse(
+    SmppStatus status,
+    uint sequenceNumber,
+    string? messageId = null)
+    : ResponsePduBase(status, sequenceNumber)
 {
-    internal class SubmitResponse : ResponsePduBase
-    {
-        public SubmitResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
+    internal override SmppCommand Command => SmppCommand.SubmitResp;
 
-        public SubmitResponse(
-            SmppStatus status,
-            uint sequenceNumber,
-            string messageId)
-            : base(status, sequenceNumber)
-        {
-            MessageId = messageId;
-        }
-
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.SubmitResp; }
-        }
-
-        internal string MessageId { get; private set; }
-    }
+    internal string? MessageId { get; } = messageId;
 }

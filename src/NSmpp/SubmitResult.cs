@@ -1,12 +1,3 @@
-﻿namespace NSmpp
-{
-    public class SubmitResult
-    {
-        public SubmitResult(string messageId)
-        {
-            MessageId = messageId;
-        }
+﻿namespace NSmpp;
 
-        public string MessageId { get; private set; }
-    }
-}
+public record SubmitResult(string MessageId);

@@ -1,38 +1,23 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp.Pdu;
+
+internal class BindTransceiver(
+    uint sequenceNumber,
+    string systemId,
+    string password,
+    string systemType,
+    byte interfaceVersion,
+    TypeOfNumber addressTon,
+    NumericPlanIndicator addressNpi,
+    string? addressRange)
+    : PduBase(sequenceNumber)
 {
-    internal class BindTransceiver : PduBase
-    {
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.BindTransceiver; }
-        }
+    internal override SmppCommand Command => SmppCommand.BindTransceiver;
 
-        internal string SystemId { get; private set; }
-        internal string Password { get; private set; }
-        internal string SystemType { get; private set; }
-        internal byte InterfaceVersion { get; private set; }
-        internal TypeOfNumber AddressTon { get; private set; }
-        internal NumericPlanIndicator AddressNpi { get; private set; }
-        internal string AddressRange { get; private set; }
-
-        public BindTransceiver(
-            uint sequenceNumber,
-            string systemId,
-            string password,
-            string systemType,
-            byte interfaceVersion,
-            TypeOfNumber addressTon,
-            NumericPlanIndicator addressNpi,
-            string addressRange)
-            : base(sequenceNumber)
-        {
-            SystemId = systemId;
-            Password = password;
-            SystemType = systemType;
-            InterfaceVersion = interfaceVersion;
-            AddressTon = addressTon;
-            AddressNpi = addressNpi;
-            AddressRange = AddressRange;
-        }
-    }
+    internal string SystemId { get; } = systemId;
+    internal string Password { get; } = password;
+    internal string SystemType { get; } = systemType;
+    internal byte InterfaceVersion { get; } = interfaceVersion;
+    internal TypeOfNumber AddressTon { get; } = addressTon;
+    internal NumericPlanIndicator AddressNpi { get; } = addressNpi;
+    internal string? AddressRange { get; } = addressRange;
 }

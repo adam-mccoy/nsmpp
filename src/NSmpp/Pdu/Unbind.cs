@@ -1,15 +1,6 @@
-﻿namespace NSmpp.Pdu
-{
-    internal class Unbind : PduBase
-    {
-        public Unbind(uint sequenceNumber)
-            : base(sequenceNumber)
-        {
-        }
+﻿namespace NSmpp.Pdu;
 
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.Unbind; }
-        }
-    }
+internal class Unbind(uint sequenceNumber) : PduBase(sequenceNumber)
+{
+    internal override SmppCommand Command => SmppCommand.Unbind;
 }

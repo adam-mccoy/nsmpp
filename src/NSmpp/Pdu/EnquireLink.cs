@@ -1,15 +1,7 @@
-﻿namespace NSmpp.Pdu
-{
-    internal class EnquireLink : PduBase
-    {
-        public EnquireLink(uint sequenceNumber)
-            : base(sequenceNumber)
-        {
-        }
+﻿namespace NSmpp.Pdu;
 
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.EnquireLink; }
-        }
-    }
+internal class EnquireLink(uint sequenceNumber)
+    : PduBase(sequenceNumber)
+{
+    internal override SmppCommand Command => SmppCommand.EnquireLink;
 }

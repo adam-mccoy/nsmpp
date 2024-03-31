@@ -1,15 +1,7 @@
-﻿namespace NSmpp.Pdu
-{
-    internal class DeliverResponse : ResponsePduBase
-    {
-        public DeliverResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
+﻿namespace NSmpp.Pdu;
 
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.DeliverResp; }
-        }
-    }
+internal class DeliverResponse(SmppStatus status, uint sequenceNumber)
+    : ResponsePduBase(status, sequenceNumber)
+{
+    internal override SmppCommand Command => SmppCommand.DeliverResp;
 }

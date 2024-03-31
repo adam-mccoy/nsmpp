@@ -1,28 +1,27 @@
 ﻿using NSmpp.Pdu;
 
-namespace NSmpp.Serialization
+namespace NSmpp.Serialization;
+
+internal class UnbindResponseSerializer : PduSerializer<UnbindResponse>
 {
-    internal class UnbindResponseSerializer : PduSerializer<UnbindResponse>
+    internal override byte[] Serialize(UnbindResponse pdu)
     {
-        internal override byte[] Serialize(UnbindResponse pdu)
-        {
-            var writer = new PduWriter();
-            writer.WritePduHeader(pdu);
+        var writer = new PduWriter();
+        writer.WritePduHeader(pdu);
 
-            var bytes = writer.GetBytes();
-            PduWriter.WriteInteger(bytes, 0, bytes.Length);
-            return bytes;
-        }
+        var bytes = writer.GetBytes();
+        PduWriter.WriteInt32(bytes, 0, bytes.Length);
+        return bytes;
+    }
 
-        internal override UnbindResponse Deserialize(byte[] bytes)
-        {
-            var reader = new PduReader(bytes);
-            int length = reader.ReadInteger();
-            var command = (SmppCommand)reader.ReadInteger();
-            var status = (SmppStatus)reader.ReadInteger();
-            var sequence = (uint)reader.ReadInteger();
+    internal override UnbindResponse Deserialize(byte[] bytes)
+    {
+        var reader = new PduReader(bytes);
+        int length = reader.ReadInt32();
+        var command = (SmppCommand)reader.ReadInt32();
+        var status = (SmppStatus)reader.ReadInt32();
+        var sequence = (uint)reader.ReadInt32();
 
-            return new UnbindResponse(status, sequence);
-        }
+        return new UnbindResponse(status, sequence);
     }
 }

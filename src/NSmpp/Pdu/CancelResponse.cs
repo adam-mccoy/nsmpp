@@ -1,15 +1,7 @@
-﻿namespace NSmpp.Pdu
-{
-    internal class CancelResponse : ResponsePduBase
-    {
-        public CancelResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
+﻿namespace NSmpp.Pdu;
 
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.CancelResp; }
-        }
-    }
+internal class CancelResponse(SmppStatus status, uint sequenceNumber)
+    : ResponsePduBase(status, sequenceNumber)
+{
+    internal override SmppCommand Command => SmppCommand.CancelResp;
 }

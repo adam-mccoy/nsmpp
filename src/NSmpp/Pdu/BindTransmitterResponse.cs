@@ -1,47 +1,29 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp.Pdu;
+
+internal class BindTransmitterResponse(
+    SmppStatus status,
+    uint sequenceNumber,
+    string? systemId = null)
+    : ResponsePduBase(status, sequenceNumber)
 {
-    internal class BindTransmitterResponse : ResponsePduBase
+    internal override SmppCommand Command => SmppCommand.BindTransmitterResp;
+
+    public string? SystemId { get; } = systemId;
+
+    public override bool Equals(object? obj)
     {
-        public BindTransmitterResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
+        if (obj == this)
+            return true;
 
-        public BindTransmitterResponse(
-            SmppStatus status,
-            uint sequenceNumber,
-            string systemId)
-            : base(status, sequenceNumber)
-        {
-            SystemId = systemId;
-        }
+        if (obj is not BindTransmitterResponse rhs)
+            return false;
 
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.BindTransmitterResp; }
-        }
-
-        public string SystemId { get; private set; }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == this)
-                return true;
-
-            var rhs = obj as BindTransmitterResponse;
-            if (rhs == null)
-                return false;
-
-            return
-                rhs.Command == Command &&
-                rhs.Status == Status &&
-                rhs.SequenceNumber == SequenceNumber &&
-                rhs.SystemId == SystemId;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode() * 17 ^ SystemId.GetHashCode();
-        }
+        return
+            rhs.Command == Command &&
+            rhs.Status == Status &&
+            rhs.SequenceNumber == SequenceNumber &&
+            rhs.SystemId == SystemId;
     }
+
+    public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), SystemId);
 }

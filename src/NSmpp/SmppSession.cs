@@ -1,33 +1,22 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using NSmpp.Helpers;
+﻿using NSmpp.Helpers;
 using NSmpp.Pdu;
 
 namespace NSmpp
 {
-    internal class SmppSession : IPduReceivedHandler, IDisposable
+    internal class SmppSession : IPduReceivedHandler, IAsyncDisposable
     {
-        private readonly TaskRegistry _taskRegistry = new TaskRegistry();
+        private readonly TaskRegistry _taskRegistry = new();
 
-        private SessionState _state;
-        private int _sequenceNumber = 0;
+        private int _sequenceNumber;
 
-        private PduSender _pduSender;
-        private PduReceiver _pduReceiver;
-        private Task _receiverTask;
-        private Task _senderTask;
+        private readonly PduSender _pduSender;
+        private readonly PduReceiver _pduReceiver;
+        private readonly Task? _receiverTask;
+        private readonly Task? _senderTask;
 
-        private PeriodicCaller _enquireLinkRunner;
+        private PeriodicCaller? _enquireLinkRunner;
 
-        internal event EventHandler<DeliverReceivedEventArgs> DeliverReceived;
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        internal event EventHandler<DeliverReceivedEventArgs>? DeliverReceived;
 
         internal SmppSession(Stream inputStream, Stream outputStream)
         {
@@ -35,25 +24,19 @@ namespace NSmpp
             _pduReceiver = new PduReceiver(inputStream, this);
             _receiverTask = _pduReceiver.Start().ContinueWith(t =>
             {
-                _state = SessionState.Closed;
+                SessionState = SessionState.Closed;
                 Console.WriteLine("Receiver task completed.");
                 if (t.IsFaulted)
-                    Console.WriteLine("Failed with exception: {0}", t.Exception.Flatten());
+                    Console.WriteLine("Failed with exception: {0}", t.Exception!.Flatten());
             });
             _senderTask = _pduSender.Start();
         }
 
-        internal SessionState SessionState
-        {
-            get { return _state; }
-        }
+        internal SessionState SessionState { get; private set; }
 
         internal TimeSpan EnquireLinkFrequency
         {
-            get
-            {
-                return _enquireLinkRunner?.Delay ?? Timeout.InfiniteTimeSpan;
-            }
+            get => _enquireLinkRunner?.Delay ?? Timeout.InfiniteTimeSpan;
             set
             {
                 if (value == Timeout.InfiniteTimeSpan)
@@ -63,17 +46,16 @@ namespace NSmpp
                 }
                 else
                 {
-                    _enquireLinkRunner = new PeriodicCaller(value, async () => await EnquireLink());
+                    _enquireLinkRunner = new PeriodicCaller(value, () => EnquireLink());
                     if (SessionState.IsBound())
                         _enquireLinkRunner.Reset();
                 }
-
             }
         }
 
         internal void Close()
         {
-            if (_state != SessionState.Open && _state != SessionState.Closed)
+            if (SessionState != SessionState.Open && SessionState != SessionState.Closed)
                 AsyncHelper.RunSync(Unbind);
             _enquireLinkRunner?.Stop();
             _pduSender.Stop();
@@ -100,7 +82,7 @@ namespace NSmpp
 
         private void EnsureOpen()
         {
-            if (_state != SessionState.Open)
+            if (SessionState != SessionState.Open)
                 throw new InvalidOperationException("This operation can only be performed when the session is in the Open state.");
         }
 
@@ -176,23 +158,14 @@ namespace NSmpp
 
         private void EnsureBound()
         {
-            if (!_state.IsBound())
+            if (!SessionState.IsBound())
                 throw new InvalidOperationException("This operation can only be performed when the session is in the Bound state.");
         }
 
         private void EnsureCanTransmit()
         {
-            if (_state != SessionState.BoundTransmitter && _state != SessionState.BoundTransceiver)
+            if (SessionState != SessionState.BoundTransmitter && SessionState != SessionState.BoundTransceiver)
                 throw new InvalidOperationException("This operation can only be performed when the session is bound as a transmitter or transceiver.");
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Close();
-                _enquireLinkRunner?.Dispose();
-            }
         }
 
         void IPduReceivedHandler.HandlePdu(GenericNack pdu)
@@ -220,7 +193,7 @@ namespace NSmpp
             else
             {
                 _enquireLinkRunner?.Reset();
-                _state = SessionState.BoundReceiver;
+                SessionState = SessionState.BoundReceiver;
                 task.SetResult(new BindResult(pdu.SystemId));
             }
         }
@@ -239,7 +212,7 @@ namespace NSmpp
             else
             {
                 _enquireLinkRunner?.Reset();
-                _state = SessionState.BoundTransmitter;
+                SessionState = SessionState.BoundTransmitter;
                 task.SetResult(new BindResult(pdu.SystemId));
             }
         }
@@ -257,7 +230,7 @@ namespace NSmpp
             }
             else
             {
-                _state = SessionState.BoundTransceiver;
+                SessionState = SessionState.BoundTransceiver;
                 _enquireLinkRunner?.Reset();
                 task.SetResult(new BindResult(pdu.SystemId));
             }
@@ -269,7 +242,7 @@ namespace NSmpp
             _pduSender.Enqueue(response);
             // TODO: cancel outstanding tasks
             _enquireLinkRunner?.Stop();
-            _state = SessionState.Open;
+            SessionState = SessionState.Open;
         }
 
         void IPduReceivedHandler.HandlePdu(UnbindResponse pdu)
@@ -286,7 +259,7 @@ namespace NSmpp
             else
             {
                 _enquireLinkRunner?.Stop();
-                _state = SessionState.Open;
+                SessionState = SessionState.Open;
                 task.SetResult(true);
             }
         }
@@ -384,6 +357,23 @@ namespace NSmpp
         private void OnDeliverReceived(Address source, Address destination, string message)
         {
             DeliverReceived?.Invoke(this, new DeliverReceivedEventArgs(source, destination, message));
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_receiverTask != null) await CastAndDispose(_receiverTask);
+            if (_senderTask != null) await CastAndDispose(_senderTask);
+            if (_enquireLinkRunner != null) await CastAndDispose(_enquireLinkRunner);
+
+            return;
+
+            static async ValueTask CastAndDispose(IDisposable resource)
+            {
+                if (resource is IAsyncDisposable resourceAsyncDisposable)
+                    await resourceAsyncDisposable.DisposeAsync();
+                else
+                    resource.Dispose();
+            }
         }
     }
 }

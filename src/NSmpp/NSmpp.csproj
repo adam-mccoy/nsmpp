@@ -1,120 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7150BB50-A528-4303-9942-0C26760091A7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NSmpp</RootNamespace>
-    <AssemblyName>NSmpp</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\NSmpp\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\NSmpp\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Address.cs" />
-    <Compile Include="BindResult.cs" />
-    <Compile Include="DeliverReceivedEventArgs.cs" />
-    <Compile Include="Extensions\SocketExtensions.cs" />
-    <Compile Include="Helpers\AsyncHelper.cs" />
-    <Compile Include="Helpers\BindHelper.cs" />
-    <Compile Include="Helpers\PduHelper.cs" />
-    <Compile Include="IPduReceivedHandler.cs" />
-    <Compile Include="MessageState.cs" />
-    <Compile Include="NumericPlanIndicator.cs" />
-    <Compile Include="PduSender.cs" />
-    <Compile Include="BindOptions.cs" />
-    <Compile Include="Pdu\BindTransceiverResponse.cs" />
-    <Compile Include="Pdu\BindTransceiver.cs" />
-    <Compile Include="Pdu\BindReceiver.cs" />
-    <Compile Include="Pdu\BindTransmitter.cs" />
-    <Compile Include="Pdu\BindReceiverResponse.cs" />
-    <Compile Include="Pdu\BindTransmitterResponse.cs" />
-    <Compile Include="BindType.cs" />
-    <Compile Include="Pdu\Deliver.cs" />
-    <Compile Include="Pdu\DeliverResponse.cs" />
-    <Compile Include="Pdu\Cancel.cs" />
-    <Compile Include="Pdu\CancelResponse.cs" />
-    <Compile Include="Pdu\EnquireLink.cs" />
-    <Compile Include="Pdu\EnquireLinkResponse.cs" />
-    <Compile Include="Pdu\GenericNack.cs" />
-    <Compile Include="Pdu\MessageType.cs" />
-    <Compile Include="Pdu\MessagingMode.cs" />
-    <Compile Include="Pdu\NetworkSpecificFeatures.cs" />
-    <Compile Include="Pdu\PduBase.cs" />
-    <Compile Include="Pdu\PriorityFlag.cs" />
-    <Compile Include="Pdu\Query.cs" />
-    <Compile Include="Pdu\QueryResponse.cs" />
-    <Compile Include="Pdu\ResponsePduBase.cs" />
-    <Compile Include="Pdu\SmppCommand.cs" />
-    <Compile Include="Pdu\SmppHeader.cs" />
-    <Compile Include="Pdu\SmppStatus.cs" />
-    <Compile Include="Pdu\Submit.cs" />
-    <Compile Include="Pdu\SubmitResponse.cs" />
-    <Compile Include="Pdu\Unbind.cs" />
-    <Compile Include="Pdu\UnbindResponse.cs" />
-    <Compile Include="PeriodicCaller.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryResult.cs" />
-    <Compile Include="Serialization\DeliverResponseSerializer.cs" />
-    <Compile Include="Serialization\DeliverSerializer.cs" />
-    <Compile Include="Serialization\CancelResponseSerializer.cs" />
-    <Compile Include="Serialization\CancelSerializer.cs" />
-    <Compile Include="Serialization\EnquireLinkResponseSerializer.cs" />
-    <Compile Include="Serialization\EnquireLinkSerializer.cs" />
-    <Compile Include="Serialization\GenericNackSerializer.cs" />
-    <Compile Include="Serialization\PduSerializationException.cs" />
-    <Compile Include="Serialization\QueryResponseSerializer.cs" />
-    <Compile Include="Serialization\QuerySerializer.cs" />
-    <Compile Include="Serialization\SubmitResponseSerializer.cs" />
-    <Compile Include="Serialization\BindTransceiverSerializer.cs" />
-    <Compile Include="Serialization\BindTransceiverResponseSerializer.cs" />
-    <Compile Include="Serialization\BindReceiverResponseSerializer.cs" />
-    <Compile Include="Serialization\BindTransmitterResponseSerializer.cs" />
-    <Compile Include="Serialization\BindReceiverSerializer.cs" />
-    <Compile Include="Serialization\BindTransmitterSerializer.cs" />
-    <Compile Include="Serialization\IPduSerializer.cs" />
-    <Compile Include="Serialization\PduSerializerFactory.cs" />
-    <Compile Include="Serialization\PduWriter.cs" />
-    <Compile Include="Serialization\PduReader.cs" />
-    <Compile Include="Serialization\PduSerializer.cs" />
-    <Compile Include="PduReceiver.cs" />
-    <Compile Include="Serialization\SubmitSerializer.cs" />
-    <Compile Include="Serialization\UnbindResponseSerializer.cs" />
-    <Compile Include="Serialization\UnbindSerializer.cs" />
-    <Compile Include="SessionState.cs" />
-    <Compile Include="SmppClient.cs" />
-    <Compile Include="SmppSession.cs" />
-    <Compile Include="SubmitResult.cs" />
-    <Compile Include="TaskRegistry.cs" />
-    <Compile Include="TypeOfNumber.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="$(AssemblyName).Tests"/>
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0"/>
+        <PackageReference Include="Nullable" Version="1.3.1"/>
+        <PackageReference Include="IsExternalInit" Version="1.0.3"/>
+    </ItemGroup>
+
 </Project>

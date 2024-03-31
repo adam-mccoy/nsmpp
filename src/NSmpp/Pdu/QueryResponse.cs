@@ -1,37 +1,18 @@
-﻿using System;
+﻿namespace NSmpp.Pdu;
 
-namespace NSmpp.Pdu
+internal class QueryResponse(
+    SmppStatus status,
+    uint sequenceNumber,
+    string messageId,
+    DateTimeOffset? finalDate,
+    MessageState messageState,
+    int errorCode)
+    : ResponsePduBase(status, sequenceNumber)
 {
-    internal class QueryResponse : ResponsePduBase
-    {
-        public QueryResponse(SmppStatus status, uint sequenceNumber)
-            : base(status, sequenceNumber)
-        {
-        }
+    internal override SmppCommand Command => SmppCommand.QueryResp;
 
-        public QueryResponse(
-            SmppStatus status,
-            uint sequenceNumber,
-            string messageId,
-            DateTimeOffset? finalDate,
-            MessageState messageState,
-            int errorCode)
-            : base(status, sequenceNumber)
-        {
-            MessageId = messageId;
-            FinalDate = finalDate;
-            MessageState = messageState;
-            ErrorCode = errorCode;
-        }
-
-        internal override SmppCommand Command
-        {
-            get { return SmppCommand.QueryResp; }
-        }
-
-        internal string MessageId { get; private set; }
-        internal DateTimeOffset? FinalDate { get; private set; }
-        internal MessageState MessageState { get; private set; }
-        internal int ErrorCode { get; private set; }
-    }
+    internal string MessageId { get; private set; } = messageId;
+    internal DateTimeOffset? FinalDate { get; private set; } = finalDate;
+    internal MessageState MessageState { get; private set; } = messageState;
+    internal int ErrorCode { get; private set; } = errorCode;
 }

@@ -1,32 +1,25 @@
-﻿namespace NSmpp.Pdu
+﻿namespace NSmpp.Pdu;
+
+internal abstract class PduBase(uint sequenceNumber)
 {
-    internal abstract class PduBase
+    protected const int HeaderLength = 16;
+
+    internal abstract SmppCommand Command { get; }
+    internal uint SequenceNumber { get; } = sequenceNumber;
+
+    public override bool Equals(object? obj)
     {
-        protected const int HeaderLength = 16;
+        if (obj == this)
+            return true;
 
-        internal abstract SmppCommand Command { get; }
-        internal uint SequenceNumber { get; private set; }
+        if (obj is not PduBase rhs)
+            return false;
 
-        protected PduBase(uint sequenceNumber)
-        {
-            SequenceNumber = sequenceNumber;
-        }
+        return rhs.SequenceNumber == SequenceNumber;
+    }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == this)
-                return true;
-
-            var rhs = obj as PduBase;
-            if (rhs == null)
-                return false;
-
-            return rhs.SequenceNumber == SequenceNumber;
-        }
-
-        public override int GetHashCode()
-        {
-            return SequenceNumber.GetHashCode();
-        }
+    public override int GetHashCode()
+    {
+        return SequenceNumber.GetHashCode();
     }
 }

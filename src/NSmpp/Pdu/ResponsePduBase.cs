@@ -1,13 +1,7 @@
-﻿namespace NSmpp.Pdu
-{
-    internal abstract class ResponsePduBase : PduBase
-    {
-        internal SmppStatus Status { get; private set; }
+﻿namespace NSmpp.Pdu;
 
-        public ResponsePduBase(SmppStatus status, uint sequenceNumber)
-            : base(sequenceNumber)
-        {
-            Status = status;
-        }
-    }
+internal abstract class ResponsePduBase(SmppStatus status, uint sequenceNumber)
+    : PduBase(sequenceNumber)
+{
+    internal SmppStatus Status { get; private set; } = status;
 }
