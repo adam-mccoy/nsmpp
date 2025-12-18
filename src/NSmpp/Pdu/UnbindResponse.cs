@@ -1,7 +1,7 @@
 ﻿namespace NSmpp.Pdu;
 
-internal class UnbindResponse(SmppStatus status, uint sequenceNumber)
-    : ResponsePduBase(status, sequenceNumber)
+internal class UnbindResponse(SmppStatus status)
+    : ResponsePduBase(status)
 {
     internal override SmppCommand Command => SmppCommand.UnbindResp;
 }

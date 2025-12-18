@@ -28,16 +28,15 @@ internal class BindTransmitterSerializer : PduSerializer<BindTransmitter>
         var command = (SmppCommand)reader.ReadInt32();
         reader.ReadInt32(); // skip status
         var sequence = (uint)reader.ReadInt32();
-        var systemId = reader.ReadString();
+        var systemId = reader.ReadString() ?? throw new PduSerializationException("Missing system ID");
         var password = reader.ReadString();
-        var systemType = reader.ReadString();
+        var systemType = reader.ReadString() ?? throw new PduSerializationException("Missing system type");
         var interfaceVersion = reader.ReadByte();
         var addressTon = (TypeOfNumber)reader.ReadByte();
         var addressNpi = (NumericPlanIndicator)reader.ReadByte();
         var addressRange = reader.ReadString();
 
         return new BindTransmitter(
-            sequence,
             systemId,
             password,
             systemType,

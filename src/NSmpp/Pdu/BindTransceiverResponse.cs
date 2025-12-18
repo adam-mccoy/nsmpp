@@ -2,9 +2,8 @@
 
 internal class BindTransceiverResponse(
     SmppStatus status,
-    uint sequenceNumber,
     string? systemId = null)
-    : ResponsePduBase(status, sequenceNumber)
+    : ResponsePduBase(status)
 {
     internal override SmppCommand Command => SmppCommand.BindTransceiverResp;
 

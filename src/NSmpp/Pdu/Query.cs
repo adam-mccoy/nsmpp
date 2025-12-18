@@ -2,11 +2,7 @@
 
 internal class Query : PduBase
 {
-    internal Query(
-        uint sequence,
-        string messageId,
-        Address source)
-        : base(sequence)
+    internal Query(string messageId, Address source)
     {
         MessageId = messageId;
         Source = source;

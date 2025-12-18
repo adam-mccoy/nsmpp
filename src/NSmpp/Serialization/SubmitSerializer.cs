@@ -53,7 +53,6 @@ internal class SubmitSerializer : PduSerializer<Submit>
         var shortMessage = reader.ReadBytes(msgLength);
 
         return new Submit(
-            sequence,
             serviceType,
             sourceTon,
             sourceNpi,

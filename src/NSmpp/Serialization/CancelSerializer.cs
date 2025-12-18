@@ -25,6 +25,6 @@ internal class CancelSerializer : PduSerializer<Cancel>
         var source = reader.ReadAddress();
         var dest = reader.ReadAddress();
 
-        return new Cancel(sequence, serviceType, messageId, source, dest);
+        return new Cancel(serviceType, messageId, source, dest);
     }
 }

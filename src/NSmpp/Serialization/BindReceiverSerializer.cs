@@ -37,7 +37,6 @@ internal class BindReceiverSerializer : PduSerializer<BindReceiver>
         var addressRange = reader.ReadString();
 
         return new BindReceiver(
-            sequence,
             systemId,
             password,
             systemType,

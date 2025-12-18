@@ -18,6 +18,6 @@ internal class EnquireLinkSerializer : PduSerializer<EnquireLink>
         reader.Skip(12);
         var sequence = (uint)reader.ReadInt32();
 
-        return new EnquireLink(sequence);
+        return new EnquireLink { SequenceNumber = sequence };
     }
 }

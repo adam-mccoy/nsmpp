@@ -19,6 +19,6 @@ internal class EnquireLinkResponseSerializer : PduSerializer<EnquireLinkResponse
         var status = (SmppStatus)reader.ReadInt32();
         var sequence = (uint)reader.ReadInt32();
 
-        return new EnquireLinkResponse(status, sequence);
+        return new EnquireLinkResponse(status) { SequenceNumber = sequence };
     }
 }

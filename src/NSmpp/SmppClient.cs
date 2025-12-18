@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
+using NSmpp.Helpers;
+using NSmpp.Pdu;
 
 namespace NSmpp;
 
@@ -36,25 +38,46 @@ public class SmppClient : IAsyncDisposable
     public Task<BindResult> Bind(BindType type, string systemId, string password)
     {
         EnsureSession();
-        return _currentSession.Bind(type, systemId, password);
+        var pdu = BindHelper.CreateBindPdu(type, systemId, password, new BindOptions());
+        return _currentSession.SendPdu<BindResult>(pdu);
     }
 
     public Task<SubmitResult> Submit(string source, string dest, string message)
     {
         EnsureSession();
-        return _currentSession.Submit(source, dest, message);
+        var pdu = new Submit(
+            null,
+            TypeOfNumber.Unknown,
+            NumericPlanIndicator.Unknown,
+            source,
+            TypeOfNumber.Unknown,
+            NumericPlanIndicator.Unknown,
+            dest,
+            0,
+            0,
+            0,
+            message);
+
+        return _currentSession.SendPdu<SubmitResult>(pdu);
     }
 
     public Task<QueryResult> Query(string messageId, Address source)
     {
         EnsureSession();
-        return _currentSession.Query(messageId, source);
+        var pdu = new Query(messageId, source);
+        return _currentSession.SendPdu<QueryResult>(pdu);
     }
 
     public Task Cancel(string messageId, Address source, Address destination)
     {
         EnsureSession();
-        return _currentSession.Cancel(messageId, source, destination);
+        var pdu = new Cancel(
+            null,
+            messageId,
+            source,
+            destination);
+
+        return _currentSession.SendPdu(pdu);
     }
 
     public Task EnquireLink()

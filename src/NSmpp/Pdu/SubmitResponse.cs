@@ -2,9 +2,8 @@
 
 internal class SubmitResponse(
     SmppStatus status,
-    uint sequenceNumber,
     string? messageId = null)
-    : ResponsePduBase(status, sequenceNumber)
+    : ResponsePduBase(status)
 {
     internal override SmppCommand Command => SmppCommand.SubmitResp;
 

@@ -20,6 +20,6 @@ internal class DeliverResponseSerializer : PduSerializer<DeliverResponse>
         var status = (SmppStatus)reader.ReadInt32();
         var sequence = (uint)reader.ReadInt32();
 
-        return new DeliverResponse(status, sequence);
+        return new DeliverResponse(status) { SequenceNumber = sequence };
     }
 }

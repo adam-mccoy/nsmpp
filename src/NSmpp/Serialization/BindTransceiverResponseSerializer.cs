@@ -25,10 +25,10 @@ internal class BindTransceiverResponseSerializer : PduSerializer<BindTransceiver
             var header = reader.ReadHeader();
 
             if (header.Status != SmppStatus.Ok)
-                return new BindTransceiverResponse(header.Status, header.Sequence);
+                return new BindTransceiverResponse(header.Status) { SequenceNumber = header.Sequence };
             var systemId = reader.ReadString();
 
-            return new BindTransceiverResponse(header.Status, header.Sequence, systemId);
+            return new BindTransceiverResponse(header.Status, systemId) { SequenceNumber = header.Sequence };
         }
         catch (Exception ex)
         {

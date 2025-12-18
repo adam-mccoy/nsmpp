@@ -1,7 +1,6 @@
 ﻿namespace NSmpp.Pdu;
 
 internal class BindTransceiver(
-    uint sequenceNumber,
     string systemId,
     string password,
     string systemType,
@@ -9,7 +8,7 @@ internal class BindTransceiver(
     TypeOfNumber addressTon,
     NumericPlanIndicator addressNpi,
     string? addressRange)
-    : PduBase(sequenceNumber)
+    : PduBase
 {
     internal override SmppCommand Command => SmppCommand.BindTransceiver;
 

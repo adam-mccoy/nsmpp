@@ -25,11 +25,11 @@ internal class SubmitResponseSerializer : PduSerializer<SubmitResponse>
             var header = reader.ReadHeader();
 
             if (header.Status != SmppStatus.Ok)
-                return new SubmitResponse(header.Status, header.Sequence);
+                return new SubmitResponse(header.Status) { SequenceNumber = header.Sequence };
 
             var messageId = reader.ReadString();
 
-            return new SubmitResponse(header.Status, header.Sequence, messageId);
+            return new SubmitResponse(header.Status, messageId) { SequenceNumber = header.Sequence };
         }
         catch (Exception ex)
         {

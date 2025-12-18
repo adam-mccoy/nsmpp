@@ -2,12 +2,11 @@
 
 internal class QueryResponse(
     SmppStatus status,
-    uint sequenceNumber,
     string messageId,
     DateTimeOffset? finalDate,
     MessageState messageState,
     int errorCode)
-    : ResponsePduBase(status, sequenceNumber)
+    : ResponsePduBase(status)
 {
     internal override SmppCommand Command => SmppCommand.QueryResp;
 

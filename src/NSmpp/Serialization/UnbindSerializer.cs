@@ -22,6 +22,6 @@ internal class UnbindSerializer : PduSerializer<Unbind>
         reader.ReadInt32(); // skip status
         var sequence = (uint)reader.ReadInt32();
 
-        return new Unbind(sequence);
+        return new Unbind { SequenceNumber = sequence };
     }
 }

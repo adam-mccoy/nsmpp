@@ -34,11 +34,13 @@ internal class QueryResponseSerializer : PduSerializer<QueryResponse>
 
             return new QueryResponse(
                 header.Status,
-                header.Sequence,
                 messageId,
                 finalDate,
                 messageState,
-                errorCode);
+                errorCode)
+            {
+                SequenceNumber = header.Sequence
+            };
         }
         catch (Exception ex)
         {

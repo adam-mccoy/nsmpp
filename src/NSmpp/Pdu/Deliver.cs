@@ -1,7 +1,6 @@
 ﻿namespace NSmpp.Pdu;
 
 internal class Deliver(
-    uint sequenceNumber,
     string serviceType,
     Address source,
     Address destination,
@@ -14,7 +13,7 @@ internal class Deliver(
     byte dataCoding,
     int length,
     string shortMessage)
-    : PduBase(sequenceNumber)
+    : PduBase
 {
     internal override SmppCommand Command => SmppCommand.Deliver;
 

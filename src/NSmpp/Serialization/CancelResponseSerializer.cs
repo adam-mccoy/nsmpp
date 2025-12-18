@@ -19,6 +19,6 @@ internal class CancelResponseSerializer : PduSerializer<CancelResponse>
         var status = (SmppStatus)reader.ReadInt32();
         var sequence = (uint)reader.ReadInt32();
 
-        return new CancelResponse(status, sequence);
+        return new CancelResponse(status) { SequenceNumber = sequence };
     }
 }

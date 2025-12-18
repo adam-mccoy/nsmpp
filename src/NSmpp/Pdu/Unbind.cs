@@ -1,6 +1,6 @@
 ﻿namespace NSmpp.Pdu;
 
-internal class Unbind(uint sequenceNumber) : PduBase(sequenceNumber)
+internal class Unbind : PduBase
 {
     internal override SmppCommand Command => SmppCommand.Unbind;
 }

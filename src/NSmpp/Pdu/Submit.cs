@@ -1,7 +1,6 @@
 ﻿namespace NSmpp.Pdu;
 
 internal class Submit(
-    uint sequenceNumber,
     string? serviceType,
     TypeOfNumber sourceTon,
     NumericPlanIndicator sourceNpi,
@@ -13,7 +12,7 @@ internal class Submit(
     int protocolId,
     int priorityFlag,
     string shortMessage)
-    : PduBase(sequenceNumber)
+    : PduBase
 {
     internal override SmppCommand Command => SmppCommand.Submit;
 

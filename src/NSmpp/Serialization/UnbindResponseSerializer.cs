@@ -22,6 +22,6 @@ internal class UnbindResponseSerializer : PduSerializer<UnbindResponse>
         var status = (SmppStatus)reader.ReadInt32();
         var sequence = (uint)reader.ReadInt32();
 
-        return new UnbindResponse(status, sequence);
+        return new UnbindResponse(status) { SequenceNumber = sequence };
     }
 }

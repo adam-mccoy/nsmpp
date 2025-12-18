@@ -29,7 +29,6 @@ internal class QuerySerializer : PduSerializer<Query>
         var sourceAddress = reader.ReadString();
 
         return new Query(
-            sequence,
             messageId,
             new Address(sourceTon, sourceNpi, sourceAddress));
     }

@@ -20,6 +20,6 @@ internal class GenericNackSerializer : PduSerializer<GenericNack>
         var status = (SmppStatus)reader.ReadInt32();
         var sequence = (uint)reader.ReadInt32();
 
-        return new GenericNack(status, sequence);
+        return new GenericNack(status) { SequenceNumber = sequence };
     }
 }

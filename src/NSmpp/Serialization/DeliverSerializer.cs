@@ -47,7 +47,6 @@ internal class DeliverSerializer : PduSerializer<Deliver>
         var shortMessage = reader.ReadString();
 
         return new Deliver(
-            sequence,
             serviceType,
             source,
             dest,

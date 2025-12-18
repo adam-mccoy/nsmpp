@@ -3,7 +3,7 @@ using NSmpp.Pdu;
 
 namespace NSmpp.Serialization;
 
-internal class PduWriter
+internal class PduWriter : IPduWriter
 {
     private const int DefaultBufferSize = 200;
 
@@ -31,7 +31,7 @@ internal class PduWriter
         return result;
     }
 
-    internal void WriteInt32(int value)
+    public void WriteInt32(int value)
     {
         EnsureSize(4);
         WriteInt32(_buffer, _position, value);
@@ -46,20 +46,20 @@ internal class PduWriter
         buffer[position] = (byte)(value & 0xff);
     }
 
-    internal void WriteInt16(short value)
+    public void WriteInt16(short value)
     {
         EnsureSize(2);
         _buffer[_position++] = (byte)(value >> 8 & 0xff);
         _buffer[_position++] = (byte)(value & 0xff);
     }
 
-    internal void WriteByte(byte value)
+    public void WriteByte(byte value)
     {
         EnsureSize(1);
         _buffer[_position++] = value;
     }
 
-    internal void WriteString(string? value)
+    public void WriteString(string? value)
     {
         EnsureSize((value ?? string.Empty).Length + 1);
         if (!string.IsNullOrEmpty(value))
@@ -70,12 +70,12 @@ internal class PduWriter
         _buffer[_position++] = 0x00;
     }
 
-    internal void WriteBytes(byte[] bytes)
+    public void WriteBytes(ReadOnlySpan<byte> bytes)
     {
         if (bytes == null)
             throw new ArgumentNullException(nameof(bytes));
         EnsureSize(bytes.Length);
-        Buffer.BlockCopy(bytes, 0, _buffer, _position, bytes.Length);
+        bytes.CopyTo(new Span<byte>(_buffer, _position, bytes.Length));
         _position += bytes.Length;
     }
 
@@ -135,4 +135,13 @@ internal class PduWriter
         Buffer.BlockCopy(_buffer, 0, newBuffer, 0, _position);
         _buffer = newBuffer;
     }
+}
+
+internal interface IPduWriter
+{
+    void WriteInt32(int value);
+    void WriteInt16(short value);
+    void WriteByte(byte value);
+    void WriteString(string? value);
+    void WriteBytes(ReadOnlySpan<byte> value);
 }
